@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import type { ReactNode } from 'react';
+import { ArtifactProvider } from '@artifact-ui/core';
 import { QueryProvider } from './query-provider';
 
 type AppProviderProps = {
@@ -9,7 +10,9 @@ type AppProviderProps = {
 export const AppProvider = ({ children }: AppProviderProps) => {
 	return (
 		<StrictMode>
-			<QueryProvider>{children}</QueryProvider>
+			<ArtifactProvider theme="light" accent="obsidian" radius="medium">
+				<QueryProvider>{children}</QueryProvider>
+			</ArtifactProvider>
 		</StrictMode>
 	);
 };

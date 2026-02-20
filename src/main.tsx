@@ -1,4 +1,5 @@
 import { createRoot } from 'react-dom/client';
+import '@artifact-ui/core/styles.css';
 import { AppProvider } from '@/providers';
 import { AppRouter } from '@/routes';
 
