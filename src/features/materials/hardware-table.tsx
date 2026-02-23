@@ -1,4 +1,6 @@
 import { Table } from '@artifact-ui/core';
+import { SortableHeader } from '@/components/sortable-header';
+import { useSortableTable } from '@/hooks/use-sortable-table';
 import type { HardwareEntry } from '@/types/api';
 
 type HardwareTableProps = {
@@ -6,16 +8,35 @@ type HardwareTableProps = {
 };
 
 export const HardwareTable = ({ items }: HardwareTableProps) => {
+	const { sortedData, sortKey, sortDirection, toggleSort } =
+		useSortableTable(items, {
+			defaultKey: 'piece',
+			defaultDirection: 'asc',
+		});
+
 	return (
-		<Table.Root variant="surface" size="2" highlight>
+		<Table.Root variant="surface" size="2">
 			<Table.Header>
 				<Table.Row>
-					<Table.HeaderCell>Piece</Table.HeaderCell>
-					<Table.HeaderCell textAlign="center">Qty</Table.HeaderCell>
+					<SortableHeader
+						label="Piece"
+						sortKey="piece"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader
+						label="Qty"
+						sortKey="total_count"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						align="center"
+					/>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{items.map((item, index) => (
+				{sortedData.map((item, index) => (
 					<Table.Row key={`${item.piece}-${index}`}>
 						<Table.Cell>{item.piece}</Table.Cell>
 						<Table.Cell textAlign="center">{item.total_count}</Table.Cell>

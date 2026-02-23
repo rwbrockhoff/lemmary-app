@@ -1,5 +1,7 @@
 import { Table, Checkbox, Button, Badge, cn } from '@artifact-ui/core';
 import { getProgressColor } from './batch-utils';
+import { SortableHeader } from '@/components/sortable-header';
+import { useSortableTable } from '@/hooks/use-sortable-table';
 import styles from '@/styles/shared.module.css';
 import { MinusIcon, PlusIcon } from '@/components/icons/icons';
 import type { BatchMaterial } from '@/types/api';
@@ -10,6 +12,8 @@ type BatchMaterialsTableProps = {
 	onUpdateQty?: (id: string, completedQty: number) => void;
 };
 
+type MaterialSortKey = Extract<keyof BatchMaterial, string> | 'progress';
+
 export const BatchMaterialsTable = ({
 	materials,
 	onToggle,
@@ -17,23 +21,61 @@ export const BatchMaterialsTable = ({
 }: BatchMaterialsTableProps) => {
 	const isFabric = materials[0]?.category === 'fabric';
 
+	const { sortedData, sortKey, sortDirection, toggleSort } =
+		useSortableTable<BatchMaterial, MaterialSortKey>(materials, {
+			defaultKey: 'piece',
+			defaultDirection: 'asc',
+			customSortFns: {
+				progress: (a, b) => {
+					const aTotal = Number(a.quantity);
+					const bTotal = Number(b.quantity);
+					const aRatio = aTotal > 0 ? a.completed_qty / aTotal : 0;
+					const bRatio = bTotal > 0 ? b.completed_qty / bTotal : 0;
+					return aRatio - bRatio;
+				},
+			},
+		});
+
 	return (
 		<Table.Root>
 			<Table.Header>
 				<Table.Row>
 					{!isFabric && <Table.HeaderCell className="w-10" />}
-					<Table.HeaderCell>Piece</Table.HeaderCell>
-					<Table.HeaderCell>Detail</Table.HeaderCell>
-					<Table.HeaderCell>Qty</Table.HeaderCell>
+					<SortableHeader<MaterialSortKey>
+						label="Piece"
+						sortKey="piece"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader<MaterialSortKey>
+						label="Detail"
+						sortKey="color"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader<MaterialSortKey>
+						label="Qty"
+						sortKey="quantity"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
 					{isFabric && (
-						<Table.HeaderCell style={{ textAlign: 'center' }}>
-							Progress
-						</Table.HeaderCell>
+						<SortableHeader<MaterialSortKey>
+							label="Progress"
+							sortKey="progress"
+							activeSortKey={sortKey}
+							sortDirection={sortDirection}
+							onSort={toggleSort}
+							align="center"
+						/>
 					)}
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{materials.map((material) => {
+				{sortedData.map((material) => {
 					const totalQty = Number(material.quantity);
 
 					if (isFabric && onUpdateQty) {

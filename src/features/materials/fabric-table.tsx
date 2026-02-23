@@ -1,4 +1,6 @@
 import { Table } from '@artifact-ui/core';
+import { SortableHeader } from '@/components/sortable-header';
+import { useSortableTable } from '@/hooks/use-sortable-table';
 import type { FabricEntry } from '@/types/api';
 
 type FabricTableProps = {
@@ -6,18 +8,49 @@ type FabricTableProps = {
 };
 
 export const FabricTable = ({ items }: FabricTableProps) => {
+	const { sortedData, sortKey, sortDirection, toggleSort } =
+		useSortableTable(items, {
+			defaultKey: 'product_name',
+			defaultDirection: 'asc',
+		});
+
 	return (
-		<Table.Root variant="surface" size="2" highlight>
+		<Table.Root variant="surface" size="2">
 			<Table.Header>
 				<Table.Row>
-					<Table.HeaderCell>Product</Table.HeaderCell>
-					<Table.HeaderCell>Piece</Table.HeaderCell>
-					<Table.HeaderCell>Color</Table.HeaderCell>
-					<Table.HeaderCell textAlign="center">Qty</Table.HeaderCell>
+					<SortableHeader
+						label="Product"
+						sortKey="product_name"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader
+						label="Piece"
+						sortKey="piece"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader
+						label="Color"
+						sortKey="color"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader
+						label="Qty"
+						sortKey="total_quantity"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						align="center"
+					/>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{items.map((item, index) => (
+				{sortedData.map((item, index) => (
 					<Table.Row key={`${item.product_name}-${item.piece}-${item.color}-${index}`}>
 						<Table.Cell>{item.product_name}</Table.Cell>
 						<Table.Cell>{item.piece}</Table.Cell>

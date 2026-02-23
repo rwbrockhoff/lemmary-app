@@ -1,4 +1,6 @@
 import { Table } from '@artifact-ui/core';
+import { SortableHeader } from '@/components/sortable-header';
+import { useSortableTable } from '@/hooks/use-sortable-table';
 import type { LinearEntry } from '@/types/api';
 
 type LinearTableProps = {
@@ -6,19 +8,52 @@ type LinearTableProps = {
 };
 
 export const LinearTable = ({ items }: LinearTableProps) => {
+	const { sortedData, sortKey, sortDirection, toggleSort } =
+		useSortableTable(items, {
+			defaultKey: 'material_type',
+			defaultDirection: 'asc',
+		});
+
 	return (
-		<Table.Root variant="surface" size="2" highlight>
+		<Table.Root variant="surface" size="2">
 			<Table.Header>
 				<Table.Row>
-					<Table.HeaderCell>Material</Table.HeaderCell>
-					<Table.HeaderCell textAlign="center">Width</Table.HeaderCell>
-					<Table.HeaderCell textAlign="center">Total (ft)</Table.HeaderCell>
-					<Table.HeaderCell textAlign="center">Order (ft)</Table.HeaderCell>
-					<Table.HeaderCell textAlign="center">Order (yds)</Table.HeaderCell>
+					<SortableHeader
+						label="Material"
+						sortKey="material_type"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader
+						label="Width"
+						sortKey="width"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						align="center"
+					/>
+					<SortableHeader
+						label="Total (ft)"
+						sortKey="total_feet"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						align="center"
+					/>
+					<SortableHeader
+						label="Order (ft)"
+						sortKey="feet_to_order"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						align="center"
+					/>
+					<Table.HeaderCell style={{ textAlign: 'center' }}>Order (yds)</Table.HeaderCell>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{items.map((item, index) => (
+				{sortedData.map((item, index) => (
 					<Table.Row key={`${item.material_type}-${item.width}-${index}`}>
 						<Table.Cell>{item.material_type}</Table.Cell>
 						<Table.Cell textAlign="center">

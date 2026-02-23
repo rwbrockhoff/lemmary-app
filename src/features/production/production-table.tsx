@@ -1,4 +1,6 @@
 import { Table } from '@artifact-ui/core';
+import { SortableHeader } from '@/components/sortable-header';
+import { useSortableTable } from '@/hooks/use-sortable-table';
 import type { ProductionSummaryItem } from '@/types/api';
 
 type ProductionTableProps = {
@@ -6,18 +8,50 @@ type ProductionTableProps = {
 };
 
 export const ProductionTable = ({ items }: ProductionTableProps) => {
+	const { sortedData, sortKey, sortDirection, toggleSort } =
+		useSortableTable(items, {
+			defaultKey: 'product_name',
+			defaultDirection: 'asc',
+		});
+
 	return (
-		<Table.Root variant="surface" size="2" highlight>
+		<Table.Root variant="surface" size="2">
 			<Table.Header>
 				<Table.Row>
-					<Table.HeaderCell>Product</Table.HeaderCell>
-					<Table.HeaderCell className="w-1/3">Variant</Table.HeaderCell>
-					<Table.HeaderCell>SKU</Table.HeaderCell>
-					<Table.HeaderCell textAlign="center">Qty</Table.HeaderCell>
+					<SortableHeader
+						label="Product"
+						sortKey="product_name"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader
+						label="Variant"
+						sortKey="variant_label"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						className="w-1/3"
+					/>
+					<SortableHeader
+						label="SKU"
+						sortKey="platform_sku"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader
+						label="Qty"
+						sortKey="total_quantity"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						align="center"
+					/>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{items.map((item, index) => (
+				{sortedData.map((item, index) => (
 					<Table.Row key={`${item.platform_sku}-${item.variant_label}-${index}`}>
 						<Table.Cell>{item.product_name}</Table.Cell>
 						<Table.Cell>{item.variant_label ?? '—'}</Table.Cell>

@@ -2,8 +2,11 @@ import { useParams, useNavigate } from 'react-router';
 import { Heading, Text, Table, Button, Badge, cn } from '@artifact-ui/core';
 import styles from '@/styles/shared.module.css';
 import { getProgressColor } from './batch-utils';
+import { SortableHeader } from '@/components/sortable-header';
+import { useSortableTable } from '@/hooks/use-sortable-table';
 import { MinusIcon, PlusIcon } from '@/components/icons/icons';
 import { useBatch, useUpdateOrderItemQty } from './batches-queries';
+import type { BatchOrderItem } from '@/types/api';
 
 const BatchOrderDetailPage = () => {
 	const { batchId, orderId } = useParams<{
@@ -83,78 +86,130 @@ const BatchOrderDetailPage = () => {
 				</Badge>
 			</div>
 
-			<Table.Root>
-				<Table.Header>
-					<Table.Row>
-						<Table.HeaderCell className="w-1/3">Product</Table.HeaderCell>
-						<Table.HeaderCell className="w-1/3">
-							Variant
-						</Table.HeaderCell>
-						<Table.HeaderCell>Qty</Table.HeaderCell>
-						<Table.HeaderCell style={{ textAlign: 'center' }}>
-							Progress
-						</Table.HeaderCell>
-					</Table.Row>
-				</Table.Header>
-				<Table.Body>
-					{orderItems.map((item) => (
-						<Table.Row
-							key={item.id}
-							className={cn(item.completed && styles.completedRow)}
-						>
-							<Table.Cell>{item.product_name}</Table.Cell>
-							<Table.Cell>
-								{item.variant_label ?? '—'}
-							</Table.Cell>
-							<Table.Cell>{item.quantity}</Table.Cell>
-							<Table.Cell textAlign="center">
-								<div className="flex items-center justify-center gap-2">
-									<Button
-										size="1"
-										variant="ghost"
-										color="neutral"
-										disabled={item.completed_qty <= 0}
-										onClick={() =>
-											updateQty.mutate({
-												id: item.id,
-												completedQty:
-													item.completed_qty - 1,
-											})
-										}
-									>
-										<MinusIcon size={14} />
-									</Button>
-									<Badge
-										size="2"
-										variant="soft"
-										color={getProgressColor(item.completed_qty, item.quantity)}
-									>
-										{item.completed_qty}/{item.quantity}
-									</Badge>
-									<Button
-										size="1"
-										variant="ghost"
-										color="neutral"
-										disabled={
-											item.completed_qty >= item.quantity
-										}
-										onClick={() =>
-											updateQty.mutate({
-												id: item.id,
-												completedQty:
-													item.completed_qty + 1,
-											})
-										}
-									>
-										<PlusIcon size={14} />
-									</Button>
-								</div>
-							</Table.Cell>
-						</Table.Row>
-					))}
-				</Table.Body>
-			</Table.Root>
+			<OrderItemsTable
+				orderItems={orderItems}
+				onUpdateQty={(id, completedQty) =>
+					updateQty.mutate({ id, completedQty })
+				}
+			/>
 		</div>
+	);
+};
+
+type OrderItemSortKey = Extract<keyof BatchOrderItem, string> | 'progress';
+
+type OrderItemsTableProps = {
+	orderItems: BatchOrderItem[];
+	onUpdateQty: (id: string, completedQty: number) => void;
+};
+
+const OrderItemsTable = ({ orderItems, onUpdateQty }: OrderItemsTableProps) => {
+	const { sortedData, sortKey, sortDirection, toggleSort } =
+		useSortableTable<BatchOrderItem, OrderItemSortKey>(orderItems, {
+			defaultKey: 'product_name',
+			defaultDirection: 'asc',
+			customSortFns: {
+				progress: (a, b) => {
+					const aRatio = a.quantity > 0 ? a.completed_qty / a.quantity : 0;
+					const bRatio = b.quantity > 0 ? b.completed_qty / b.quantity : 0;
+					return aRatio - bRatio;
+				},
+			},
+		});
+
+	return (
+		<Table.Root>
+			<Table.Header>
+				<Table.Row>
+					<SortableHeader<OrderItemSortKey>
+						label="Product"
+						sortKey="product_name"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						className="w-1/3"
+					/>
+					<SortableHeader<OrderItemSortKey>
+						label="Variant"
+						sortKey="variant_label"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						className="w-1/3"
+					/>
+					<SortableHeader<OrderItemSortKey>
+						label="Qty"
+						sortKey="quantity"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader<OrderItemSortKey>
+						label="Progress"
+						sortKey="progress"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						align="center"
+					/>
+				</Table.Row>
+			</Table.Header>
+			<Table.Body>
+				{sortedData.map((item) => (
+					<Table.Row
+						key={item.id}
+						className={cn(item.completed && styles.completedRow)}
+					>
+						<Table.Cell>{item.product_name}</Table.Cell>
+						<Table.Cell>
+							{item.variant_label ?? '—'}
+						</Table.Cell>
+						<Table.Cell>{item.quantity}</Table.Cell>
+						<Table.Cell textAlign="center">
+							<div className="flex items-center justify-center gap-2">
+								<Button
+									size="1"
+									variant="ghost"
+									color="neutral"
+									disabled={item.completed_qty <= 0}
+									onClick={() =>
+										onUpdateQty(
+											item.id,
+											item.completed_qty - 1,
+										)
+									}
+								>
+									<MinusIcon size={14} />
+								</Button>
+								<Badge
+									size="2"
+									variant="soft"
+									color={getProgressColor(item.completed_qty, item.quantity)}
+								>
+									{item.completed_qty}/{item.quantity}
+								</Badge>
+								<Button
+									size="1"
+									variant="ghost"
+									color="neutral"
+									disabled={
+										item.completed_qty >= item.quantity
+									}
+									onClick={() =>
+										onUpdateQty(
+											item.id,
+											item.completed_qty + 1,
+										)
+									}
+								>
+									<PlusIcon size={14} />
+								</Button>
+							</div>
+						</Table.Cell>
+					</Table.Row>
+				))}
+			</Table.Body>
+		</Table.Root>
 	);
 };
 
