@@ -3,6 +3,11 @@ export type ApiResponse<T> = {
 	data: T;
 };
 
+export type OrdersResponse = {
+	orders: Order[];
+	lastSyncedAt: string | null;
+};
+
 export type Order = {
 	id: string;
 	store_id: string;

@@ -2,15 +2,31 @@ import { Heading, Text, Button } from '@artifact-ui/core';
 import { RefreshIcon } from '@/components/icons';
 import { useOrders, useSyncOrders } from './orders-queries';
 import { OrdersTable } from './orders-table';
+import { OrdersSummary } from './orders-summary';
+import { formatRelativeTime } from '@/utils/format';
 
 const OrdersPage = () => {
-	const { data: orders, isLoading, error } = useOrders();
+	const { data, isLoading, error } = useOrders();
 	const syncMutation = useSyncOrders();
+
+	const orders = data?.orders;
+	const lastSyncedAt = data?.lastSyncedAt;
+
+	const pendingOrders = orders?.filter(
+		(o) => o.fulfillment_status === 'pending',
+	);
 
 	return (
 		<div className="p-8 max-w-5xl mx-auto">
 			<div className="flex items-center justify-between mb-6">
-				<Heading size="6">Orders</Heading>
+				<div>
+					<Heading size="6">Orders</Heading>
+					{lastSyncedAt && (
+						<Text size="1" color="secondary">
+							Last synced {formatRelativeTime(lastSyncedAt)}
+						</Text>
+					)}
+				</div>
 				<Button
 					onClick={() => syncMutation.mutate()}
 					disabled={syncMutation.isPending}
@@ -20,6 +36,10 @@ const OrdersPage = () => {
 					{syncMutation.isPending ? 'Syncing...' : 'Sync Orders'}
 				</Button>
 			</div>
+
+			{pendingOrders && pendingOrders.length > 0 && (
+				<OrdersSummary orders={pendingOrders} />
+			)}
 
 			{isLoading && <Text color="secondary">Loading orders...</Text>}
 

@@ -7,7 +7,8 @@ import { formatDate, formatCurrency } from '@/utils/format';
 
 const CreateBatchPage = () => {
 	const navigate = useNavigate();
-	const { data: orders, isLoading } = useOrders();
+	const { data, isLoading } = useOrders();
+	const orders = data?.orders;
 	const createBatch = useCreateBatch();
 
 	const [name, setName] = useState('');
@@ -15,9 +16,13 @@ const CreateBatchPage = () => {
 		new Set(),
 	);
 
-	const pendingOrders = orders?.filter(
-		(o) => o.fulfillment_status === 'pending',
-	);
+	const pendingOrders = orders
+		?.filter((o) => o.fulfillment_status === 'pending')
+		.sort(
+			(a, b) =>
+				new Date(a.order_date).getTime() -
+				new Date(b.order_date).getTime(),
+		);
 
 	const toggleOrder = (orderId: string) => {
 		setSelectedOrderIds((prev) => {

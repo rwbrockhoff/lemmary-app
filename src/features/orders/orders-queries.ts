@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
-import type { ApiResponse, Order } from '@/types/api';
+import type { ApiResponse, OrdersResponse } from '@/types/api';
 
 const orderKeys = {
 	all: ['orders'] as const,
@@ -10,7 +10,7 @@ export const useOrders = () => {
 	return useQuery({
 		queryKey: orderKeys.all,
 		queryFn: async () => {
-			const response = await api<ApiResponse<Order[]>>('/orders');
+			const response = await api<ApiResponse<OrdersResponse>>('/orders');
 			return response.data;
 		},
 	});
