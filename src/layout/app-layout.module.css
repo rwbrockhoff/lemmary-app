@@ -1,0 +1,13 @@
+.layout {
+	min-height: 100vh;
+	background: var(--color-bg-default);
+}
+
+.content {
+	margin-left: 240px;
+	transition: margin-left 0.2s ease;
+}
+
+.contentCollapsed {
+	margin-left: 56px;
+}
