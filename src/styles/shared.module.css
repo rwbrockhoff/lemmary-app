@@ -1,0 +1,13 @@
+.completedRow {
+	background-color: var(--green-50);
+}
+
+.completedRow [data-state='checked'] {
+	background-color: var(--green-500);
+	border-color: var(--green-500);
+}
+
+.completedRow [data-state='checked']:hover {
+	background-color: var(--green-600);
+	border-color: var(--green-600);
+}

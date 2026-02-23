@@ -1,4 +1,6 @@
-import { Table, Badge } from '@artifact-ui/core';
+import { Table, Badge, cn } from '@artifact-ui/core';
+import { getProgressColor } from './batch-utils';
+import styles from '@/styles/shared.module.css';
 import type { BatchItem, BatchOrderItem } from '@/types/api';
 
 type BatchItemsTableProps = {
@@ -37,7 +39,10 @@ export const BatchItemsTable = ({
 					);
 
 					return (
-						<Table.Row key={item.id}>
+						<Table.Row
+							key={item.id}
+							className={cn(completed === total && total > 0 && styles.completedRow)}
+						>
 							<Table.Cell>{item.product_name}</Table.Cell>
 							<Table.Cell>
 								{item.variant_label ?? '—'}
@@ -47,11 +52,7 @@ export const BatchItemsTable = ({
 								<Badge
 									size="1"
 									variant="soft"
-									color={
-										completed === total && total > 0
-											? 'success'
-											: 'neutral'
-									}
+									color={getProgressColor(completed, total)}
 								>
 									{completed}/{total}
 								</Badge>

@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from 'react-router';
-import { Heading, Text, Table, Button, Badge } from '@artifact-ui/core';
+import { Heading, Text, Table, Button, Badge, cn } from '@artifact-ui/core';
+import styles from '@/styles/shared.module.css';
+import { getProgressColor } from './batch-utils';
 import { MinusIcon, PlusIcon } from '@/components/icons/icons';
 import { useBatch, useUpdateOrderItemQty } from './batches-queries';
 
@@ -68,14 +70,14 @@ const BatchOrderDetailPage = () => {
 				<Badge
 					size="2"
 					variant="soft"
-					color={productsCompleted === orderItems.length ? 'success' : 'neutral'}
+					color={getProgressColor(productsCompleted, orderItems.length)}
 				>
 					{productsCompleted}/{orderItems.length} products
 				</Badge>
 				<Badge
 					size="2"
 					variant="soft"
-					color={itemsCompleted === totalItems ? 'success' : 'neutral'}
+					color={getProgressColor(itemsCompleted, totalItems)}
 				>
 					{itemsCompleted}/{totalItems} items
 				</Badge>
@@ -96,7 +98,10 @@ const BatchOrderDetailPage = () => {
 				</Table.Header>
 				<Table.Body>
 					{orderItems.map((item) => (
-						<Table.Row key={item.id}>
+						<Table.Row
+							key={item.id}
+							className={cn(item.completed && styles.completedRow)}
+						>
 							<Table.Cell>{item.product_name}</Table.Cell>
 							<Table.Cell>
 								{item.variant_label ?? '—'}
@@ -122,11 +127,7 @@ const BatchOrderDetailPage = () => {
 									<Badge
 										size="2"
 										variant="soft"
-										color={
-											item.completed_qty >= item.quantity
-												? 'success'
-												: 'neutral'
-										}
+										color={getProgressColor(item.completed_qty, item.quantity)}
 									>
 										{item.completed_qty}/{item.quantity}
 									</Badge>

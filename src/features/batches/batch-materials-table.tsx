@@ -1,4 +1,6 @@
-import { Table, Checkbox, Button, Badge } from '@artifact-ui/core';
+import { Table, Checkbox, Button, Badge, cn } from '@artifact-ui/core';
+import { getProgressColor } from './batch-utils';
+import styles from '@/styles/shared.module.css';
 import { MinusIcon, PlusIcon } from '@/components/icons/icons';
 import type { BatchMaterial } from '@/types/api';
 
@@ -36,7 +38,10 @@ export const BatchMaterialsTable = ({
 
 					if (isFabric && onUpdateQty) {
 						return (
-							<Table.Row key={material.id}>
+							<Table.Row
+								key={material.id}
+								className={cn(material.completed && styles.completedRow)}
+							>
 								<Table.Cell>
 									{material.piece}
 								</Table.Cell>
@@ -67,12 +72,7 @@ export const BatchMaterialsTable = ({
 										<Badge
 											size="2"
 											variant="soft"
-											color={
-												material.completed_qty >=
-												totalQty
-													? 'success'
-													: 'neutral'
-											}
+											color={getProgressColor(material.completed_qty, totalQty)}
 										>
 											{material.completed_qty}/{totalQty}
 										</Badge>
@@ -102,7 +102,7 @@ export const BatchMaterialsTable = ({
 					return (
 						<Table.Row
 							key={material.id}
-							className="cursor-pointer"
+							className={cn('cursor-pointer', material.completed && styles.completedRow)}
 							onClick={() =>
 								onToggle(material.id, !material.completed)
 							}

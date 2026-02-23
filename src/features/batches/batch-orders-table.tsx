@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router';
-import { Table, Checkbox, Badge } from '@artifact-ui/core';
+import { Table, Checkbox, Badge, cn } from '@artifact-ui/core';
+import { getProgressColor } from './batch-utils';
+import styles from '@/styles/shared.module.css';
 import { formatDate, formatCurrency } from '@/utils/format';
 import type { BatchOrder, BatchOrderItem } from '@/types/api';
 
@@ -47,7 +49,7 @@ export const BatchOrdersTable = ({
 					return (
 						<Table.Row
 							key={order.id}
-							className="cursor-pointer"
+							className={cn('cursor-pointer', order.completed && styles.completedRow)}
 							onClick={() =>
 								navigate(
 									`/batches/${batchId}/orders/${order.id}`,
@@ -74,11 +76,7 @@ export const BatchOrdersTable = ({
 								<Badge
 									size="1"
 									variant="soft"
-									color={
-										completed === total
-											? 'success'
-											: 'neutral'
-									}
+									color={getProgressColor(completed, total)}
 								>
 									{completed}/{total}
 								</Badge>
