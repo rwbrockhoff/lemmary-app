@@ -27,3 +27,36 @@ export type ProductionSummaryItem = {
 	variant_label: string | null;
 	total_quantity: number;
 };
+
+export type FabricEntry = {
+	product_name: string;
+	piece: string;
+	color: string;
+	total_quantity: number;
+};
+
+export type LinearEntry = {
+	material_type: string;
+	width: number | null;
+	total_inches: number;
+	total_feet: number;
+	feet_to_order: number;
+};
+
+export type HardwareEntry = {
+	piece: string;
+	total_count: number;
+};
+
+export type MaterialsMismatch = {
+	platform_sku: string | null;
+	product_name: string;
+	variant_label: string | null;
+};
+
+export type MaterialsReport = {
+	fabric: FabricEntry[];
+	linear: LinearEntry[];
+	hardware: HardwareEntry[];
+	mismatches: MaterialsMismatch[];
+};

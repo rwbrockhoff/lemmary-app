@@ -4,6 +4,7 @@ import { AppLayout } from '@/layout/app-layout';
 
 const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
 const ProductionPage = lazy(() => import('@/features/production/production-page'));
+const MaterialsPage = lazy(() => import('@/features/materials/materials-page'));
 
 const router = createBrowserRouter([
 	{
@@ -22,6 +23,14 @@ const router = createBrowserRouter([
 				element: (
 					<Suspense>
 						<ProductionPage />
+					</Suspense>
+				),
+			},
+			{
+				path: '/materials',
+				element: (
+					<Suspense>
+						<MaterialsPage />
 					</Suspense>
 				),
 			},
