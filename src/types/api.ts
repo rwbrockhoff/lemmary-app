@@ -60,3 +60,78 @@ export type MaterialsReport = {
 	hardware: HardwareEntry[];
 	mismatches: MaterialsMismatch[];
 };
+
+export type Batch = {
+	id: string;
+	store_id: string;
+	name: string;
+	status: string;
+	completed_at: string | null;
+	order_count: number;
+	item_count: number;
+	items_completed: number;
+	created_at: string;
+	updated_at: string;
+};
+
+export type BatchOrder = {
+	id: string;
+	order_id: string;
+	completed: boolean;
+	order_number: string;
+	customer_name: string;
+	order_date: string;
+	grand_total: string | null;
+};
+
+export type BatchItem = {
+	id: string;
+	batch_id: string;
+	platform_sku: string | null;
+	product_name: string;
+	variant_label: string | null;
+	quantity: number;
+	completed: boolean;
+	created_at: string;
+};
+
+export type BatchOrderItem = {
+	id: string;
+	batch_id: string;
+	batch_order_id: string;
+	platform_sku: string | null;
+	product_name: string;
+	variant_label: string | null;
+	quantity: number;
+	completed: boolean;
+	completed_qty: number;
+	created_at: string;
+};
+
+export type BatchMaterial = {
+	id: string;
+	batch_id: string;
+	category: string;
+	material_type: string | null;
+	piece: string;
+	color: string | null;
+	width: string | null;
+	quantity: string;
+	completed: boolean;
+	completed_qty: number;
+	created_at: string;
+};
+
+export type BatchDetail = {
+	id: string;
+	store_id: string;
+	name: string;
+	status: string;
+	completed_at: string | null;
+	created_at: string;
+	updated_at: string;
+	orders: BatchOrder[];
+	items: BatchItem[];
+	orderItems: BatchOrderItem[];
+	materials: BatchMaterial[];
+};
