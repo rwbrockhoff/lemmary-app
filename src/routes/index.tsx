@@ -1,9 +1,16 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router';
+
+const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
 
 const router = createBrowserRouter([
 	{
 		path: '/',
-		element: <div>Assemblr</div>,
+		element: (
+			<Suspense>
+				<OrdersPage />
+			</Suspense>
+		),
 	},
 ]);
 
