@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { AppLayout } from '@/layout/app-layout';
 
 const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
+const ProductionPage = lazy(() => import('@/features/production/production-page'));
 
 const router = createBrowserRouter([
 	{
@@ -13,6 +14,14 @@ const router = createBrowserRouter([
 				element: (
 					<Suspense>
 						<OrdersPage />
+					</Suspense>
+				),
+			},
+			{
+				path: '/production',
+				element: (
+					<Suspense>
+						<ProductionPage />
 					</Suspense>
 				),
 			},

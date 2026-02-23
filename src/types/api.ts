@@ -20,3 +20,10 @@ export type Order = {
 	created_at: string;
 	updated_at: string;
 };
+
+export type ProductionSummaryItem = {
+	platform_sku: string | null;
+	product_name: string;
+	variant_label: string | null;
+	total_quantity: number;
+};
