@@ -1,6 +1,7 @@
 import { useParams, useSearchParams } from 'react-router';
 import { Heading, Text, Table, Select, Badge } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { VariantBadges } from '@/components/variant-badges';
 import {
 	useOrder,
 	useWorkflowStages,
@@ -74,8 +75,8 @@ const OrderDetailPage = () => {
 				<Table.Header>
 					<Table.Row>
 						<Table.HeaderCell className="w-1/3">Product</Table.HeaderCell>
-						<Table.HeaderCell className="w-1/4">Variant</Table.HeaderCell>
-						<Table.HeaderCell>Qty</Table.HeaderCell>
+						<Table.HeaderCell className="w-1/3">Variant</Table.HeaderCell>
+						<Table.HeaderCell className="w-16">Qty</Table.HeaderCell>
 						<Table.HeaderCell>Status</Table.HeaderCell>
 					</Table.Row>
 				</Table.Header>
@@ -83,7 +84,7 @@ const OrderDetailPage = () => {
 					{order.items.map((item) => (
 						<Table.Row key={item.id}>
 							<Table.Cell>{item.product_name}</Table.Cell>
-							<Table.Cell>{item.variant_label ?? '—'}</Table.Cell>
+							<Table.Cell><VariantBadges variants={item.variant_label} /></Table.Cell>
 							<Table.Cell>{item.quantity}</Table.Cell>
 							<Table.Cell>
 								<StageSelect

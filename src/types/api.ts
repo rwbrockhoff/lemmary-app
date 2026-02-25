@@ -1,3 +1,5 @@
+export type VariantOption = { name: string; value: string };
+
 export type ApiResponse<T> = {
 	success: true;
 	data: T;
@@ -34,7 +36,7 @@ export type OrderItem = {
 	order_id: string;
 	platform_sku: string | null;
 	product_name: string;
-	variant_label: string | null;
+	variant_label: VariantOption[] | null;
 	quantity: number;
 	unit_price: string | null;
 	image_url: string | null;
@@ -67,7 +69,7 @@ export type WorkflowStagesResponse = {
 export type ProductionSummaryItem = {
 	platform_sku: string | null;
 	product_name: string;
-	variant_label: string | null;
+	variant_label: VariantOption[] | null;
 	total_quantity: number;
 };
 
@@ -94,7 +96,7 @@ export type HardwareEntry = {
 export type MaterialsMismatch = {
 	platform_sku: string | null;
 	product_name: string;
-	variant_label: string | null;
+	variant_label: VariantOption[] | null;
 };
 
 export type MaterialsReport = {
@@ -132,7 +134,7 @@ export type BatchItem = {
 	batch_id: string;
 	platform_sku: string | null;
 	product_name: string;
-	variant_label: string | null;
+	variant_label: VariantOption[] | null;
 	quantity: number;
 	completed: boolean;
 	created_at: string;
@@ -144,7 +146,7 @@ export type BatchOrderItem = {
 	batch_order_id: string;
 	platform_sku: string | null;
 	product_name: string;
-	variant_label: string | null;
+	variant_label: VariantOption[] | null;
 	quantity: number;
 	workflow_stage_id: string | null;
 	workflow_stage_name: string | null;

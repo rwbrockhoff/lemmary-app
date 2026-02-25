@@ -4,6 +4,7 @@ import { getProgressColor } from './batch-utils';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import styles from '@/styles/shared.module.css';
+import { VariantBadges } from '@/components/variant-badges';
 import type { BatchItem, BatchOrderItem } from '@/types/api';
 
 type BatchItemsTableProps = {
@@ -23,7 +24,7 @@ export const BatchItemsTable = ({
 			const matching = orderItems.filter(
 				(oi) =>
 					oi.platform_sku === item.platform_sku &&
-					oi.variant_label === item.variant_label,
+					JSON.stringify(oi.variant_label) === JSON.stringify(item.variant_label),
 			);
 			const completed = matching.filter((oi) => oi.is_complete).length;
 			const total = matching.length;
@@ -84,7 +85,7 @@ export const BatchItemsTable = ({
 					const matching = orderItems.filter(
 						(oi) =>
 							oi.platform_sku === item.platform_sku &&
-							oi.variant_label === item.variant_label,
+							JSON.stringify(oi.variant_label) === JSON.stringify(item.variant_label),
 					);
 					const completed = matching.filter((oi) => oi.is_complete).length;
 					const total = matching.length;
@@ -96,7 +97,7 @@ export const BatchItemsTable = ({
 						>
 							<Table.Cell>{item.product_name}</Table.Cell>
 							<Table.Cell>
-								{item.variant_label ?? '—'}
+								<VariantBadges variants={item.variant_label} />
 							</Table.Cell>
 							<Table.Cell>{item.quantity}</Table.Cell>
 							<Table.Cell textAlign="center">

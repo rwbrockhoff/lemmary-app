@@ -1,4 +1,5 @@
 import { Table } from '@artifact-ui/core';
+import { VariantBadges } from '@/components/variant-badges';
 import type { MaterialsMismatch } from '@/types/api';
 
 type MismatchesTableProps = {
@@ -19,7 +20,7 @@ export const MismatchesTable = ({ items }: MismatchesTableProps) => {
 				{items.map((item, index) => (
 					<Table.Row key={`${item.platform_sku}-${index}`}>
 						<Table.Cell>{item.product_name}</Table.Cell>
-						<Table.Cell>{item.variant_label ?? '—'}</Table.Cell>
+						<Table.Cell><VariantBadges variants={item.variant_label} /></Table.Cell>
 						<Table.Cell>{item.platform_sku ?? '—'}</Table.Cell>
 					</Table.Row>
 				))}
