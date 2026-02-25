@@ -17,6 +17,9 @@ export type Order = {
 	customer_email: string | null;
 	order_date: string;
 	fulfillment_status: string;
+	workflow_stage_id: string | null;
+	workflow_stage_name: string | null;
+	workflow_stage_color: string | null;
 	subtotal: string | null;
 	shipping_total: string | null;
 	grand_total: string | null;
@@ -24,6 +27,41 @@ export type Order = {
 	item_count: number;
 	created_at: string;
 	updated_at: string;
+};
+
+export type OrderItem = {
+	id: string;
+	order_id: string;
+	platform_sku: string | null;
+	product_name: string;
+	variant_label: string | null;
+	quantity: number;
+	unit_price: string | null;
+	image_url: string | null;
+	workflow_stage_id: string | null;
+	workflow_stage_name: string | null;
+	created_at: string;
+	updated_at: string;
+};
+
+export type OrderDetail = Order & {
+	workflow_stage_name: string | null;
+	items: OrderItem[];
+};
+
+export type WorkflowStage = {
+	id: string;
+	store_id: string;
+	name: string;
+	position: number;
+	color: string | null;
+	is_default: boolean;
+	is_complete: boolean;
+};
+
+export type WorkflowStagesResponse = {
+	orderStages: WorkflowStage[];
+	itemStages: WorkflowStage[];
 };
 
 export type ProductionSummaryItem = {
@@ -102,15 +140,15 @@ export type BatchItem = {
 
 export type BatchOrderItem = {
 	id: string;
-	batch_id: string;
+	order_id: string;
 	batch_order_id: string;
 	platform_sku: string | null;
 	product_name: string;
 	variant_label: string | null;
 	quantity: number;
-	completed: boolean;
-	completed_qty: number;
-	created_at: string;
+	workflow_stage_id: string | null;
+	workflow_stage_name: string | null;
+	is_complete: boolean | null;
 };
 
 export type BatchMaterial = {

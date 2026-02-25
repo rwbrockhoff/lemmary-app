@@ -112,3 +112,32 @@ export const useCreateBatch = () => {
 		},
 	});
 };
+
+export const useRenameBatch = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (params: { batchId: string; name: string }) => {
+			return api(`/batches/${params.batchId}`, {
+				method: 'PUT',
+				body: JSON.stringify({ name: params.name }),
+			});
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
+export const useDeleteBatch = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (batchId: string) => {
+			return api(`/batches/${batchId}`, { method: 'DELETE' });
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};

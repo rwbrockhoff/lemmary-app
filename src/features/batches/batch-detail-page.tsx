@@ -1,10 +1,17 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { Heading, Text, Badge, Tabs } from '@artifact-ui/core';
+import { Heading, Text, Badge, Tabs, DropdownMenu, IconButton } from '@artifact-ui/core';
+import { Breadcrumbs } from '@/components/breadcrumbs';
+import { EllipsisIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
 import {
 	useBatch,
 	useToggleComplete,
 	useUpdateMaterialQty,
+	useRenameBatch,
+	useDeleteBatch,
 } from './batches-queries';
+import { RenameBatchModal } from './rename-batch-modal';
+import { DeleteBatchModal } from './delete-batch-modal';
 import { BatchOrdersTable } from './batch-orders-table';
 import { BatchItemsTable } from './batch-items-table';
 import { BatchMaterialsTable } from './batch-materials-table';
@@ -15,6 +22,24 @@ const BatchDetailPage = () => {
 	const { data: batch, isLoading, error } = useBatch(batchId!);
 	const toggleComplete = useToggleComplete(batchId!);
 	const updateMaterialQty = useUpdateMaterialQty(batchId!);
+	const renameMutation = useRenameBatch();
+	const deleteMutation = useDeleteBatch();
+
+	const [showRename, setShowRename] = useState(false);
+	const [showDelete, setShowDelete] = useState(false);
+
+	const handleRename = (name: string) => {
+		renameMutation.mutate(
+			{ batchId: batchId!, name },
+			{ onSuccess: () => setShowRename(false) },
+		);
+	};
+
+	const handleDelete = () => {
+		deleteMutation.mutate(batchId!, {
+			onSuccess: () => navigate('/batches'),
+		});
+	};
 
 	const handleToggle = (
 		type: 'orders' | 'items' | 'materials',
@@ -54,12 +79,7 @@ const BatchDetailPage = () => {
 	return (
 		<div className="p-8 max-w-5xl mx-auto">
 			<div className="flex items-center gap-3 mb-6">
-				<button
-					onClick={() => navigate('/batches')}
-					className="text-sm opacity-60 hover:opacity-100 cursor-pointer"
-				>
-					Batches /
-				</button>
+				<Breadcrumbs segments={[{ label: 'Batches', to: '/batches' }]} />
 				<Heading size="6">{batch.name}</Heading>
 				<Badge
 					size="1"
@@ -70,6 +90,28 @@ const BatchDetailPage = () => {
 				>
 					{batch.status}
 				</Badge>
+				<DropdownMenu.DropdownMenu>
+					<DropdownMenu.DropdownMenuTrigger asChild>
+						<IconButton
+							icon={<EllipsisIcon size={16} />}
+							label="Batch options"
+							size="1"
+							variant="ghost"
+							color="neutral"
+						/>
+					</DropdownMenu.DropdownMenuTrigger>
+					<DropdownMenu.DropdownMenuContent align="end" size="1">
+						<DropdownMenu.DropdownMenuItem onClick={() => setShowRename(true)}>
+							<PencilIcon size={14} />
+							Rename
+						</DropdownMenu.DropdownMenuItem>
+						<DropdownMenu.DropdownMenuSeparator />
+						<DropdownMenu.DropdownMenuItem onClick={() => setShowDelete(true)}>
+							<TrashIcon size={14} />
+							Delete
+						</DropdownMenu.DropdownMenuItem>
+					</DropdownMenu.DropdownMenuContent>
+				</DropdownMenu.DropdownMenu>
 			</div>
 
 			<Tabs.Root defaultValue="orders">
@@ -141,6 +183,21 @@ const BatchDetailPage = () => {
 					</Tabs.Content>
 				)}
 			</Tabs.Root>
+			<RenameBatchModal
+				open={showRename}
+				onOpenChange={setShowRename}
+				currentName={batch.name}
+				onRename={handleRename}
+				isPending={renameMutation.isPending}
+			/>
+
+			<DeleteBatchModal
+				open={showDelete}
+				onOpenChange={setShowDelete}
+				batchName={batch.name}
+				onDelete={handleDelete}
+				isPending={deleteMutation.isPending}
+			/>
 		</div>
 	);
 };

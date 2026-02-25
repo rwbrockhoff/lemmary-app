@@ -1,14 +1,24 @@
 import { Badge } from '@artifact-ui/core';
 
 type StatusBadgeProps = {
-	status: string;
+	name: string | null;
+	color: string | null;
 };
 
-export const StatusBadge = ({ status }: StatusBadgeProps) => {
-	const color = status === 'pending' ? 'info' : 'success';
+const colorMap: Record<string, 'neutral' | 'info' | 'success' | 'danger' | 'primary'> = {
+	gray: 'neutral',
+	blue: 'info',
+	orange: 'primary',
+	green: 'success',
+	red: 'danger',
+};
+
+export const StatusBadge = ({ name, color }: StatusBadgeProps) => {
+	const badgeColor = colorMap[color ?? 'gray'] ?? 'neutral';
+
 	return (
-		<Badge variant="soft" color={color} size="1">
-			{status}
+		<Badge variant="soft" color={badgeColor} size="1">
+			{name ?? 'No status'}
 		</Badge>
 	);
 };

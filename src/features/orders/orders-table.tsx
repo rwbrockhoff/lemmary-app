@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router';
 import { Table } from '@artifact-ui/core';
 import { StatusBadge } from './status-badge';
 import { SortableHeader } from '@/components/sortable-header';
@@ -10,6 +11,7 @@ type OrdersTableProps = {
 };
 
 export const OrdersTable = ({ orders }: OrdersTableProps) => {
+	const navigate = useNavigate();
 	const { sortedData, sortKey, sortDirection, toggleSort } =
 		useSortableTable(orders, {
 			defaultKey: 'order_date',
@@ -63,12 +65,16 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 			</Table.Header>
 			<Table.Body>
 				{sortedData.map((order) => (
-					<Table.Row key={order.id}>
+					<Table.Row
+						key={order.id}
+						className="cursor-pointer"
+						onClick={() => navigate(`/orders/${order.id}`)}
+					>
 						<Table.Cell>{order.order_number}</Table.Cell>
 						<Table.Cell>{order.customer_name}</Table.Cell>
 						<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 						<Table.Cell>
-							<StatusBadge status={order.fulfillment_status} />
+							<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
 						</Table.Cell>
 						<Table.Cell textAlign="center">{order.item_count}</Table.Cell>
 						<Table.Cell textAlign="end">

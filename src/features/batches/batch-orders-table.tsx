@@ -31,11 +31,8 @@ export const BatchOrdersTable = ({
 			const items = orderItems.filter(
 				(i) => i.batch_order_id === order.id,
 			);
-			const completed = items.reduce(
-				(sum, i) => sum + i.completed_qty,
-				0,
-			);
-			const total = items.reduce((sum, i) => sum + i.quantity, 0);
+			const completed = items.filter((i) => i.is_complete).length;
+			const total = items.length;
 			map.set(order.id, total > 0 ? completed / total : 0);
 		}
 		return map;
@@ -104,23 +101,15 @@ export const BatchOrdersTable = ({
 					const items = orderItems.filter(
 						(i) => i.batch_order_id === order.id,
 					);
-					const completed = items.reduce(
-						(sum, i) => sum + i.completed_qty,
-						0,
-					);
-					const total = items.reduce(
-						(sum, i) => sum + i.quantity,
-						0,
-					);
+					const completed = items.filter((i) => i.is_complete).length;
+					const total = items.length;
 
 					return (
 						<Table.Row
 							key={order.id}
 							className={cn('cursor-pointer', order.completed && styles.completedRow)}
 							onClick={() =>
-								navigate(
-									`/batches/${batchId}/orders/${order.id}`,
-								)
+								navigate(`/orders/${order.order_id}?from=batch&batchId=${batchId}`)
 							}
 						>
 							<Table.Cell onClick={(e) => e.stopPropagation()}>

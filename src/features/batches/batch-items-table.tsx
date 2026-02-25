@@ -25,14 +25,8 @@ export const BatchItemsTable = ({
 					oi.platform_sku === item.platform_sku &&
 					oi.variant_label === item.variant_label,
 			);
-			const completed = matching.reduce(
-				(sum, oi) => sum + oi.completed_qty,
-				0,
-			);
-			const total = matching.reduce(
-				(sum, oi) => sum + oi.quantity,
-				0,
-			);
+			const completed = matching.filter((oi) => oi.is_complete).length;
+			const total = matching.length;
 			map.set(item.id, total > 0 ? completed / total : 0);
 		}
 		return map;
@@ -92,14 +86,8 @@ export const BatchItemsTable = ({
 							oi.platform_sku === item.platform_sku &&
 							oi.variant_label === item.variant_label,
 					);
-					const completed = matching.reduce(
-						(sum, oi) => sum + oi.completed_qty,
-						0,
-					);
-					const total = matching.reduce(
-						(sum, oi) => sum + oi.quantity,
-						0,
-					);
+					const completed = matching.filter((oi) => oi.is_complete).length;
+					const total = matching.length;
 
 					return (
 						<Table.Row

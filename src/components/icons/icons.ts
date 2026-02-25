@@ -8,3 +8,6 @@ export { Plus as PlusIcon } from 'lucide-react';
 export { Minus as MinusIcon } from 'lucide-react';
 export { ChevronUp as ChevronUpIcon } from 'lucide-react';
 export { ChevronDown as ChevronDownIcon } from 'lucide-react';
+export { EllipsisVertical as EllipsisIcon } from 'lucide-react';
+export { Pencil as PencilIcon } from 'lucide-react';
+export { Trash2 as TrashIcon } from 'lucide-react';
