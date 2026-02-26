@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { Heading, Text, Button, Table, Checkbox } from '@artifact-ui/core';
 import { useOrders } from '@/features/orders/orders-queries';
 import { useCreateBatch } from './batches-queries';
+import { StatusBadge } from '@/features/orders/status-badge';
 import { formatDate, formatCurrency } from '@/utils/format';
 
 const CreateBatchPage = () => {
@@ -104,6 +105,7 @@ const CreateBatchPage = () => {
 							<Table.HeaderCell>Due</Table.HeaderCell>
 							<Table.HeaderCell>Items</Table.HeaderCell>
 							<Table.HeaderCell className="text-end">Total</Table.HeaderCell>
+							<Table.HeaderCell>Status</Table.HeaderCell>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -128,6 +130,9 @@ const CreateBatchPage = () => {
 								</Table.Cell>
 								<Table.Cell className="text-end">
 									{formatCurrency(order.grand_total)}
+								</Table.Cell>
+								<Table.Cell>
+									<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
 								</Table.Cell>
 							</Table.Row>
 						))}
