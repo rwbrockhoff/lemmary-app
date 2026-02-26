@@ -3,7 +3,6 @@ import { api } from '@/api/client';
 import { orderKeys } from './orders-keys';
 import { optimisticallyUpdateOrderStage, rollbackOrderStage } from './orders-cache';
 import type {
-	ApiResponse,
 	OrdersResponse,
 	OrderDetail,
 	WorkflowStagesResponse,
@@ -13,46 +12,28 @@ import type {
 export const useOrders = () => {
 	return useQuery({
 		queryKey: orderKeys.all,
-		queryFn: async () => {
-			const response = await api<ApiResponse<OrdersResponse>>('/orders');
-			return response.data;
-		},
+		queryFn: () => api.get<OrdersResponse>('/orders'),
 	});
 };
 
 export const useOrder = (orderId: string) => {
 	return useQuery({
 		queryKey: orderKeys.detail(orderId),
-		queryFn: async () => {
-			const response = await api<ApiResponse<OrderDetail>>(
-				`/orders/${orderId}`,
-			);
-			return response.data;
-		},
+		queryFn: () => api.get<OrderDetail>(`/orders/${orderId}`),
 	});
 };
 
 export const useWorkflowStages = () => {
 	return useQuery({
 		queryKey: orderKeys.workflowStages,
-		queryFn: async () => {
-			const response = await api<ApiResponse<WorkflowStagesResponse>>(
-				'/orders/workflow-stages',
-			);
-			return response.data;
-		},
+		queryFn: () => api.get<WorkflowStagesResponse>('/orders/workflow-stages'),
 	});
 };
 
 export const useWorkflowBoard = () => {
 	return useQuery({
 		queryKey: orderKeys.workflowBoard,
-		queryFn: async () => {
-			const response = await api<ApiResponse<WorkflowBoardResponse>>(
-				'/orders/workflow-board',
-			);
-			return response.data;
-		},
+		queryFn: () => api.get<WorkflowBoardResponse>('/orders/workflow-board'),
 	});
 };
 
@@ -60,12 +41,8 @@ export const useUpdateOrderStage = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (params: { orderId: string; stageId: string }) => {
-			return api(`/orders/${params.orderId}/stage`, {
-				method: 'PUT',
-				body: JSON.stringify({ stageId: params.stageId }),
-			});
-		},
+		mutationFn: (params: { orderId: string; stageId: string }) =>
+			api.put(`/orders/${params.orderId}/stage`, { stageId: params.stageId }),
 		onMutate: (variables) => optimisticallyUpdateOrderStage(queryClient, variables),
 		onError: (_error, _variables, context) => {
 			rollbackOrderStage(queryClient, context?.previous);
@@ -84,15 +61,10 @@ export const useUpdateOrderItemStage = (orderId: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (params: { itemId: string; stageId: string }) => {
-			return api(
-				`/orders/${orderId}/items/${params.itemId}/stage`,
-				{
-					method: 'PUT',
-					body: JSON.stringify({ stageId: params.stageId }),
-				},
-			);
-		},
+		mutationFn: (params: { itemId: string; stageId: string }) =>
+			api.put(`/orders/${orderId}/items/${params.itemId}/stage`, {
+				stageId: params.stageId,
+			}),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: orderKeys.detail(orderId),
@@ -106,12 +78,8 @@ export const useUpdateOrderNotes = (orderId: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (notes: string) => {
-			return api(`/orders/${orderId}/notes`, {
-				method: 'PUT',
-				body: JSON.stringify({ notes }),
-			});
-		},
+		mutationFn: (notes: string) =>
+			api.put(`/orders/${orderId}/notes`, { notes }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: orderKeys.detail(orderId),
@@ -124,12 +92,7 @@ export const useSyncOrders = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async () => {
-			const response = await api<ApiResponse<{ synced: number }>>('/orders/sync', {
-				method: 'POST',
-			});
-			return response.data;
-		},
+		mutationFn: () => api.post<{ synced: number }>('/orders/sync'),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 		},

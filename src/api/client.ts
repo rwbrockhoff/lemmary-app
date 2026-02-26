@@ -4,10 +4,15 @@ type RequestOptions = RequestInit & {
 	params?: Record<string, string>;
 };
 
-export const api = async <T>(
+interface ApiResponse<T> {
+	data: T;
+	message?: string;
+}
+
+async function request<T>(
 	endpoint: string,
 	options?: RequestOptions,
-): Promise<T> => {
+): Promise<T> {
 	const { params, ...init } = options ?? {};
 
 	let url = `${BASE_URL}${endpoint}`;
@@ -35,4 +40,24 @@ export const api = async <T>(
 	}
 
 	return response.json() as Promise<T>;
+}
+
+export const api = {
+	get: <T>(endpoint: string, params?: Record<string, string>) =>
+		request<ApiResponse<T>>(endpoint, { params }).then((r) => r.data),
+
+	post: <T = void>(endpoint: string, body?: unknown) =>
+		request<ApiResponse<T>>(endpoint, {
+			method: 'POST',
+			body: body ? JSON.stringify(body) : undefined,
+		}).then((r) => r.data),
+
+	put: <T = void>(endpoint: string, body?: unknown) =>
+		request<ApiResponse<T>>(endpoint, {
+			method: 'PUT',
+			body: body ? JSON.stringify(body) : undefined,
+		}).then((r) => r.data),
+
+	del: <T = void>(endpoint: string) =>
+		request<ApiResponse<T>>(endpoint, { method: 'DELETE' }).then((r) => r.data),
 };

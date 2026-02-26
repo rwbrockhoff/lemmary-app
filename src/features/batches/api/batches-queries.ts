@@ -1,27 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { batchKeys } from './batches-keys';
-import type { ApiResponse, Batch, BatchDetail } from '@/types/api';
+import type { Batch, BatchDetail } from '@/types/api';
 
 export const useBatches = () => {
 	return useQuery({
 		queryKey: batchKeys.all,
-		queryFn: async () => {
-			const response = await api<ApiResponse<Batch[]>>('/batches');
-			return response.data;
-		},
+		queryFn: () => api.get<Batch[]>('/batches'),
 	});
 };
 
 export const useBatch = (batchId: string) => {
 	return useQuery({
 		queryKey: batchKeys.detail(batchId),
-		queryFn: async () => {
-			const response = await api<ApiResponse<BatchDetail>>(
-				`/batches/${batchId}`,
-			);
-			return response.data;
-		},
+		queryFn: () => api.get<BatchDetail>(`/batches/${batchId}`),
 	});
 };
 
@@ -29,16 +21,14 @@ export const useToggleComplete = (batchId: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (params: {
+		mutationFn: (params: {
 			type: 'orders' | 'items' | 'materials';
 			id: string;
 			completed: boolean;
-		}) => {
-			return api(`/batches/${batchId}/${params.type}/${params.id}`, {
-				method: 'PUT',
-				body: JSON.stringify({ completed: params.completed }),
-			});
-		},
+		}) =>
+			api.put(`/batches/${batchId}/${params.type}/${params.id}`, {
+				completed: params.completed,
+			}),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: batchKeys.detail(batchId),
@@ -52,15 +42,10 @@ export const useUpdateOrderItemQty = (batchId: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (params: { id: string; completedQty: number }) => {
-			return api(
-				`/batches/${batchId}/order-items/${params.id}/qty`,
-				{
-					method: 'PUT',
-					body: JSON.stringify({ completedQty: params.completedQty }),
-				},
-			);
-		},
+		mutationFn: (params: { id: string; completedQty: number }) =>
+			api.put(`/batches/${batchId}/order-items/${params.id}/qty`, {
+				completedQty: params.completedQty,
+			}),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: batchKeys.detail(batchId),
@@ -74,15 +59,10 @@ export const useUpdateMaterialQty = (batchId: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (params: { id: string; completedQty: number }) => {
-			return api(
-				`/batches/${batchId}/materials/${params.id}/qty`,
-				{
-					method: 'PUT',
-					body: JSON.stringify({ completedQty: params.completedQty }),
-				},
-			);
-		},
+		mutationFn: (params: { id: string; completedQty: number }) =>
+			api.put(`/batches/${batchId}/materials/${params.id}/qty`, {
+				completedQty: params.completedQty,
+			}),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: batchKeys.detail(batchId),
@@ -96,13 +76,8 @@ export const useCreateBatch = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (body: { name: string; orderIds: string[] }) => {
-			const response = await api<ApiResponse<Batch>>('/batches', {
-				method: 'POST',
-				body: JSON.stringify(body),
-			});
-			return response.data;
-		},
+		mutationFn: (body: { name: string; orderIds: string[] }) =>
+			api.post<Batch>('/batches', body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
@@ -113,12 +88,8 @@ export const useRenameBatch = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (params: { batchId: string; name: string }) => {
-			return api(`/batches/${params.batchId}`, {
-				method: 'PUT',
-				body: JSON.stringify({ name: params.name }),
-			});
-		},
+		mutationFn: (params: { batchId: string; name: string }) =>
+			api.put(`/batches/${params.batchId}`, { name: params.name }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
@@ -129,9 +100,7 @@ export const useDeleteBatch = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (batchId: string) => {
-			return api(`/batches/${batchId}`, { method: 'DELETE' });
-		},
+		mutationFn: (batchId: string) => api.del(`/batches/${batchId}`),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
