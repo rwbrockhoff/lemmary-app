@@ -71,11 +71,47 @@ export const useUpdateOrderStage = () => {
 				body: JSON.stringify({ stageId: params.stageId }),
 			});
 		},
-		onSuccess: (_data, variables) => {
+		onMutate: async (variables) => {
+			await queryClient.cancelQueries({ queryKey: orderKeys.workflowBoard });
+
+			const previous = queryClient.getQueryData<WorkflowBoardResponse>(
+				orderKeys.workflowBoard,
+			);
+
+			if (previous) {
+				const newStage = previous.stages.find((s) => s.id === variables.stageId);
+
+				queryClient.setQueryData<WorkflowBoardResponse>(
+					orderKeys.workflowBoard,
+					{
+						...previous,
+						orders: previous.orders.map((o) =>
+							o.id === variables.orderId
+								? {
+										...o,
+										workflow_stage_id: variables.stageId,
+										workflow_stage_name: newStage?.name ?? null,
+										workflow_stage_color: newStage?.color ?? null,
+									}
+								: o,
+						),
+					},
+				);
+			}
+
+			return { previous };
+		},
+		onError: (_error, _variables, context) => {
+			if (context?.previous) {
+				queryClient.setQueryData(orderKeys.workflowBoard, context.previous);
+			}
+		},
+		onSettled: (_data, _error, variables) => {
 			queryClient.invalidateQueries({
 				queryKey: orderKeys.detail(variables.orderId),
 			});
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
 		},
 	});
 };
