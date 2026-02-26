@@ -1,11 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
+import { batchKeys } from './batches-keys';
 import type { ApiResponse, Batch, BatchDetail } from '@/types/api';
-
-export const batchKeys = {
-	all: ['batches'] as const,
-	detail: (batchId: string) => ['batches', batchId] as const,
-};
 
 export const useBatches = () => {
 	return useQuery({

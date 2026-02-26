@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Text, Card, TextArea, Button } from '@artifact-ui/core';
-import { useUpdateOrderNotes } from './orders-queries';
+import { useUpdateOrderNotes } from '../api/orders-queries';
 import { formatDate, formatCurrency } from '@/utils/format';
 import type { OrderDetail } from '@/types/api';
 

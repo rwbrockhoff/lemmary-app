@@ -1,15 +1,15 @@
 import { useParams, useSearchParams } from 'react-router';
-import { Heading, Text, Table, Select, Badge } from '@artifact-ui/core';
+import { Heading, Text, Table } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { VariantBadges } from '@/components/variant-badges';
-import { OrderMetadataCard } from './order-metadata-card';
+import { OrderMetadataCard } from './components/order-metadata-card';
+import { StageSelect } from './components/stage-select';
 import {
 	useOrder,
 	useWorkflowStages,
 	useUpdateOrderStage,
 	useUpdateOrderItemStage,
-} from './orders-queries';
-import type { WorkflowStage } from '@/types/api';
+} from './api/orders-queries';
 
 const OrderDetailPage = () => {
 	const { orderId } = useParams<{ orderId: string }>();
@@ -36,9 +36,7 @@ const OrderDetailPage = () => {
 
 	const orderStages = stages?.orderStages ?? [];
 	const itemStages = stages?.itemStages ?? [];
-
 	const breadcrumbs = getBreadcrumbs(from, batchId);
-
 
 	return (
 		<div className="p-8 max-w-5xl mx-auto">
@@ -89,47 +87,6 @@ const OrderDetailPage = () => {
 		</div>
 	);
 };
-
-type StageSelectProps = {
-	stages: WorkflowStage[];
-	value: string | null;
-	onChange: (stageId: string) => void;
-};
-
-const StageSelect = ({ stages, value, onChange }: StageSelectProps) => {
-	const currentStage = stages.find((s) => s.id === value);
-	const badgeColor = getBadgeColor(currentStage?.color ?? 'gray');
-
-	return (
-		<Select.Root value={value ?? undefined} onValueChange={onChange} size="1">
-			<Select.Trigger aria-label="Workflow stage">
-				<Badge variant="soft" size="1" color={badgeColor}>
-					{currentStage?.name ?? 'No status'}
-				</Badge>
-			</Select.Trigger>
-			<Select.Content>
-				<Select.Group>
-					{stages.map((stage) => (
-						<Select.Item key={stage.id} value={stage.id} textValue={stage.name}>
-							{stage.name}
-						</Select.Item>
-					))}
-				</Select.Group>
-			</Select.Content>
-		</Select.Root>
-	);
-};
-
-function getBadgeColor(color: string) {
-	const colorMap: Record<string, 'neutral' | 'info' | 'success' | 'danger' | 'primary'> = {
-		gray: 'neutral',
-		blue: 'info',
-		orange: 'primary',
-		green: 'success',
-		red: 'danger',
-	};
-	return colorMap[color] ?? 'neutral';
-}
 
 function getBreadcrumbs(from: string | null, batchId: string | null) {
 	if (from === 'batch' && batchId) {

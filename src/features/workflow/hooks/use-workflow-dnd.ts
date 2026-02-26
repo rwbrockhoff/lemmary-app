@@ -6,7 +6,7 @@ import {
 	type DragStartEvent,
 	type DragEndEvent,
 } from '@dnd-kit/core';
-import { useUpdateOrderStage } from '@/features/orders/orders-queries';
+import { useUpdateOrderStage } from '@/features/orders/api/orders-queries';
 import type { WorkflowBoardOrder } from '@/types/api';
 
 export const useWorkflowDnd = (orders: WorkflowBoardOrder[]) => {

@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { Table, Checkbox, Badge, cn } from '@artifact-ui/core';
-import { StatusBadge } from '@/features/orders/status-badge';
-import { getProgressColor } from './batch-utils';
+import { StatusBadge } from '@/features/orders/components/status-badge';
+import { getProgressColor } from '../batch-utils';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import styles from '@/styles/shared.module.css';

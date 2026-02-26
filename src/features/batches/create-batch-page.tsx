@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Heading, Text, Button, Table, Checkbox } from '@artifact-ui/core';
-import { useOrders } from '@/features/orders/orders-queries';
-import { useCreateBatch } from './batches-queries';
-import { StatusBadge } from '@/features/orders/status-badge';
+import { useOrders } from '@/features/orders/api/orders-queries';
+import { useCreateBatch } from './api/batches-queries';
+import { StatusBadge } from '@/features/orders/components/status-badge';
 import { formatDate, formatCurrency } from '@/utils/format';
 
 const CreateBatchPage = () => {

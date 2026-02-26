@@ -9,12 +9,12 @@ import {
 	useUpdateMaterialQty,
 	useRenameBatch,
 	useDeleteBatch,
-} from './batches-queries';
-import { RenameBatchModal } from './rename-batch-modal';
-import { DeleteBatchModal } from './delete-batch-modal';
-import { BatchOrdersTable } from './batch-orders-table';
-import { BatchItemsTable } from './batch-items-table';
-import { BatchMaterialsTable } from './batch-materials-table';
+} from './api/batches-queries';
+import { RenameBatchModal } from './components/rename-batch-modal';
+import { DeleteBatchModal } from './components/delete-batch-modal';
+import { BatchOrdersTable } from './components/batch-orders-table';
+import { BatchItemsTable } from './components/batch-items-table';
+import { BatchMaterialsTable } from './components/batch-materials-table';
 
 const BatchDetailPage = () => {
 	const { batchId } = useParams<{ batchId: string }>();

@@ -1,5 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
+import { orderKeys } from './orders-keys';
+import { optimisticallyUpdateOrderStage, rollbackOrderStage } from './orders-cache';
 import type {
 	ApiResponse,
 	OrdersResponse,
@@ -7,13 +9,6 @@ import type {
 	WorkflowStagesResponse,
 	WorkflowBoardResponse,
 } from '@/types/api';
-
-export const orderKeys = {
-	all: ['orders'] as const,
-	detail: (orderId: string) => ['orders', orderId] as const,
-	workflowStages: ['workflow-stages'] as const,
-	workflowBoard: ['workflow-board'] as const,
-};
 
 export const useOrders = () => {
 	return useQuery({
@@ -71,40 +66,9 @@ export const useUpdateOrderStage = () => {
 				body: JSON.stringify({ stageId: params.stageId }),
 			});
 		},
-		onMutate: async (variables) => {
-			await queryClient.cancelQueries({ queryKey: orderKeys.workflowBoard });
-
-			const previous = queryClient.getQueryData<WorkflowBoardResponse>(
-				orderKeys.workflowBoard,
-			);
-
-			if (previous) {
-				const newStage = previous.stages.find((s) => s.id === variables.stageId);
-
-				queryClient.setQueryData<WorkflowBoardResponse>(
-					orderKeys.workflowBoard,
-					{
-						...previous,
-						orders: previous.orders.map((o) =>
-							o.id === variables.orderId
-								? {
-										...o,
-										workflow_stage_id: variables.stageId,
-										workflow_stage_name: newStage?.name ?? null,
-										workflow_stage_color: newStage?.color ?? null,
-									}
-								: o,
-						),
-					},
-				);
-			}
-
-			return { previous };
-		},
+		onMutate: (variables) => optimisticallyUpdateOrderStage(queryClient, variables),
 		onError: (_error, _variables, context) => {
-			if (context?.previous) {
-				queryClient.setQueryData(orderKeys.workflowBoard, context.previous);
-			}
+			rollbackOrderStage(queryClient, context?.previous);
 		},
 		onSettled: (_data, _error, variables) => {
 			queryClient.invalidateQueries({

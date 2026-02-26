@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import { Text } from '@artifact-ui/core';
-import { StatusBadge } from '@/features/orders/status-badge';
+import { StatusBadge } from '@/features/orders/components/status-badge';
 import { DraggableOrderCard } from './order-card';
 import type { WorkflowBoardOrder, WorkflowStage } from '@/types/api';
 

@@ -1,20 +1,13 @@
 import { Badge } from '@artifact-ui/core';
+import { getBadgeColor } from './stage-select';
 
 type StatusBadgeProps = {
 	name: string | null;
 	color: string | null;
 };
 
-const colorMap: Record<string, 'neutral' | 'info' | 'success' | 'danger' | 'primary'> = {
-	gray: 'neutral',
-	blue: 'info',
-	orange: 'primary',
-	green: 'success',
-	red: 'danger',
-};
-
 export const StatusBadge = ({ name, color }: StatusBadgeProps) => {
-	const badgeColor = colorMap[color ?? 'gray'] ?? 'neutral';
+	const badgeColor = getBadgeColor(color ?? 'gray');
 
 	return (
 		<Badge variant="soft" color={badgeColor} size="1">

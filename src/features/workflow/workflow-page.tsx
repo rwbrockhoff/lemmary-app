@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { Heading, Text } from '@artifact-ui/core';
-import { useWorkflowBoard } from '@/features/orders/orders-queries';
+import { useWorkflowBoard } from '@/features/orders/api/orders-queries';
 import { BatchFilter } from './components/batch-filter';
 import { KanbanColumn } from './components/kanban-column';
 import { OrderCardOverlay } from './components/order-card';

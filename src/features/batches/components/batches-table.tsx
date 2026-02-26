@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Table, Badge, Text, DropdownMenu, IconButton } from '@artifact-ui/core';
 import { EllipsisIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
-import { useRenameBatch, useDeleteBatch } from './batches-queries';
+import { useRenameBatch, useDeleteBatch } from '../api/batches-queries';
 import { RenameBatchModal } from './rename-batch-modal';
 import { DeleteBatchModal } from './delete-batch-modal';
 import { formatDate } from '@/utils/format';

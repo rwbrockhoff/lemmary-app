@@ -1,8 +1,8 @@
 import { Heading, Text, Button } from '@artifact-ui/core';
 import { RefreshIcon } from '@/components/icons';
-import { useOrders, useSyncOrders } from './orders-queries';
-import { OrdersTable } from './orders-table';
-import { OrdersSummary } from './orders-summary';
+import { useOrders, useSyncOrders } from './api/orders-queries';
+import { OrdersTable } from './components/orders-table';
+import { OrdersSummary } from './components/orders-summary';
 import { formatRelativeTime } from '@/utils/format';
 
 const OrdersPage = () => {

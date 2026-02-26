@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router';
 import { Heading, Text, Button } from '@artifact-ui/core';
 import { PlusIcon } from '@/components/icons';
-import { useBatches } from './batches-queries';
-import { BatchesTable } from './batches-table';
+import { useBatches } from './api/batches-queries';
+import { BatchesTable } from './components/batches-table';
 
 const BatchesPage = () => {
 	const { data: batches, isLoading, error } = useBatches();
