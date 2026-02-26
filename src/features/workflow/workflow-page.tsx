@@ -7,12 +7,17 @@ import { KanbanColumn } from './components/kanban-column';
 import { OrderCardOverlay } from './components/order-card';
 import { useWorkflowDnd } from './hooks/use-workflow-dnd';
 
+const STORAGE_KEY = 'workflow-completed-collapsed';
+
 const WorkflowPage = () => {
 	const { data, isLoading, error } = useWorkflowBoard();
 	const [selectedBatchIds, setSelectedBatchIds] = useState<Set<string> | null>(
 		null,
 	);
 	const [showAll, setShowAll] = useState(false);
+	const [completedCollapsed, setCompletedCollapsed] = useState(
+		() => localStorage.getItem(STORAGE_KEY) === 'true',
+	);
 
 	const activeBatches = data?.activeBatches ?? [];
 
@@ -44,6 +49,14 @@ const WorkflowPage = () => {
 			return next;
 		});
 		setShowAll(false);
+	};
+
+	const toggleCompletedCollapsed = () => {
+		setCompletedCollapsed((prev) => {
+			const next = !prev;
+			localStorage.setItem(STORAGE_KEY, String(next));
+			return next;
+		});
 	};
 
 	if (isLoading)
@@ -89,6 +102,10 @@ const WorkflowPage = () => {
 							orders={filteredOrders.filter(
 								(o) => o.workflow_stage_id === stage.id,
 							)}
+							collapsed={stage.is_complete ? completedCollapsed : undefined}
+							onToggleCollapse={
+								stage.is_complete ? toggleCompletedCollapsed : undefined
+							}
 						/>
 					))}
 				</div>
