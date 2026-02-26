@@ -37,13 +37,8 @@ const OrderDetailPage = () => {
 	const orderStages = stages?.orderStages ?? [];
 	const itemStages = stages?.itemStages ?? [];
 
-	const breadcrumbs =
-		from === 'batch' && batchId
-			? [
-					{ label: 'Batches', to: '/batches' },
-					{ label: 'Batch', to: `/batches/${batchId}` },
-				]
-			: [{ label: 'Orders', to: '/' }];
+	const breadcrumbs = getBreadcrumbs(from, batchId);
+
 
 	return (
 		<div className="p-8 max-w-5xl mx-auto">
@@ -134,6 +129,21 @@ function getBadgeColor(color: string) {
 		red: 'danger',
 	};
 	return colorMap[color] ?? 'neutral';
+}
+
+function getBreadcrumbs(from: string | null, batchId: string | null) {
+	if (from === 'batch' && batchId) {
+		return [
+			{ label: 'Batches', to: '/batches' },
+			{ label: 'Batch', to: `/batches/${batchId}` },
+		];
+	}
+
+	if (from === 'workflow') {
+		return [{ label: 'Workflow', to: '/workflow' }];
+	}
+
+	return [{ label: 'Orders', to: '/' }];
 }
 
 export default OrderDetailPage;

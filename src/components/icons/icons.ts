@@ -11,3 +11,4 @@ export { ChevronDown as ChevronDownIcon } from 'lucide-react';
 export { EllipsisVertical as EllipsisIcon } from 'lucide-react';
 export { Pencil as PencilIcon } from 'lucide-react';
 export { Trash2 as TrashIcon } from 'lucide-react';
+export { Columns3 as WorkflowIcon } from 'lucide-react';

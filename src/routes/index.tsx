@@ -6,6 +6,7 @@ const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
 const OrderDetailPage = lazy(() => import('@/features/orders/order-detail-page'));
 const ProductionPage = lazy(() => import('@/features/production/production-page'));
 const MaterialsPage = lazy(() => import('@/features/materials/materials-page'));
+const WorkflowPage = lazy(() => import('@/features/workflow/workflow-page'));
 const BatchesPage = lazy(() => import('@/features/batches/batches-page'));
 const CreateBatchPage = lazy(() => import('@/features/batches/create-batch-page'));
 const BatchDetailPage = lazy(() => import('@/features/batches/batch-detail-page'));
@@ -43,6 +44,14 @@ const router = createBrowserRouter([
 				element: (
 					<Suspense>
 						<MaterialsPage />
+					</Suspense>
+				),
+			},
+			{
+				path: '/workflow',
+				element: (
+					<Suspense>
+						<WorkflowPage />
 					</Suspense>
 				),
 			},

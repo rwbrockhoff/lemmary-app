@@ -5,12 +5,14 @@ import type {
 	OrdersResponse,
 	OrderDetail,
 	WorkflowStagesResponse,
+	WorkflowBoardResponse,
 } from '@/types/api';
 
 export const orderKeys = {
 	all: ['orders'] as const,
 	detail: (orderId: string) => ['orders', orderId] as const,
 	workflowStages: ['workflow-stages'] as const,
+	workflowBoard: ['workflow-board'] as const,
 };
 
 export const useOrders = () => {
@@ -41,6 +43,18 @@ export const useWorkflowStages = () => {
 		queryFn: async () => {
 			const response = await api<ApiResponse<WorkflowStagesResponse>>(
 				'/orders/workflow-stages',
+			);
+			return response.data;
+		},
+	});
+};
+
+export const useWorkflowBoard = () => {
+	return useQuery({
+		queryKey: orderKeys.workflowBoard,
+		queryFn: async () => {
+			const response = await api<ApiResponse<WorkflowBoardResponse>>(
+				'/orders/workflow-board',
 			);
 			return response.data;
 		},

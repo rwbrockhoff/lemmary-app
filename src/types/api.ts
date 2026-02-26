@@ -110,6 +110,17 @@ export type MaterialsReport = {
 	mismatches: MaterialsMismatch[];
 };
 
+export type WorkflowBoardOrder = Order & {
+	batch_name: string | null;
+	batch_id: string | null;
+};
+
+export type WorkflowBoardResponse = {
+	orders: WorkflowBoardOrder[];
+	stages: WorkflowStage[];
+	activeBatches: { id: string; name: string }[];
+};
+
 export type Batch = {
 	id: string;
 	store_id: string;
