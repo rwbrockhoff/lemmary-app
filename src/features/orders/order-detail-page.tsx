@@ -2,13 +2,13 @@ import { useParams, useSearchParams } from 'react-router';
 import { Heading, Text, Table, Select, Badge } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { VariantBadges } from '@/components/variant-badges';
+import { OrderMetadataCard } from './order-metadata-card';
 import {
 	useOrder,
 	useWorkflowStages,
 	useUpdateOrderStage,
 	useUpdateOrderItemStage,
 } from './orders-queries';
-import { formatDate, formatCurrency } from '@/utils/format';
 import type { WorkflowStage } from '@/types/api';
 
 const OrderDetailPage = () => {
@@ -18,7 +18,6 @@ const OrderDetailPage = () => {
 	const { data: stages } = useWorkflowStages();
 	const updateOrderStage = useUpdateOrderStage();
 	const updateItemStage = useUpdateOrderItemStage(orderId!);
-
 	const from = searchParams.get('from');
 	const batchId = searchParams.get('batchId');
 
@@ -48,20 +47,11 @@ const OrderDetailPage = () => {
 
 	return (
 		<div className="p-8 max-w-5xl mx-auto">
-			<div className="flex items-center gap-3 mb-2">
+			<div className="flex items-center gap-4 mb-6">
 				<Breadcrumbs segments={breadcrumbs} />
 				<Heading size="6">
 					{order.order_number} — {order.customer_name}
 				</Heading>
-			</div>
-
-			<div className="flex items-center gap-4 mb-6">
-				<Text size="2" color="secondary">
-					{formatDate(order.order_date)}
-				</Text>
-				<Text size="2" color="secondary">
-					{formatCurrency(order.grand_total)}
-				</Text>
 				<StageSelect
 					stages={orderStages}
 					value={order.workflow_stage_id}
@@ -70,6 +60,8 @@ const OrderDetailPage = () => {
 					}
 				/>
 			</div>
+
+			<OrderMetadataCard order={order} />
 
 			<Table.Root>
 				<Table.Header>

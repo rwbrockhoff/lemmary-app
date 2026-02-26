@@ -25,6 +25,9 @@ export type Order = {
 	subtotal: string | null;
 	shipping_total: string | null;
 	grand_total: string | null;
+	shipping_method: string | null;
+	order_notes: string | null;
+	order_url: string | null;
 	currency: string;
 	item_count: number;
 	created_at: string;

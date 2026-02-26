@@ -88,6 +88,24 @@ export const useUpdateOrderItemStage = (orderId: string) => {
 	});
 };
 
+export const useUpdateOrderNotes = (orderId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (notes: string) => {
+			return api(`/orders/${orderId}/notes`, {
+				method: 'PUT',
+				body: JSON.stringify({ notes }),
+			});
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: orderKeys.detail(orderId),
+			});
+		},
+	});
+};
+
 export const useSyncOrders = () => {
 	const queryClient = useQueryClient();
 
