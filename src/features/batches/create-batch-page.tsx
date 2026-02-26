@@ -101,6 +101,7 @@ const CreateBatchPage = () => {
 							<Table.HeaderCell className="w-24">Order #</Table.HeaderCell>
 							<Table.HeaderCell>Customer</Table.HeaderCell>
 							<Table.HeaderCell>Date</Table.HeaderCell>
+							<Table.HeaderCell>Due</Table.HeaderCell>
 							<Table.HeaderCell>Items</Table.HeaderCell>
 							<Table.HeaderCell className="text-end">Total</Table.HeaderCell>
 						</Table.Row>
@@ -121,6 +122,7 @@ const CreateBatchPage = () => {
 								<Table.Cell>{order.order_number}</Table.Cell>
 								<Table.Cell>{order.customer_name}</Table.Cell>
 								<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
+								<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
 								<Table.Cell className="text-center">
 									{order.item_count}
 								</Table.Cell>

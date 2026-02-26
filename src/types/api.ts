@@ -19,6 +19,7 @@ export type Order = {
 	customer_email: string | null;
 	order_date: string;
 	fulfillment_status: string;
+	due_date: string | null;
 	workflow_stage_id: string | null;
 	workflow_stage_name: string | null;
 	workflow_stage_color: string | null;
@@ -129,7 +130,10 @@ export type BatchOrder = {
 	order_number: string;
 	customer_name: string;
 	order_date: string;
+	due_date: string | null;
 	grand_total: string | null;
+	workflow_stage_name: string | null;
+	workflow_stage_color: string | null;
 };
 
 export type BatchItem = {

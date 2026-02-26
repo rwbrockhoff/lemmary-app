@@ -18,6 +18,9 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 			<Card.Body className="grid grid-cols-2 gap-6">
 				<div className="flex flex-col gap-3">
 					<MetadataRow label="Date" value={formatDate(order.order_date)} />
+					{order.due_date && (
+						<MetadataRow label="Due" value={formatDate(order.due_date)} />
+					)}
 					<MetadataRow label="Total" value={formatCurrency(order.grand_total)} />
 					{order.shipping_method && (
 						<MetadataRow label="Shipping" value={order.shipping_method} />

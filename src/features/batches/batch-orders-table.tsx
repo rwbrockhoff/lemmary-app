@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { Table, Checkbox, Badge, cn } from '@artifact-ui/core';
+import { StatusBadge } from '@/features/orders/status-badge';
 import { getProgressColor } from './batch-utils';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
@@ -68,11 +69,19 @@ export const BatchOrdersTable = ({
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-1/3"
+						className="w-1/4"
 					/>
 					<SortableHeader<OrderSortKey>
 						label="Date"
 						sortKey="order_date"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						className="w-32"
+					/>
+					<SortableHeader<OrderSortKey>
+						label="Due"
+						sortKey="due_date"
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
@@ -86,6 +95,7 @@ export const BatchOrdersTable = ({
 						onSort={toggleSort}
 						align="end"
 					/>
+					<Table.HeaderCell>Status</Table.HeaderCell>
 					<SortableHeader<OrderSortKey>
 						label="Progress"
 						sortKey="progress"
@@ -125,8 +135,14 @@ export const BatchOrdersTable = ({
 							<Table.Cell>
 								{formatDate(order.order_date)}
 							</Table.Cell>
+							<Table.Cell>
+								{order.due_date ? formatDate(order.due_date) : '—'}
+							</Table.Cell>
 							<Table.Cell textAlign="end">
 								{formatCurrency(order.grand_total)}
+							</Table.Cell>
+							<Table.Cell>
+								<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
 							</Table.Cell>
 							<Table.Cell textAlign="center">
 								<Badge

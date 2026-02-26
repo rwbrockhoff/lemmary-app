@@ -36,7 +36,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-1/3"
+						className="w-1/4"
 					/>
 					<SortableHeader
 						label="Date"
@@ -44,14 +44,15 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
+						className="w-32"
 					/>
-					<Table.HeaderCell>Status</Table.HeaderCell>
 					<SortableHeader
-						label="Items"
-						sortKey="item_count"
+						label="Due"
+						sortKey="due_date"
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
+						className="w-32"
 					/>
 					<SortableHeader
 						label="Total"
@@ -60,6 +61,14 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						sortDirection={sortDirection}
 						onSort={toggleSort}
 						align="end"
+					/>
+					<Table.HeaderCell>Status</Table.HeaderCell>
+					<SortableHeader
+						label="Items"
+						sortKey="item_count"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
 					/>
 				</Table.Row>
 			</Table.Header>
@@ -73,13 +82,14 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						<Table.Cell>{order.order_number}</Table.Cell>
 						<Table.Cell>{order.customer_name}</Table.Cell>
 						<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
+						<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
+						<Table.Cell textAlign="end">
+							{formatCurrency(order.grand_total)}
+						</Table.Cell>
 						<Table.Cell>
 							<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
 						</Table.Cell>
 						<Table.Cell textAlign="center">{order.item_count}</Table.Cell>
-						<Table.Cell textAlign="end">
-							{formatCurrency(order.grand_total)}
-						</Table.Cell>
 					</Table.Row>
 				))}
 			</Table.Body>
