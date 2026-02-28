@@ -1,5 +1,19 @@
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
+const AUTH_TOKEN_KEY = 'auth_token';
+
+export function getAuthToken(): string | null {
+	return localStorage.getItem(AUTH_TOKEN_KEY);
+}
+
+export function setAuthToken(token: string) {
+	localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
+export function clearAuthToken() {
+	localStorage.removeItem(AUTH_TOKEN_KEY);
+}
+
 type RequestOptions = RequestInit & {
 	params?: Record<string, string>;
 };
@@ -26,11 +40,22 @@ async function request<T>(
 		headers['Content-Type'] = 'application/json';
 	}
 
+	const token = getAuthToken();
+	if (token) {
+		headers['Authorization'] = `Bearer ${token}`;
+	}
+
 	const response = await fetch(url, {
 		credentials: 'include',
 		headers,
 		...init,
 	});
+
+	if (response.status === 401) {
+		clearAuthToken();
+		window.location.href = '/login';
+		throw new Error('Unauthorized');
+	}
 
 	if (!response.ok) {
 		const error = await response.json().catch(() => ({}));

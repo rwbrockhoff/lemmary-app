@@ -65,7 +65,7 @@ const OrderDetailPage = () => {
 						<Table.HeaderCell className="w-1/3">Product</Table.HeaderCell>
 						<Table.HeaderCell className="w-1/3">Variant</Table.HeaderCell>
 						<Table.HeaderCell className="w-16">Qty</Table.HeaderCell>
-						<Table.HeaderCell>Status</Table.HeaderCell>
+						<Table.HeaderCell className="w-56">Status</Table.HeaderCell>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
