@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Table, Badge, Text, DropdownMenu, IconButton } from '@artifact-ui/core';
+import { Table, DropdownMenu, IconButton } from '@artifact-ui/core';
 import { EllipsisHorizontalIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
-import { useRenameBatch, useDeleteBatch } from '../api/batches-queries';
+import { BatchStatusSelect } from './batch-status-select';
+import { useRenameBatch, useUpdateBatchStatus, useDeleteBatch } from '../api/batches-queries';
 import { RenameBatchModal } from './rename-batch-modal';
 import { DeleteBatchModal } from './delete-batch-modal';
 import { formatDate } from '@/utils/format';
@@ -15,6 +16,7 @@ type BatchesTableProps = {
 export const BatchesTable = ({ batches }: BatchesTableProps) => {
 	const navigate = useNavigate();
 	const renameMutation = useRenameBatch();
+	const statusMutation = useUpdateBatchStatus();
 	const deleteMutation = useDeleteBatch();
 
 	const [renameTarget, setRenameTarget] = useState<Batch | null>(null);
@@ -62,14 +64,13 @@ export const BatchesTable = ({ batches }: BatchesTableProps) => {
 							<Table.Cell>
 								{batch.items_completed}/{batch.item_count} items
 							</Table.Cell>
-							<Table.Cell>
-								<Badge
-									size="1"
-									variant="soft"
-									color={batch.status === 'completed' ? 'success' : 'info'}
-								>
-									{batch.status}
-								</Badge>
+							<Table.Cell onClick={(e) => e.stopPropagation()}>
+								<BatchStatusSelect
+									value={batch.status}
+									onChange={(status) =>
+										statusMutation.mutate({ batchId: batch.id, status })
+									}
+								/>
 							</Table.Cell>
 							<Table.Cell>{formatDate(batch.created_at)}</Table.Cell>
 							<Table.Cell>

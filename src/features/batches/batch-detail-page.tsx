@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { Heading, Text, Badge, Tabs, DropdownMenu, IconButton } from '@artifact-ui/core';
+import { Heading, Text, Tabs, DropdownMenu, IconButton } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { EllipsisIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
+import { EllipsisHorizontalIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
+import { BatchStatusSelect } from './components/batch-status-select';
 import {
 	useBatch,
 	useToggleComplete,
 	useUpdateMaterialQty,
 	useRenameBatch,
+	useUpdateBatchStatus,
 	useDeleteBatch,
 } from './api/batches-queries';
 import { RenameBatchModal } from './components/rename-batch-modal';
@@ -23,6 +25,7 @@ const BatchDetailPage = () => {
 	const toggleComplete = useToggleComplete(batchId!);
 	const updateMaterialQty = useUpdateMaterialQty(batchId!);
 	const renameMutation = useRenameBatch();
+	const statusMutation = useUpdateBatchStatus();
 	const deleteMutation = useDeleteBatch();
 
 	const [showRename, setShowRename] = useState(false);
@@ -81,19 +84,16 @@ const BatchDetailPage = () => {
 			<div className="flex items-center gap-3 mb-6">
 				<Breadcrumbs segments={[{ label: 'Batches', to: '/batches' }]} />
 				<Heading size="6">{batch.name}</Heading>
-				<Badge
-					size="1"
-					variant="soft"
-					color={
-						batch.status === 'completed' ? 'success' : 'info'
+				<BatchStatusSelect
+					value={batch.status}
+					onChange={(status) =>
+						statusMutation.mutate({ batchId: batchId!, status })
 					}
-				>
-					{batch.status}
-				</Badge>
+				/>
 				<DropdownMenu.DropdownMenu>
 					<DropdownMenu.DropdownMenuTrigger asChild>
 						<IconButton
-							icon={<EllipsisIcon size={16} />}
+							icon={<EllipsisHorizontalIcon size={16} />}
 							label="Batch options"
 							size="1"
 							variant="ghost"

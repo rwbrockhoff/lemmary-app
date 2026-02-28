@@ -96,6 +96,18 @@ export const useRenameBatch = () => {
 	});
 };
 
+export const useUpdateBatchStatus = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (params: { batchId: string; status: string }) =>
+			api.put(`/batches/${params.batchId}`, { status: params.status }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
 export const useDeleteBatch = () => {
 	const queryClient = useQueryClient();
 

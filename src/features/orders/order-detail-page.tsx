@@ -1,6 +1,7 @@
 import { useParams, useSearchParams } from 'react-router';
 import { Heading, Text, Table } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { ImageIcon } from '@/components/icons';
 import shared from '@/styles/shared.module.css';
 import { VariantBadges } from '@/components/variant-badges';
 import { OrderMetadataCard } from './components/order-metadata-card';
@@ -60,6 +61,7 @@ const OrderDetailPage = () => {
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
+						<Table.HeaderCell className="w-12" />
 						<Table.HeaderCell className="w-1/3">Product</Table.HeaderCell>
 						<Table.HeaderCell className="w-1/3">Variant</Table.HeaderCell>
 						<Table.HeaderCell className="w-16">Qty</Table.HeaderCell>
@@ -82,6 +84,20 @@ const OrderDetailPage = () => {
 
 						return (
 						<Table.Row key={item.id} className={rowClass}>
+							<Table.Cell>
+								{item.image_url ? (
+									<img
+										src={item.image_url}
+										alt={item.product_name}
+										className="w-8 h-8 rounded object-cover shrink-0"
+										style={{ minWidth: '32px', minHeight: '32px' }}
+									/>
+								) : (
+									<div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center">
+										<ImageIcon size={14} className="text-gray-400" />
+									</div>
+								)}
+							</Table.Cell>
 							<Table.Cell>{item.product_name}</Table.Cell>
 							<Table.Cell><VariantBadges variants={item.variant_label} /></Table.Cell>
 							<Table.Cell>{item.quantity}</Table.Cell>
