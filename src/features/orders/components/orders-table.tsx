@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router';
-import { Table } from '@artifact-ui/core';
+import { Table, Badge } from '@artifact-ui/core';
+import { getProgressColor } from '@/features/batches/batch-utils';
 import { StatusBadge } from './status-badge';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
-import { formatDate, formatCurrency } from '@/utils/format';
+import { formatDate } from '@/utils/format';
 import type { Order } from '@/types/api';
 
 type OrdersTableProps = {
@@ -54,14 +55,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						onSort={toggleSort}
 						className="w-32"
 					/>
-					<SortableHeader
-						label="Total"
-						sortKey="grand_total"
-						activeSortKey={sortKey}
-						sortDirection={sortDirection}
-						onSort={toggleSort}
-						align="end"
-					/>
+					<Table.HeaderCell>Progress</Table.HeaderCell>
 					<Table.HeaderCell>Status</Table.HeaderCell>
 					<SortableHeader
 						label="Items"
@@ -70,7 +64,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						sortDirection={sortDirection}
 						onSort={toggleSort}
 					/>
-				</Table.Row>
+					</Table.Row>
 			</Table.Header>
 			<Table.Body>
 				{sortedData.map((order) => (
@@ -83,14 +77,20 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						<Table.Cell>{order.customer_name}</Table.Cell>
 						<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 						<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
-						<Table.Cell textAlign="end">
-							{formatCurrency(order.grand_total)}
+						<Table.Cell>
+							<Badge
+								size="1"
+								variant="soft"
+								color={getProgressColor(order.items_completed, order.item_count)}
+							>
+								{order.items_completed}/{order.item_count}
+							</Badge>
 						</Table.Cell>
 						<Table.Cell>
 							<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
 						</Table.Cell>
 						<Table.Cell textAlign="center">{order.item_count}</Table.Cell>
-					</Table.Row>
+						</Table.Row>
 				))}
 			</Table.Body>
 		</Table.Root>

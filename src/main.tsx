@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import '@artifact-ui/core/styles.css';
+import '@artifact-ui/core/layers.css';
 import { AppProvider } from '@/providers';
 import { AppRouter } from '@/routes';
 

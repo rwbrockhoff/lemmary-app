@@ -1,4 +1,5 @@
 import { Heading, Text, Badge, Tabs } from '@artifact-ui/core';
+import { MaterialsIcon } from '@/components/icons';
 import { useMaterialsReport } from './materials-queries';
 import { FabricTable } from './fabric-table';
 import { LinearTable } from './linear-table';
@@ -11,7 +12,7 @@ const MaterialsPage = () => {
 	return (
 		<div className="p-8 max-w-5xl mx-auto">
 			<div className="mb-6">
-				<Heading size="6">Materials Report</Heading>
+				<Heading size="6" iconLeft={<MaterialsIcon size={20} />}>Materials Report</Heading>
 			</div>
 
 			{isLoading && <Text color="secondary">Loading materials report...</Text>}

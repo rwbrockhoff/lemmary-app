@@ -1,5 +1,5 @@
 import { Heading, Text, Button } from '@artifact-ui/core';
-import { RefreshIcon } from '@/components/icons';
+import { RefreshIcon, OrdersIcon } from '@/components/icons';
 import { useOrders, useSyncOrders } from './api/orders-queries';
 import { OrdersTable } from './components/orders-table';
 import { OrdersSummary } from './components/orders-summary';
@@ -19,8 +19,8 @@ const OrdersPage = () => {
 	return (
 		<div className="p-8 max-w-5xl mx-auto">
 			<div className="flex items-center justify-between mb-6">
-				<div>
-					<Heading size="6">Orders</Heading>
+				<div className="flex flex-col gap-1">
+					<Heading size="6" iconLeft={<OrdersIcon size={20} />}>Orders</Heading>
 					{lastSyncedAt && (
 						<Text size="1" color="secondary">
 							Last synced {formatRelativeTime(lastSyncedAt)}

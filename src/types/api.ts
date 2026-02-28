@@ -31,6 +31,7 @@ export type Order = {
 	order_url: string | null;
 	currency: string;
 	item_count: number;
+	items_completed: number;
 	created_at: string;
 	updated_at: string;
 };

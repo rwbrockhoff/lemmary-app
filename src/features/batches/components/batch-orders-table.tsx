@@ -69,7 +69,7 @@ export const BatchOrdersTable = ({
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-1/4"
+						className="w-1/5"
 					/>
 					<SortableHeader<OrderSortKey>
 						label="Date"
@@ -95,7 +95,7 @@ export const BatchOrdersTable = ({
 						onSort={toggleSort}
 						align="end"
 					/>
-					<Table.HeaderCell>Status</Table.HeaderCell>
+					<Table.HeaderCell className="w-40">Status</Table.HeaderCell>
 					<SortableHeader<OrderSortKey>
 						label="Progress"
 						sortKey="progress"
@@ -131,7 +131,7 @@ export const BatchOrdersTable = ({
 								/>
 							</Table.Cell>
 							<Table.Cell>{order.order_number}</Table.Cell>
-							<Table.Cell>{order.customer_name}</Table.Cell>
+							<Table.Cell className="truncate max-w-0">{order.customer_name}</Table.Cell>
 							<Table.Cell>
 								{formatDate(order.order_date)}
 							</Table.Cell>

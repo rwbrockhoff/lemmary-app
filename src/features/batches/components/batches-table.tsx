@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Table, Badge, Text, DropdownMenu, IconButton } from '@artifact-ui/core';
-import { EllipsisIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
+import { EllipsisHorizontalIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
 import { useRenameBatch, useDeleteBatch } from '../api/batches-queries';
 import { RenameBatchModal } from './rename-batch-modal';
 import { DeleteBatchModal } from './delete-batch-modal';
@@ -45,7 +45,7 @@ export const BatchesTable = ({ batches }: BatchesTableProps) => {
 						<Table.HeaderCell>Progress</Table.HeaderCell>
 						<Table.HeaderCell>Status</Table.HeaderCell>
 						<Table.HeaderCell>Created</Table.HeaderCell>
-						<Table.HeaderCell className="w-10" />
+						<Table.HeaderCell className="w-14" />
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -56,7 +56,7 @@ export const BatchesTable = ({ batches }: BatchesTableProps) => {
 							onClick={() => navigate(`/batches/${batch.id}`)}
 						>
 							<Table.Cell>
-								<Text weight="medium">{batch.name}</Text>
+								{batch.name}
 							</Table.Cell>
 							<Table.Cell>{batch.order_count}</Table.Cell>
 							<Table.Cell>
@@ -76,7 +76,7 @@ export const BatchesTable = ({ batches }: BatchesTableProps) => {
 								<DropdownMenu.DropdownMenu>
 									<DropdownMenu.DropdownMenuTrigger asChild>
 										<IconButton
-											icon={<EllipsisIcon size={16} />}
+											icon={<EllipsisHorizontalIcon size={16} />}
 											label="Batch options"
 											size="1"
 											variant="ghost"

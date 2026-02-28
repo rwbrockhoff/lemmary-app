@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { Heading, Text } from '@artifact-ui/core';
+import { WorkflowIcon } from '@/components/icons';
 import { useWorkflowBoard } from '@/features/orders/api/orders-queries';
 import { BatchFilter } from './components/batch-filter';
 import { KanbanColumn } from './components/kanban-column';
@@ -78,7 +79,7 @@ const WorkflowPage = () => {
 	return (
 		<div className="p-8">
 			<div className="flex items-center justify-between mb-6">
-				<Heading size="6">Workflow</Heading>
+				<Heading size="6" iconLeft={<WorkflowIcon />}>Workflow</Heading>
 			</div>
 
 			<BatchFilter

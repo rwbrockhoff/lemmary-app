@@ -11,3 +11,24 @@
 	background-color: var(--green-600);
 	border-color: var(--green-600);
 }
+
+.completedRow button[role='combobox']:hover {
+	background-color: var(--green-100);
+}
+
+.inProgressRow {
+	background-color: var(--blue-50);
+}
+
+.inProgressRow button[role='combobox']:hover {
+	background-color: var(--blue-100);
+}
+
+.badgePurple {
+	background-color: #f0ebf7;
+	color: #5e4a80;
+}
+
+.badgePurple:hover {
+	background-color: #ede2fe;
+}

@@ -1,6 +1,7 @@
 import { useParams, useSearchParams } from 'react-router';
 import { Heading, Text, Table } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import shared from '@/styles/shared.module.css';
 import { VariantBadges } from '@/components/variant-badges';
 import { OrderMetadataCard } from './components/order-metadata-card';
 import { StageSelect } from './components/stage-select';
@@ -66,8 +67,21 @@ const OrderDetailPage = () => {
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{order.items.map((item) => (
-						<Table.Row key={item.id}>
+					{order.items.map((item) => {
+						const currentStage = itemStages.find(
+							(s) => s.id === item.workflow_stage_id,
+						);
+						const isComplete = currentStage?.is_complete;
+						const isInProgress = !isComplete && !currentStage?.is_default;
+
+						const rowClass = isComplete
+							? shared.completedRow
+							: isInProgress
+								? shared.inProgressRow
+								: '';
+
+						return (
+						<Table.Row key={item.id} className={rowClass}>
 							<Table.Cell>{item.product_name}</Table.Cell>
 							<Table.Cell><VariantBadges variants={item.variant_label} /></Table.Cell>
 							<Table.Cell>{item.quantity}</Table.Cell>
@@ -81,7 +95,8 @@ const OrderDetailPage = () => {
 								/>
 							</Table.Cell>
 						</Table.Row>
-					))}
+						);
+					})}
 				</Table.Body>
 			</Table.Root>
 		</div>
