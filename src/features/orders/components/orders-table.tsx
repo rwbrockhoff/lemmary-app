@@ -46,7 +46,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-16"
+						className="w-20"
 					/>
 					<SortableHeader
 						label="Customer"
@@ -54,7 +54,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-[30%]"
+						className="w-1/4"
 					/>
 					<SortableHeader
 						label="Date"
@@ -103,7 +103,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 								className="cursor-pointer"
 								onClick={() => navigate(`/orders/${order.id}`)}
 							>
-								<Table.Cell>{order.order_number}</Table.Cell>
+								<Table.Cell><Text size="2" weight="medium">{order.order_number}</Text></Table.Cell>
 								<Table.Cell>{order.customer_name}</Table.Cell>
 								<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 								<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>

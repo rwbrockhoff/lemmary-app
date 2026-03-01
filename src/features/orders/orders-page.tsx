@@ -56,18 +56,18 @@ const OrdersPage = () => {
 			)}
 
 			{orders && orders.length > 0 && (
-				<Tabs.Root defaultValue="orders">
+				<Tabs.Root defaultValue="overview">
 					<Tabs.List>
-						<Tabs.Trigger value="orders">Orders</Tabs.Trigger>
 						<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
+						<Tabs.Trigger value="orders">Order Details</Tabs.Trigger>
 					</Tabs.List>
-
-					<Tabs.Content value="orders">
-						<OrdersTable orders={orders ?? []} />
-					</Tabs.Content>
 
 					<Tabs.Content value="overview">
 						<OrdersOverviewTable orders={pendingOrders ?? []} />
+					</Tabs.Content>
+
+					<Tabs.Content value="orders">
+						<OrdersTable orders={orders ?? []} />
 					</Tabs.Content>
 				</Tabs.Root>
 			)}

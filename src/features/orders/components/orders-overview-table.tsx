@@ -48,7 +48,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-16"
+						className="w-20"
 					/>
 					<SortableHeader
 						label="Customer"
@@ -56,7 +56,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-1/4"
+						className="w-1/5"
 					/>
 					<SortableHeader
 						label="Due"
@@ -105,8 +105,18 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 									<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
 								</Table.Cell>
 								<Table.Cell>
-									{order.batch_name ? (
-										<Badge size="1" variant="soft">{order.batch_name}</Badge>
+									{order.batch_name && order.batch_id ? (
+										<Badge
+											size="1"
+											variant="soft"
+											className="cursor-pointer"
+											onClick={(e) => {
+												e.stopPropagation();
+												navigate(`/batches/${order.batch_id}`);
+											}}
+										>
+											{order.batch_name}
+										</Badge>
 									) : (
 										'—'
 									)}
