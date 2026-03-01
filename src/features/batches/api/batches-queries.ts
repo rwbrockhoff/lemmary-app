@@ -6,6 +6,7 @@ import {
 	optimisticallyUpdateMaterialQty,
 	rollbackBatchDetail,
 } from './batches-cache';
+import { orderKeys } from '@/features/orders/api/orders-keys';
 import type { Batch, BatchDetail } from '@/types/api';
 
 export const useBatches = () => {
@@ -119,6 +120,19 @@ export const useUpdateBatchStatus = () => {
 			api.put(`/batches/${params.batchId}`, { status: params.status }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
+export const useUpdateBatchOrders = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (params: { batchId: string; orderIds: string[] }) =>
+			api.put(`/batches/${params.batchId}`, { orderIds: params.orderIds }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 		},
 	});
 };

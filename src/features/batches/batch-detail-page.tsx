@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router';
 import { Heading, Text, Tabs, DropdownMenu, IconButton } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { PageSpinner } from '@/components/page-spinner';
-import { EllipsisHorizontalIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
+import { EllipsisHorizontalIcon, PencilIcon, TrashIcon, ListChecksIcon } from '@/components/icons/icons';
 import { BatchStatusSelect } from './components/batch-status-select';
 import {
 	useBatch,
@@ -97,6 +97,10 @@ const BatchDetailPage = () => {
 						/>
 					</DropdownMenu.DropdownMenuTrigger>
 					<DropdownMenu.DropdownMenuContent align="end" size="1">
+						<DropdownMenu.DropdownMenuItem onClick={() => navigate(`/batches/${batchId}/edit`)}>
+							<ListChecksIcon size={14} />
+							Edit Orders
+						</DropdownMenu.DropdownMenuItem>
 						<DropdownMenu.DropdownMenuItem onClick={() => setShowRename(true)}>
 							<PencilIcon size={14} />
 							Rename

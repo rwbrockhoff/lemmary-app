@@ -1,13 +1,26 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Heading, Text, Button } from '@artifact-ui/core';
+import { Heading, Text, Button, Tabs } from '@artifact-ui/core';
 import { PlusIcon, BatchesIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { useBatches } from './api/batches-queries';
 import { BatchesTable } from './components/batches-table';
 
+const ACTIVE_STATUSES = ['Active', 'Up Next', 'Paused'];
+
 const BatchesPage = () => {
 	const { data: batches, isLoading, error } = useBatches();
 	const navigate = useNavigate();
+
+	const activeBatches = useMemo(
+		() => batches?.filter((b) => ACTIVE_STATUSES.includes(b.status)) ?? [],
+		[batches],
+	);
+
+	const completedBatches = useMemo(
+		() => batches?.filter((b) => b.status === 'Completed') ?? [],
+		[batches],
+	);
 
 	return (
 		<div className="p-8 max-w-5xl mx-auto">
@@ -34,7 +47,32 @@ const BatchesPage = () => {
 			)}
 
 			{batches && batches.length > 0 && (
-				<BatchesTable batches={batches} />
+				<Tabs.Root defaultValue="active">
+					<Tabs.List>
+						<Tabs.Trigger value="active">
+							Active ({activeBatches.length})
+						</Tabs.Trigger>
+						<Tabs.Trigger value="completed">
+							Completed ({completedBatches.length})
+						</Tabs.Trigger>
+					</Tabs.List>
+
+					<Tabs.Content value="active">
+						{activeBatches.length > 0 ? (
+							<BatchesTable batches={activeBatches} />
+						) : (
+							<Text color="secondary">No active batches.</Text>
+						)}
+					</Tabs.Content>
+
+					<Tabs.Content value="completed">
+						{completedBatches.length > 0 ? (
+							<BatchesTable batches={completedBatches} />
+						) : (
+							<Text color="secondary">No completed batches.</Text>
+						)}
+					</Tabs.Content>
+				</Tabs.Root>
 			)}
 		</div>
 	);

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Table, DropdownMenu, IconButton } from '@artifact-ui/core';
-import { EllipsisHorizontalIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
+import { EllipsisHorizontalIcon, PencilIcon, TrashIcon, ListChecksIcon } from '@/components/icons/icons';
+import { SortableHeader } from '@/components/sortable-header';
+import { useSortableTable } from '@/hooks/use-sortable-table';
 import { BatchStatusSelect } from './batch-status-select';
 import { useRenameBatch, useUpdateBatchStatus, useDeleteBatch } from '../api/batches-queries';
 import { RenameBatchModal } from './rename-batch-modal';
@@ -15,6 +17,19 @@ type BatchesTableProps = {
 
 export const BatchesTable = ({ batches }: BatchesTableProps) => {
 	const navigate = useNavigate();
+	const { sortedData, sortKey, sortDirection, toggleSort } =
+		useSortableTable(batches, {
+			defaultKey: 'created_at',
+			defaultDirection: 'desc',
+			storageKey: 'batches',
+			customSortFns: {
+				progress: (a, b) => {
+					const aRatio = a.item_count ? a.items_completed / a.item_count : 0;
+					const bRatio = b.item_count ? b.items_completed / b.item_count : 0;
+					return aRatio - bRatio;
+				},
+			},
+		});
 	const renameMutation = useRenameBatch();
 	const statusMutation = useUpdateBatchStatus();
 	const deleteMutation = useDeleteBatch();
@@ -42,16 +57,47 @@ export const BatchesTable = ({ batches }: BatchesTableProps) => {
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.HeaderCell>Name</Table.HeaderCell>
-						<Table.HeaderCell>Orders</Table.HeaderCell>
-						<Table.HeaderCell>Progress</Table.HeaderCell>
-						<Table.HeaderCell>Status</Table.HeaderCell>
-						<Table.HeaderCell>Created</Table.HeaderCell>
+						<SortableHeader
+							label="Name"
+							sortKey="name"
+							activeSortKey={sortKey}
+							sortDirection={sortDirection}
+							onSort={toggleSort}
+							className="w-1/3"
+						/>
+						<SortableHeader
+							label="Orders"
+							sortKey="order_count"
+							activeSortKey={sortKey}
+							sortDirection={sortDirection}
+							onSort={toggleSort}
+						/>
+						<SortableHeader
+							label="Progress"
+							sortKey="progress"
+							activeSortKey={sortKey}
+							sortDirection={sortDirection}
+							onSort={toggleSort}
+						/>
+						<SortableHeader
+							label="Status"
+							sortKey="status"
+							activeSortKey={sortKey}
+							sortDirection={sortDirection}
+							onSort={toggleSort}
+						/>
+						<SortableHeader
+							label="Created"
+							sortKey="created_at"
+							activeSortKey={sortKey}
+							sortDirection={sortDirection}
+							onSort={toggleSort}
+						/>
 						<Table.HeaderCell className="w-14" />
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{batches.map((batch) => (
+					{sortedData.map((batch) => (
 						<Table.Row
 							key={batch.id}
 							className="cursor-pointer"
@@ -86,6 +132,15 @@ export const BatchesTable = ({ batches }: BatchesTableProps) => {
 										/>
 									</DropdownMenu.DropdownMenuTrigger>
 									<DropdownMenu.DropdownMenuContent align="end" size="1">
+										<DropdownMenu.DropdownMenuItem
+											onClick={(e) => {
+												e.stopPropagation();
+												navigate(`/batches/${batch.id}/edit`);
+											}}
+										>
+											<ListChecksIcon size={14} />
+											Edit Orders
+										</DropdownMenu.DropdownMenuItem>
 										<DropdownMenu.DropdownMenuItem
 											onClick={(e) => {
 												e.stopPropagation();
