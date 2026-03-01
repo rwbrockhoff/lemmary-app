@@ -52,3 +52,12 @@
 .statusSuccess:hover {
 	background-color: var(--color-success-bg);
 }
+
+.expandIcon {
+	transition: transform 150ms;
+	transform: rotate(-90deg);
+}
+
+.expandIconOpen {
+	transform: rotate(0deg);
+}

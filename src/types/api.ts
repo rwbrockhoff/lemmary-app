@@ -30,6 +30,7 @@ export type Order = {
 	order_notes: string | null;
 	order_url: string | null;
 	currency: string;
+	batch_name: string | null;
 	item_count: number;
 	items_completed: number;
 	created_at: string;
@@ -53,6 +54,10 @@ export type OrderItem = {
 
 export type OrderDetail = Order & {
 	workflow_stage_name: string | null;
+	items: OrderItem[];
+};
+
+export type OrderWithItems = Order & {
 	items: OrderItem[];
 };
 

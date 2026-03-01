@@ -5,6 +5,7 @@ import { optimisticallyUpdateOrderStage, rollbackOrderStage } from './orders-cac
 import type {
 	OrdersResponse,
 	OrderDetail,
+	OrderWithItems,
 	WorkflowStagesResponse,
 	WorkflowBoardResponse,
 } from '@/types/api';
@@ -13,6 +14,13 @@ export const useOrders = () => {
 	return useQuery({
 		queryKey: orderKeys.all,
 		queryFn: () => api.get<OrdersResponse>('/orders'),
+	});
+};
+
+export const useOrdersWithItems = () => {
+	return useQuery({
+		queryKey: orderKeys.withItems,
+		queryFn: () => api.get<OrderWithItems[]>('/orders/with-items'),
 	});
 };
 
