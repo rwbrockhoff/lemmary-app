@@ -1,5 +1,6 @@
 import { Heading, Text, Button } from '@artifact-ui/core';
 import { RefreshIcon, OrdersIcon } from '@/components/icons';
+import { PageSpinner } from '@/components/page-spinner';
 import { useOrders, useSyncOrders } from './api/orders-queries';
 import { OrdersTable } from './components/orders-table';
 import { OrdersSummary } from './components/orders-summary';
@@ -37,14 +38,14 @@ const OrdersPage = () => {
 				</Button>
 			</div>
 
+			{isLoading && <PageSpinner />}
+
 			{pendingOrders && pendingOrders.length > 0 && (
 				<OrdersSummary orders={pendingOrders} />
 			)}
 
-			{isLoading && <Text color="secondary">Loading orders...</Text>}
-
 			{error && (
-				<Text color="danger">Failed to load orders. Is the API running?</Text>
+				<Text color="danger">Failed to load orders. Try again later.</Text>
 			)}
 
 			{orders && orders.length === 0 && (

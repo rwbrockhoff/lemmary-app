@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { Heading, Text, Tabs, DropdownMenu, IconButton } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { PageSpinner } from '@/components/page-spinner';
 import { EllipsisHorizontalIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
 import { BatchStatusSelect } from './components/batch-status-select';
 import {
@@ -56,12 +57,7 @@ const BatchDetailPage = () => {
 		updateMaterialQty.mutate({ id, completedQty });
 	};
 
-	if (isLoading)
-		return (
-			<Text color="secondary" className="p-8">
-				Loading batch...
-			</Text>
-		);
+	if (isLoading) return <PageSpinner />;
 	if (error || !batch)
 		return (
 			<Text color="danger" className="p-8">

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { Heading, Text, Button } from '@artifact-ui/core';
 import { PlusIcon, BatchesIcon } from '@/components/icons';
+import { PageSpinner } from '@/components/page-spinner';
 import { useBatches } from './api/batches-queries';
 import { BatchesTable } from './components/batches-table';
 
@@ -20,10 +21,10 @@ const BatchesPage = () => {
 				</Button>
 			</div>
 
-			{isLoading && <Text color="secondary">Loading batches...</Text>}
+			{isLoading && <PageSpinner />}
 
 			{error && (
-				<Text color="danger">Failed to load batches.</Text>
+				<Text color="danger">Failed to load batches. Try again later.</Text>
 			)}
 
 			{batches && batches.length === 0 && (

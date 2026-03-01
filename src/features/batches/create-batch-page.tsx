@@ -4,6 +4,7 @@ import { Heading, Text, Button, Table, Checkbox, Badge } from '@artifact-ui/core
 import { useOrdersWithItems } from '@/features/orders/api/orders-queries';
 import { useCreateBatch } from './api/batches-queries';
 import { formatDate, formatCurrency } from '@/utils/format';
+import { PageSpinner } from '@/components/page-spinner';
 import { VariantBadges } from '@/components/variant-badges';
 import { ImageIcon, ChevronDownIcon } from '@/components/icons/icons';
 import { cn } from '@artifact-ui/core';
@@ -135,7 +136,7 @@ const CreateBatchPage = () => {
 				)}
 			</div>
 
-			{isLoading && <Text color="secondary">Loading orders...</Text>}
+			{isLoading && <PageSpinner />}
 
 			{!isLoading && displayedOrders.length === 0 && (
 				<Text color="secondary">

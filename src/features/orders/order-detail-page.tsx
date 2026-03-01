@@ -1,6 +1,7 @@
 import { useParams, useSearchParams } from 'react-router';
 import { Heading, Text, Table } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { PageSpinner } from '@/components/page-spinner';
 import { ImageIcon } from '@/components/icons';
 import shared from '@/styles/shared.module.css';
 import { VariantBadges } from '@/components/variant-badges';
@@ -23,12 +24,7 @@ const OrderDetailPage = () => {
 	const from = searchParams.get('from');
 	const batchId = searchParams.get('batchId');
 
-	if (isLoading)
-		return (
-			<Text color="secondary" className="p-8">
-				Loading order...
-			</Text>
-		);
+	if (isLoading) return <PageSpinner />;
 	if (error || !order)
 		return (
 			<Text color="danger" className="p-8">

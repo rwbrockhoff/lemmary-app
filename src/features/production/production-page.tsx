@@ -1,5 +1,6 @@
 import { Heading, Text } from '@artifact-ui/core';
 import { ProductionIcon } from '@/components/icons';
+import { PageSpinner } from '@/components/page-spinner';
 import { useProductionSummary } from './production-queries';
 import { ProductionTable } from './production-table';
 
@@ -12,7 +13,7 @@ const ProductionPage = () => {
 				<Heading size="6" iconLeft={<ProductionIcon size={20} />}>Production Summary</Heading>
 			</div>
 
-			{isLoading && <Text color="secondary">Loading production summary...</Text>}
+			{isLoading && <PageSpinner />}
 
 			{error && (
 				<Text color="danger">Failed to load production summary.</Text>

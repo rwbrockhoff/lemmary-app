@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { Heading, Text } from '@artifact-ui/core';
 import { WorkflowIcon } from '@/components/icons';
+import { PageSpinner } from '@/components/page-spinner';
 import { useWorkflowBoard } from '@/features/orders/api/orders-queries';
 import { BatchFilter } from './components/batch-filter';
 import { KanbanColumn } from './components/kanban-column';
@@ -60,12 +61,7 @@ const WorkflowPage = () => {
 		});
 	};
 
-	if (isLoading)
-		return (
-			<Text color="secondary" className="p-8">
-				Loading workflow...
-			</Text>
-		);
+	if (isLoading) return <PageSpinner />;
 
 	if (error)
 		return (

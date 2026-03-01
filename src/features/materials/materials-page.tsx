@@ -1,5 +1,6 @@
 import { Heading, Text, Badge, Tabs } from '@artifact-ui/core';
 import { MaterialsIcon } from '@/components/icons';
+import { PageSpinner } from '@/components/page-spinner';
 import { useMaterialsReport } from './materials-queries';
 import { FabricTable } from './fabric-table';
 import { LinearTable } from './linear-table';
@@ -15,7 +16,7 @@ const MaterialsPage = () => {
 				<Heading size="6" iconLeft={<MaterialsIcon size={20} />}>Materials Report</Heading>
 			</div>
 
-			{isLoading && <Text color="secondary">Loading materials report...</Text>}
+			{isLoading && <PageSpinner />}
 
 			{error && <Text color="danger">Failed to load materials report.</Text>}
 
