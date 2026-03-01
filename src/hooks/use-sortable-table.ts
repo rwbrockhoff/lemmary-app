@@ -3,7 +3,7 @@ import { useState, useMemo } from 'react';
 type SortDirection = 'asc' | 'desc';
 
 type UseSortableTableOptions<T, K extends string> = {
-	defaultKey: K;
+	defaultKey: NoInfer<K>;
 	defaultDirection?: SortDirection;
 	customSortFns?: Partial<Record<K, (a: T, b: T) => number>>;
 };
@@ -12,7 +12,7 @@ export function useSortableTable<
 	T extends Record<string, unknown>,
 	K extends string = Extract<keyof T, string>,
 >(data: T[], options: UseSortableTableOptions<T, K>) {
-	const [sortKey, setSortKey] = useState<K>(options.defaultKey);
+	const [sortKey, setSortKey] = useState<K>(options.defaultKey as K);
 	const [sortDirection, setSortDirection] = useState<SortDirection>(
 		options.defaultDirection ?? 'asc',
 	);
@@ -35,8 +35,8 @@ export function useSortableTable<
 			if (customFn) {
 				comparison = customFn(a, b);
 			} else {
-				const aVal = a[sortKey];
-				const bVal = b[sortKey];
+				const aVal = a[sortKey as string];
+				const bVal = b[sortKey as string];
 
 				if (aVal == null && bVal == null) return 0;
 				if (aVal == null) return 1;
