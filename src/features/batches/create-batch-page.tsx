@@ -15,7 +15,8 @@ type Tab = 'available' | 'in-batches';
 
 const CreateBatchPage = () => {
 	const navigate = useNavigate();
-	const { data: orders, isLoading } = useOrdersWithItems();
+	const { data, isLoading } = useOrdersWithItems();
+	const orders = data?.orders;
 	const createBatch = useCreateBatch();
 
 	const [name, setName] = useState('');

@@ -20,7 +20,7 @@ const OrderDetailPage = () => {
 	const { data: order, isLoading, error } = useOrder(orderId!);
 	const { data: stages } = useWorkflowStages();
 	const updateOrderStage = useUpdateOrderStage();
-	const updateItemStage = useUpdateOrderItemStage(orderId!);
+	const updateItemStage = useUpdateOrderItemStage(orderId!, stages?.itemStages ?? []);
 	const from = searchParams.get('from');
 	const batchId = searchParams.get('batchId');
 

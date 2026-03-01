@@ -1,13 +1,14 @@
-import { Heading, Text, Button } from '@artifact-ui/core';
+import { Heading, Text, Button, Tabs } from '@artifact-ui/core';
 import { RefreshIcon, OrdersIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
-import { useOrders, useSyncOrders } from './api/orders-queries';
+import { useOrdersWithItems, useSyncOrders } from './api/orders-queries';
 import { OrdersTable } from './components/orders-table';
+import { OrdersOverviewTable } from './components/orders-overview-table';
 import { OrdersSummary } from './components/orders-summary';
 import { formatRelativeTime } from '@/utils/format';
 
 const OrdersPage = () => {
-	const { data, isLoading, error } = useOrders();
+	const { data, isLoading, error } = useOrdersWithItems();
 	const syncMutation = useSyncOrders();
 
 	const orders = data?.orders;
@@ -16,6 +17,8 @@ const OrdersPage = () => {
 	const pendingOrders = orders?.filter(
 		(o) => o.fulfillment_status === 'pending',
 	);
+
+	if (isLoading) return <PageSpinner />;
 
 	return (
 		<div className="p-8 max-w-5xl mx-auto">
@@ -38,12 +41,6 @@ const OrdersPage = () => {
 				</Button>
 			</div>
 
-			{isLoading && <PageSpinner />}
-
-			{pendingOrders && pendingOrders.length > 0 && (
-				<OrdersSummary orders={pendingOrders} />
-			)}
-
 			{error && (
 				<Text color="danger">Failed to load orders. Try again later.</Text>
 			)}
@@ -54,7 +51,26 @@ const OrdersPage = () => {
 				</Text>
 			)}
 
-			{orders && orders.length > 0 && <OrdersTable orders={orders} />}
+			{pendingOrders && pendingOrders.length > 0 && (
+				<OrdersSummary orders={pendingOrders} />
+			)}
+
+			{orders && orders.length > 0 && (
+				<Tabs.Root defaultValue="orders">
+					<Tabs.List>
+						<Tabs.Trigger value="orders">Orders</Tabs.Trigger>
+						<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
+					</Tabs.List>
+
+					<Tabs.Content value="orders">
+						<OrdersTable orders={orders ?? []} />
+					</Tabs.Content>
+
+					<Tabs.Content value="overview">
+						<OrdersOverviewTable orders={pendingOrders ?? []} />
+					</Tabs.Content>
+				</Tabs.Root>
+			)}
 		</div>
 	);
 };

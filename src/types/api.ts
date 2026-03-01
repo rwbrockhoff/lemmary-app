@@ -61,6 +61,11 @@ export type OrderWithItems = Order & {
 	items: OrderItem[];
 };
 
+export type OrdersWithItemsResponse = {
+	orders: OrderWithItems[];
+	lastSyncedAt: string | null;
+};
+
 export type WorkflowStage = {
 	id: string;
 	store_id: string;

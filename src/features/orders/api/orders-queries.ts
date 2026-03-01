@@ -1,26 +1,24 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { orderKeys } from './orders-keys';
-import { optimisticallyUpdateOrderStage, rollbackOrderStage } from './orders-cache';
+import {
+	optimisticallyUpdateOrderStage,
+	optimisticallyUpdateItemStage,
+	rollbackOrderStage,
+	rollbackOrderDetail,
+} from './orders-cache';
 import type {
-	OrdersResponse,
 	OrderDetail,
-	OrderWithItems,
+	OrdersWithItemsResponse,
+	WorkflowStage,
 	WorkflowStagesResponse,
 	WorkflowBoardResponse,
 } from '@/types/api';
 
-export const useOrders = () => {
-	return useQuery({
-		queryKey: orderKeys.all,
-		queryFn: () => api.get<OrdersResponse>('/orders'),
-	});
-};
-
 export const useOrdersWithItems = () => {
 	return useQuery({
 		queryKey: orderKeys.withItems,
-		queryFn: () => api.get<OrderWithItems[]>('/orders/with-items'),
+		queryFn: () => api.get<OrdersWithItemsResponse>('/orders/with-items'),
 	});
 };
 
@@ -65,7 +63,7 @@ export const useUpdateOrderStage = () => {
 	});
 };
 
-export const useUpdateOrderItemStage = (orderId: string) => {
+export const useUpdateOrderItemStage = (orderId: string, stages: WorkflowStage[]) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
@@ -73,7 +71,12 @@ export const useUpdateOrderItemStage = (orderId: string) => {
 			api.put(`/orders/${orderId}/items/${params.itemId}/stage`, {
 				stageId: params.stageId,
 			}),
-		onSuccess: () => {
+		onMutate: (variables) =>
+			optimisticallyUpdateItemStage(queryClient, orderId, variables, stages),
+		onError: (_error, _variables, context) => {
+			rollbackOrderDetail(queryClient, orderId, context?.previous);
+		},
+		onSettled: () => {
 			queryClient.invalidateQueries({
 				queryKey: orderKeys.detail(orderId),
 			});

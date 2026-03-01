@@ -1,27 +1,29 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Table, Text, Badge } from '@artifact-ui/core';
+import { Table, Badge, Text } from '@artifact-ui/core';
 import { cn } from '@artifact-ui/core';
-import { ExternalLinkIcon, ChevronDownIcon, ImageIcon } from '@/components/icons/icons';
+import { getProgressColor } from '@/features/batches/batch-utils';
+import { StatusBadge } from './status-badge';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import { formatDate, formatCurrency } from '@/utils/format';
 import { VariantBadges } from '@/components/variant-badges';
+import { ChevronDownIcon, ImageIcon } from '@/components/icons/icons';
 import shared from '@/styles/shared.module.css';
 import type { OrderWithItems } from '@/types/api';
 
-type OrdersTableProps = {
+type OrdersOverviewTableProps = {
 	orders: OrderWithItems[];
 };
 
-export const OrdersTable = ({ orders }: OrdersTableProps) => {
+export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 	const navigate = useNavigate();
 	const [expandedOrderIds, setExpandedOrderIds] = useState<Set<string>>(new Set());
 	const { sortedData, sortKey, sortDirection, toggleSort } =
 		useSortableTable(orders, {
-			defaultKey: 'order_date',
-			defaultDirection: 'desc',
-			storageKey: 'orders',
+			defaultKey: 'due_date',
+			defaultDirection: 'asc',
+			storageKey: 'orders-overview',
 		});
 
 	const toggleExpand = (orderId: string) => {
@@ -54,15 +56,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-[30%]"
-					/>
-					<SortableHeader
-						label="Date"
-						sortKey="order_date"
-						activeSortKey={sortKey}
-						sortDirection={sortDirection}
-						onSort={toggleSort}
-						className="w-36"
+						className="w-1/4"
 					/>
 					<SortableHeader
 						label="Due"
@@ -70,26 +64,18 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-36"
+						className="w-32"
 					/>
 					<SortableHeader
-						label="Items"
+						label="Progress"
 						sortKey="item_count"
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-14"
-					/>
-					<SortableHeader
-						label="Total"
-						sortKey="grand_total"
-						activeSortKey={sortKey}
-						sortDirection={sortDirection}
-						onSort={toggleSort}
 						className="w-28"
-						align="end"
 					/>
-					<Table.HeaderCell className="w-14" />
+					<Table.HeaderCell><Text size="2" weight="medium" color="secondary">Status</Text></Table.HeaderCell>
+					<Table.HeaderCell><Text size="2" weight="medium" color="secondary">Batch</Text></Table.HeaderCell>
 					<Table.HeaderCell className="w-14" />
 				</Table.Row>
 			</Table.Header>
@@ -106,26 +92,25 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 							>
 								<Table.Cell>{order.order_number}</Table.Cell>
 								<Table.Cell>{order.customer_name}</Table.Cell>
-								<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 								<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
-								<Table.Cell>{order.item_count}</Table.Cell>
-								<Table.Cell className="text-end">
-									{order.grand_total ? formatCurrency(order.grand_total) : '—'}
+								<Table.Cell>
+									<Badge
+										size="1"
+										variant="soft"
+										color={getProgressColor(order.items_completed, order.item_count)}
+									>
+										{order.items_completed}/{order.item_count}
+									</Badge>
 								</Table.Cell>
 								<Table.Cell>
-									<div className="flex justify-center">
-										{order.order_url && (
-											<a
-												href={order.order_url}
-												target="_blank"
-												rel="noopener noreferrer"
-												onClick={(e) => e.stopPropagation()}
-												className="text-gray-400 hover:text-gray-600"
-											>
-												<ExternalLinkIcon size={14} />
-											</a>
-										)}
-									</div>
+									<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
+								</Table.Cell>
+								<Table.Cell>
+									{order.batch_name ? (
+										<Badge size="1" variant="soft">{order.batch_name}</Badge>
+									) : (
+										'—'
+									)}
 								</Table.Cell>
 								<Table.Cell>
 									<button
@@ -145,7 +130,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 							</Table.Row>
 							{isExpanded && (
 								<Table.Row key={`${order.id}-items`}>
-									<Table.Cell colSpan={8} className="p-0">
+									<Table.Cell colSpan={7} className="p-0">
 										<div className="bg-gray-50 px-8 py-3 pr-18">
 											<table className="w-full">
 												<thead>
