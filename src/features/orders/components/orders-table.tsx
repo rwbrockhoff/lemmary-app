@@ -17,6 +17,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 		useSortableTable(orders, {
 			defaultKey: 'order_date',
 			defaultDirection: 'desc',
+			storageKey: 'orders',
 		});
 
 	return (

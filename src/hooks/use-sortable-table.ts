@@ -5,6 +5,7 @@ type SortDirection = 'asc' | 'desc';
 type UseSortableTableOptions<T, K extends string> = {
 	defaultKey: NoInfer<K>;
 	defaultDirection?: SortDirection;
+	storageKey?: string;
 	customSortFns?: Partial<Record<K, (a: T, b: T) => number>>;
 };
 
@@ -12,22 +13,43 @@ export function useSortableTable<
 	T extends Record<string, unknown>,
 	K extends string = Extract<keyof T, string>,
 >(data: T[], options: UseSortableTableOptions<T, K>) {
-	const [sortKey, setSortKey] = useState<K>(options.defaultKey as K);
+	const savedSort = options.storageKey
+		? (() => {
+				const stored = localStorage.getItem(`sort:${options.storageKey}`);
+				return stored ? JSON.parse(stored) : null;
+			})()
+		: null;
+
+	const [sortKey, setSortKey] = useState<K>(
+		(savedSort?.key as K) ?? (options.defaultKey as K),
+	);
 	const [sortDirection, setSortDirection] = useState<SortDirection>(
-		options.defaultDirection ?? 'asc',
+		savedSort?.direction ?? options.defaultDirection ?? 'asc',
 	);
 	const sortVersion = useRef(0);
 	const lastSortVersion = useRef(-1);
 	const sortedOrderRef = useRef<Map<unknown, number>>(new Map());
 
 	const toggleSort = (key: K) => {
+		let nextKey = sortKey;
+		let nextDirection: SortDirection = 'asc';
+
 		if (key === sortKey) {
-			setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+			nextDirection = sortDirection === 'asc' ? 'desc' : 'asc';
 		} else {
-			setSortKey(key);
-			setSortDirection('asc');
+			nextKey = key;
 		}
+
+		setSortKey(nextKey);
+		setSortDirection(nextDirection);
 		sortVersion.current += 1;
+
+		if (options.storageKey) {
+			localStorage.setItem(
+				`sort:${options.storageKey}`,
+				JSON.stringify({ key: nextKey, direction: nextDirection }),
+			);
+		}
 	};
 
 	const sortedData = useMemo(() => {

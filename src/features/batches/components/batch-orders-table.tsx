@@ -43,6 +43,7 @@ export const BatchOrdersTable = ({
 		useSortableTable<BatchOrder, OrderSortKey>(orders, {
 			defaultKey: 'order_date',
 			defaultDirection: 'asc',
+			storageKey: 'batch-orders',
 			customSortFns: {
 				progress: (a, b) =>
 					(progressByOrder.get(a.id) ?? 0) -

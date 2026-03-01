@@ -13,6 +13,7 @@ export const ProductionTable = ({ items }: ProductionTableProps) => {
 		useSortableTable(items, {
 			defaultKey: 'product_name',
 			defaultDirection: 'asc',
+			storageKey: 'production',
 		});
 
 	return (

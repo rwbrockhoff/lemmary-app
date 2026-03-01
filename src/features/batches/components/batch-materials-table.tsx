@@ -25,6 +25,7 @@ export const BatchMaterialsTable = ({
 		useSortableTable<BatchMaterial, MaterialSortKey>(materials, {
 			defaultKey: 'piece',
 			defaultDirection: 'asc',
+			storageKey: 'batch-materials',
 			customSortFns: {
 				progress: (a, b) => {
 					const aTotal = Number(a.quantity);
