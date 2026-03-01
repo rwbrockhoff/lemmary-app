@@ -176,6 +176,7 @@ export type BatchMaterial = {
 	id: string;
 	batch_id: string;
 	category: string;
+	product_name: string | null;
 	material_type: string | null;
 	piece: string;
 	color: string | null;

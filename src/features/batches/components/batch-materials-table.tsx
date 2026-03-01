@@ -41,12 +41,23 @@ export const BatchMaterialsTable = ({
 			<Table.Header>
 				<Table.Row>
 					{!isFabric && <Table.HeaderCell className="w-10" />}
+					{isFabric && (
+						<SortableHeader<MaterialSortKey>
+							label="Product"
+							sortKey="product_name"
+							activeSortKey={sortKey}
+							sortDirection={sortDirection}
+							onSort={toggleSort}
+							className="w-1/4"
+						/>
+					)}
 					<SortableHeader<MaterialSortKey>
 						label="Piece"
 						sortKey="piece"
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
+						className="w-1/4"
 					/>
 					<SortableHeader<MaterialSortKey>
 						label="Detail"
@@ -84,6 +95,9 @@ export const BatchMaterialsTable = ({
 								key={material.id}
 								className={cn(material.completed && styles.completedRow)}
 							>
+								<Table.Cell>
+									{material.product_name ?? '—'}
+								</Table.Cell>
 								<Table.Cell>
 									{material.piece}
 								</Table.Cell>

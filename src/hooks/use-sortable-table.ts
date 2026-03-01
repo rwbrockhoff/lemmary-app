@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 
 type SortDirection = 'asc' | 'desc';
 
@@ -16,6 +16,9 @@ export function useSortableTable<
 	const [sortDirection, setSortDirection] = useState<SortDirection>(
 		options.defaultDirection ?? 'asc',
 	);
+	const sortVersion = useRef(0);
+	const lastSortVersion = useRef(-1);
+	const sortedOrderRef = useRef<Map<unknown, number>>(new Map());
 
 	const toggleSort = (key: K) => {
 		if (key === sortKey) {
@@ -24,35 +27,60 @@ export function useSortableTable<
 			setSortKey(key);
 			setSortDirection('asc');
 		}
+		sortVersion.current += 1;
 	};
 
 	const sortedData = useMemo(() => {
-		const customFn = options.customSortFns?.[sortKey];
+		const needsResort = lastSortVersion.current !== sortVersion.current;
+		lastSortVersion.current = sortVersion.current;
 
-		return [...data].sort((a, b) => {
-			let comparison = 0;
+		if (needsResort || sortedOrderRef.current.size === 0) {
+			const customFn = options.customSortFns?.[sortKey];
 
-			if (customFn) {
-				comparison = customFn(a, b);
-			} else {
-				const aVal = a[sortKey as string];
-				const bVal = b[sortKey as string];
+			const freshSort = [...data].sort((a, b) => {
+				let comparison = 0;
 
-				if (aVal == null && bVal == null) return 0;
-				if (aVal == null) return 1;
-				if (bVal == null) return -1;
-
-				const aNum = typeof aVal === 'number' ? aVal : Number(aVal);
-				const bNum = typeof bVal === 'number' ? bVal : Number(bVal);
-
-				if (!isNaN(aNum) && !isNaN(bNum)) {
-					comparison = aNum - bNum;
+				if (customFn) {
+					comparison = customFn(a, b);
 				} else {
-					comparison = String(aVal).localeCompare(String(bVal));
-				}
-			}
+					const aVal = a[sortKey as string];
+					const bVal = b[sortKey as string];
 
-			return sortDirection === 'asc' ? comparison : -comparison;
+					if (aVal == null && bVal == null) comparison = 0;
+					else if (aVal == null) comparison = 1;
+					else if (bVal == null) comparison = -1;
+					else {
+						const aNum = typeof aVal === 'number' ? aVal : Number(aVal);
+						const bNum = typeof bVal === 'number' ? bVal : Number(bVal);
+
+						if (!isNaN(aNum) && !isNaN(bNum)) {
+							comparison = aNum - bNum;
+						} else {
+							comparison = String(aVal).localeCompare(String(bVal));
+						}
+					}
+				}
+
+				return sortDirection === 'asc' ? comparison : -comparison;
+			});
+
+			const orderMap = new Map<unknown, number>();
+			freshSort.forEach((item, i) => {
+				const id = (item as Record<string, unknown>).id;
+				orderMap.set(id, i);
+			});
+			sortedOrderRef.current = orderMap;
+
+			return freshSort;
+		}
+
+		const orderMap = sortedOrderRef.current;
+		return [...data].sort((a, b) => {
+			const aId = (a as Record<string, unknown>).id;
+			const bId = (b as Record<string, unknown>).id;
+			const aOrder = orderMap.get(aId) ?? Infinity;
+			const bOrder = orderMap.get(bId) ?? Infinity;
+			return aOrder - bOrder;
 		});
 	}, [data, sortKey, sortDirection, options.customSortFns]);
 
