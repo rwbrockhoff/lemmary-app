@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Table, Checkbox, Badge, cn } from '@artifact-ui/core';
+import { Table, Checkbox, Badge, Text, cn } from '@artifact-ui/core';
 import { StatusBadge } from '@/features/orders/components/status-badge';
 import { getProgressColor } from '../batch-utils';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import styles from '@/styles/shared.module.css';
-import { formatDate, formatCurrency } from '@/utils/format';
+import { formatDate } from '@/utils/format';
 import type { BatchOrder, BatchOrderItem } from '@/types/api';
 
 type BatchOrdersTableProps = {
@@ -62,7 +62,7 @@ export const BatchOrdersTable = ({
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-28"
+						className="w-20"
 					/>
 					<SortableHeader<OrderSortKey>
 						label="Customer"
@@ -78,7 +78,7 @@ export const BatchOrdersTable = ({
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-32"
+						className="w-36"
 					/>
 					<SortableHeader<OrderSortKey>
 						label="Due"
@@ -86,25 +86,17 @@ export const BatchOrdersTable = ({
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-32"
+						className="w-36"
 					/>
-					<SortableHeader<OrderSortKey>
-						label="Total"
-						sortKey="grand_total"
-						activeSortKey={sortKey}
-						sortDirection={sortDirection}
-						onSort={toggleSort}
-						align="end"
-					/>
-					<Table.HeaderCell className="w-40">Status</Table.HeaderCell>
 					<SortableHeader<OrderSortKey>
 						label="Progress"
 						sortKey="progress"
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						align="center"
+						className="w-28"
 					/>
+					<Table.HeaderCell><Text size="2" weight="medium" color="secondary">Status</Text></Table.HeaderCell>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
@@ -139,13 +131,7 @@ export const BatchOrdersTable = ({
 							<Table.Cell>
 								{order.due_date ? formatDate(order.due_date) : '—'}
 							</Table.Cell>
-							<Table.Cell textAlign="end">
-								{formatCurrency(order.grand_total)}
-							</Table.Cell>
 							<Table.Cell>
-								<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
-							</Table.Cell>
-							<Table.Cell textAlign="center">
 								<Badge
 									size="1"
 									variant="soft"
@@ -153,6 +139,9 @@ export const BatchOrdersTable = ({
 								>
 									{completed}/{total}
 								</Badge>
+							</Table.Cell>
+							<Table.Cell>
+								<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
 							</Table.Cell>
 						</Table.Row>
 					);

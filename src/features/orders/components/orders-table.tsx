@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { useNavigate } from 'react-router';
 import { Table, Text, Badge } from '@artifact-ui/core';
 import { cn } from '@artifact-ui/core';
@@ -98,9 +98,8 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 					const isExpanded = expandedOrderIds.has(order.id);
 
 					return (
-						<>
+						<Fragment key={order.id}>
 							<Table.Row
-								key={order.id}
 								className="cursor-pointer"
 								onClick={() => navigate(`/orders/${order.id}`)}
 							>
@@ -205,7 +204,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 									</Table.Cell>
 								</Table.Row>
 							)}
-						</>
+						</Fragment>
 					);
 				})}
 			</Table.Body>

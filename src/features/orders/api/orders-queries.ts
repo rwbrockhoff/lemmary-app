@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { orderKeys } from './orders-keys';
+import { batchKeys } from '@/features/batches/api/batches-keys';
 import {
 	optimisticallyUpdateOrderStage,
 	optimisticallyUpdateItemStage,
@@ -59,6 +60,7 @@ export const useUpdateOrderStage = () => {
 			});
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
 	});
 };
@@ -81,6 +83,7 @@ export const useUpdateOrderItemStage = (orderId: string, stages: WorkflowStage[]
 				queryKey: orderKeys.detail(orderId),
 			});
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
 	});
 };
