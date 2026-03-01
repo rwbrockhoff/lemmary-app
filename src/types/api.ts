@@ -1,0 +1,201 @@
+export type VariantOption = { name: string; value: string };
+
+export type ApiResponse<T> = {
+	success: true;
+	data: T;
+};
+
+export type OrdersResponse = {
+	orders: Order[];
+	lastSyncedAt: string | null;
+};
+
+export type Order = {
+	id: string;
+	store_id: string;
+	platform_order_id: string;
+	order_number: string;
+	customer_name: string;
+	customer_email: string | null;
+	order_date: string;
+	fulfillment_status: string;
+	due_date: string | null;
+	workflow_stage_id: string | null;
+	workflow_stage_name: string | null;
+	workflow_stage_color: string | null;
+	subtotal: string | null;
+	shipping_total: string | null;
+	grand_total: string | null;
+	shipping_method: string | null;
+	order_notes: string | null;
+	order_url: string | null;
+	currency: string;
+	item_count: number;
+	items_completed: number;
+	created_at: string;
+	updated_at: string;
+};
+
+export type OrderItem = {
+	id: string;
+	order_id: string;
+	platform_sku: string | null;
+	product_name: string;
+	variant_label: VariantOption[] | null;
+	quantity: number;
+	unit_price: string | null;
+	image_url: string | null;
+	workflow_stage_id: string | null;
+	workflow_stage_name: string | null;
+	created_at: string;
+	updated_at: string;
+};
+
+export type OrderDetail = Order & {
+	workflow_stage_name: string | null;
+	items: OrderItem[];
+};
+
+export type WorkflowStage = {
+	id: string;
+	store_id: string;
+	name: string;
+	position: number;
+	color: string | null;
+	is_default: boolean;
+	is_complete: boolean;
+};
+
+export type WorkflowStagesResponse = {
+	orderStages: WorkflowStage[];
+	itemStages: WorkflowStage[];
+};
+
+export type ProductionSummaryItem = {
+	platform_sku: string | null;
+	product_name: string;
+	variant_label: VariantOption[] | null;
+	total_quantity: number;
+};
+
+export type FabricEntry = {
+	product_name: string;
+	piece: string;
+	color: string;
+	total_quantity: number;
+};
+
+export type LinearEntry = {
+	material_type: string;
+	width: number | null;
+	total_inches: number;
+	total_feet: number;
+	feet_to_order: number;
+};
+
+export type HardwareEntry = {
+	piece: string;
+	total_count: number;
+};
+
+export type MaterialsMismatch = {
+	platform_sku: string | null;
+	product_name: string;
+	variant_label: VariantOption[] | null;
+};
+
+export type MaterialsReport = {
+	fabric: FabricEntry[];
+	linear: LinearEntry[];
+	hardware: HardwareEntry[];
+	mismatches: MaterialsMismatch[];
+};
+
+export type WorkflowBoardOrder = Order & {
+	batch_name: string | null;
+	batch_id: string | null;
+};
+
+export type WorkflowBoardResponse = {
+	orders: WorkflowBoardOrder[];
+	stages: WorkflowStage[];
+	activeBatches: { id: string; name: string }[];
+};
+
+export type Batch = {
+	id: string;
+	store_id: string;
+	name: string;
+	status: string;
+	completed_at: string | null;
+	order_count: number;
+	item_count: number;
+	items_completed: number;
+	created_at: string;
+	updated_at: string;
+};
+
+export type BatchOrder = {
+	id: string;
+	order_id: string;
+	completed: boolean;
+	order_number: string;
+	customer_name: string;
+	order_date: string;
+	due_date: string | null;
+	grand_total: string | null;
+	workflow_stage_name: string | null;
+	workflow_stage_color: string | null;
+};
+
+export type BatchItem = {
+	id: string;
+	batch_id: string;
+	platform_sku: string | null;
+	product_name: string;
+	variant_label: VariantOption[] | null;
+	quantity: number;
+	completed: boolean;
+	created_at: string;
+};
+
+export type BatchOrderItem = {
+	id: string;
+	order_id: string;
+	batch_order_id: string;
+	platform_sku: string | null;
+	product_name: string;
+	variant_label: VariantOption[] | null;
+	quantity: number;
+	workflow_stage_id: string | null;
+	workflow_stage_name: string | null;
+	is_complete: boolean | null;
+};
+
+export type BatchMaterial = {
+	id: string;
+	batch_id: string;
+	category: string;
+	material_type: string | null;
+	piece: string;
+	color: string | null;
+	width: string | null;
+	quantity: string;
+	completed: boolean;
+	completed_qty: number;
+	created_at: string;
+};
+
+export type BatchDetail = {
+	id: string;
+	store_id: string;
+	name: string;
+	status: string;
+	completed_at: string | null;
+	created_at: string;
+	updated_at: string;
+	orders: BatchOrder[];
+	items: BatchItem[];
+	orderItems: BatchOrderItem[];
+	materials: BatchMaterial[];
+};

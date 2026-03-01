@@ -1,0 +1,89 @@
+.sidebar {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 240px;
+	height: 100vh;
+	background: var(--color-bg-subtle);
+	border-right: 1px solid var(--color-border-default);
+	transition: width 0.2s ease;
+	overflow: hidden;
+}
+
+.sidebar[data-collapsed='true'] {
+	width: 56px;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	padding: var(--space-4);
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: var(--space-6);
+}
+
+.sidebar[data-collapsed='true'] .header {
+	justify-content: center;
+}
+
+.nav {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-1);
+}
+
+.navLink {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	padding: var(--space-2) var(--space-3);
+	border-radius: var(--radius-2);
+	color: var(--color-text-secondary);
+	text-decoration: none;
+	font-size: var(--font-size-2);
+	white-space: nowrap;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.navLink svg {
+	flex-shrink: 0;
+}
+
+.navLink:hover {
+	background: var(--color-bg-muted);
+	color: var(--color-text-primary);
+	filter: none;
+}
+
+.navLinkActive {
+	background: var(--color-bg-muted);
+	color: var(--color-text-primary);
+	font-weight: 500;
+}
+
+.sidebar[data-collapsed='true'] .navLink {
+	justify-content: center;
+	padding: var(--space-2);
+}
+
+.toggleButton {
+	all: unset;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--space-1);
+	border-radius: var(--radius-2);
+	color: var(--color-text-secondary);
+}
+
+.toggleButton:hover {
+	background: var(--color-bg-muted);
+	color: var(--color-text-primary);
+}

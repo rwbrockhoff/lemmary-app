@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+
+tr[class] {
+	transition: none;
+}
