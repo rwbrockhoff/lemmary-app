@@ -36,7 +36,7 @@ const WorkflowPage = () => {
 		);
 	}, [data, showAll, initializedBatchIds]);
 
-	const { sensors, activeOrder, handleDragStart, handleDragEnd } =
+	const { sensors, activeOrder, displayOrders, handleDragStart, handleDragEnd } =
 		useWorkflowDnd(filteredOrders);
 
 	const toggleBatch = (batchId: string) => {
@@ -96,7 +96,7 @@ const WorkflowPage = () => {
 						<KanbanColumn
 							key={stage.id}
 							stage={stage}
-							orders={filteredOrders.filter(
+							orders={displayOrders.filter(
 								(o) => o.workflow_stage_id === stage.id,
 							)}
 							collapsed={stage.is_complete ? completedCollapsed : undefined}
@@ -107,7 +107,7 @@ const WorkflowPage = () => {
 					))}
 				</div>
 
-				<DragOverlay>
+				<DragOverlay dropAnimation={null}>
 					{activeOrder && <OrderCardOverlay order={activeOrder} />}
 				</DragOverlay>
 			</DndContext>

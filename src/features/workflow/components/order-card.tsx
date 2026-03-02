@@ -3,6 +3,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { Text, Badge, Card } from '@artifact-ui/core';
 import { formatDate } from '@/utils/format';
 import type { WorkflowBoardOrder } from '@/types/api';
+import { getProgressColor } from '@/features/batches/batch-utils';
 
 export const DraggableOrderCard = ({ order }: { order: WorkflowBoardOrder }) => {
 	const navigate = useNavigate();
@@ -58,8 +59,13 @@ const OrderCardContent = ({ order }: { order: WorkflowBoardOrder }) => {
 						</Text>
 					)}
 				</div>
-				<Badge variant="soft" size="1" color="neutral" className="mt-2 self-start">
-					{order.item_count} {order.item_count === 1 ? 'Item' : 'Items'}
+				<Badge
+					variant="soft"
+					size="1"
+					color={getProgressColor(order.items_completed, order.item_count)}
+					className="mt-2 self-start"
+				>
+					{order.items_completed}/{order.item_count} Items
 				</Badge>
 			</Card.Body>
 		</Card.Root>
