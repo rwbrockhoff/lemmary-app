@@ -1,4 +1,4 @@
-import { Table, Checkbox, Button, Badge, cn } from '@artifact-ui/core';
+import { Table, Checkbox, Button, Badge, Flex, cn } from '@artifact-ui/core';
 import { getProgressColor } from '../batch-utils';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
@@ -109,7 +109,7 @@ export const BatchMaterialsTable = ({
 									{formatMaterialQuantity(material)}
 								</Table.Cell>
 								<Table.Cell textAlign="center">
-									<div className="flex items-center justify-center gap-2">
+									<Flex align="center" justify="center" gap="2">
 										<Button
 											size="1"
 											variant="ghost"
@@ -150,7 +150,7 @@ export const BatchMaterialsTable = ({
 										>
 											<PlusIcon size={14} />
 										</Button>
-									</div>
+									</Flex>
 								</Table.Cell>
 							</Table.Row>
 						);

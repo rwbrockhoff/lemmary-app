@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Heading, Text, Button, Tabs } from '@artifact-ui/core';
+import { Heading, Text, Button, Tabs, Flex } from '@artifact-ui/core';
 import { PlusIcon, BatchesIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { useBatches } from './api/batches-queries';
 import { BatchesTable } from './components/batches-table';
+import shared from '@/styles/shared.module.css';
 
 const ACTIVE_STATUSES = ['Active', 'Up Next', 'Paused'];
 
@@ -23,8 +24,8 @@ const BatchesPage = () => {
 	);
 
 	return (
-		<div className="p-8 max-w-5xl mx-auto">
-			<div className="flex items-center justify-between mb-6">
+		<div className={shared.pageContainer}>
+			<Flex justify="between" align="center" className="mb-6">
 				<Heading size="6" iconLeft={<BatchesIcon size={20} />}>Batches</Heading>
 				<Button
 					onClick={() => navigate('/batches/new')}
@@ -32,7 +33,7 @@ const BatchesPage = () => {
 				>
 					New Batch
 				</Button>
-			</div>
+			</Flex>
 
 			{isLoading && <PageSpinner />}
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Modal, Button, TextField } from '@artifact-ui/core';
+import { Modal, Button, TextField, Flex } from '@artifact-ui/core';
 import { PencilIcon } from '@/components/icons/icons';
 
 type RenameBatchModalProps = {
@@ -48,7 +48,7 @@ export const RenameBatchModal = ({
 					</form>
 				</Modal.Body>
 				<Modal.Footer>
-					<div className="flex justify-end gap-2">
+					<Flex justify="end" gap="2">
 						<Button
 							variant="ghost"
 							color="neutral"
@@ -65,7 +65,7 @@ export const RenameBatchModal = ({
 						>
 							Rename
 						</Button>
-					</div>
+					</Flex>
 				</Modal.Footer>
 			</Modal.Content>
 		</Modal.Root>
