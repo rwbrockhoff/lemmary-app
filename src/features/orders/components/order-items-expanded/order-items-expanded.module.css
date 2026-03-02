@@ -1,0 +1,41 @@
+.container {
+	background-color: var(--gray-50);
+	padding: var(--space-3) var(--space-8);
+	padding-right: var(--space-8);
+}
+
+.table {
+	width: 100%;
+}
+
+.headerCell {
+	text-align: left;
+	padding-block: var(--space-1);
+}
+
+.headerCellRight {
+	text-align: right;
+	padding-block: var(--space-1);
+}
+
+.cell {
+	padding-block: 6px;
+	padding-right: var(--space-3);
+}
+
+.cellPrice {
+	padding-block: 6px;
+	text-align: right;
+}
+
+.qtyColumn {
+	width: 4rem;
+}
+
+.priceColumn {
+	width: 5rem;
+}
+
+.imageCell {
+	width: 2.5rem;
+}

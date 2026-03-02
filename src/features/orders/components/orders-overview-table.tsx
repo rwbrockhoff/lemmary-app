@@ -1,14 +1,13 @@
 import { useState, Fragment } from 'react';
 import { useNavigate } from 'react-router';
-import { Table, Badge, Text } from '@artifact-ui/core';
-import { cn } from '@artifact-ui/core';
+import { Table, Badge, Text, cn } from '@artifact-ui/core';
 import { getProgressColor } from '@/features/batches/batch-utils';
 import { StatusBadge } from './status-badge';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
-import { formatDate, formatCurrency } from '@/utils/format';
-import { VariantBadges } from '@/components/variant-badges';
-import { ChevronDownIcon, ImageIcon } from '@/components/icons/icons';
+import { formatDate } from '@/utils/format';
+import { ChevronDownIcon } from '@/components/icons/icons';
+import { OrderItemsExpanded } from './order-items-expanded/order-items-expanded';
 import shared from '@/styles/shared.module.css';
 import type { OrderWithItems } from '@/types/api';
 
@@ -138,66 +137,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 								</Table.Cell>
 							</Table.Row>
 							{isExpanded && (
-								<Table.Row key={`${order.id}-items`}>
-									<Table.Cell colSpan={7} className="p-0">
-										<div className="bg-gray-50 px-8 py-3 pr-18">
-											<table className="w-full">
-												<thead>
-													<tr>
-														<th className="text-left py-1" colSpan={2}>
-															<Text size="1" color="secondary" weight="medium">Product</Text>
-														</th>
-														<th className="text-left py-1">
-															<Text size="1" color="secondary" weight="medium">Variant</Text>
-														</th>
-														<th className="text-left py-1 w-16">
-															<Text size="1" color="secondary" weight="medium">Qty</Text>
-														</th>
-														<th className="text-right py-1 w-20">
-															<Text size="1" color="secondary" weight="medium">Price</Text>
-														</th>
-													</tr>
-												</thead>
-												<tbody>
-													{order.items.map((item) => (
-														<tr key={item.id}>
-															<td className="w-10 py-1.5 pr-3">
-																{item.image_url ? (
-																	<img
-																		src={item.image_url}
-																		alt={item.product_name}
-																		className="w-8 h-8 rounded object-cover shrink-0"
-																		style={{ minWidth: '32px', minHeight: '32px' }}
-																	/>
-																) : (
-																	<div className="w-8 h-8 rounded bg-gray-200 flex items-center justify-center">
-																		<ImageIcon size={14} className="text-gray-400" />
-																	</div>
-																)}
-															</td>
-															<td className="py-1.5 pr-3">
-																<Text size="2">{item.product_name}</Text>
-															</td>
-															<td className="py-1.5 pr-3">
-																<VariantBadges variants={item.variant_label} />
-															</td>
-															<td className="py-1.5 w-16">
-																<Badge size="1" variant="outline" color="neutral">
-																	x{item.quantity}
-																</Badge>
-															</td>
-															<td className="py-1.5 w-20 text-right">
-																<Text size="2" color="secondary">
-																	{item.unit_price ? formatCurrency(item.unit_price) : '—'}
-																</Text>
-															</td>
-														</tr>
-													))}
-												</tbody>
-											</table>
-										</div>
-									</Table.Cell>
-								</Table.Row>
+								<OrderItemsExpanded items={order.items} colSpan={7} />
 							)}
 						</Fragment>
 					);

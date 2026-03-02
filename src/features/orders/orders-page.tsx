@@ -1,12 +1,13 @@
-import { Heading, Text, Button, Tabs } from '@artifact-ui/core';
+import { Heading, Text, Button, Tabs, Stack, Flex } from '@artifact-ui/core';
 import { RefreshIcon, OrdersIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
-import { useOrdersWithItems, useCompletedOrders, useSyncOrders } from './api/orders-queries';
+import { useOrdersWithItems, useSyncOrders } from './api/orders-queries';
 import { OrdersTable } from './components/orders-table';
 import { OrdersOverviewTable } from './components/orders-overview-table';
 import { CompletedOrdersTable } from './components/completed-orders-table';
 import { OrdersSummary } from './components/orders-summary';
 import { formatRelativeTime } from '@/utils/format';
+import shared from '@/styles/shared.module.css';
 
 const OrdersPage = () => {
 	const { data, isLoading, error } = useOrdersWithItems();
@@ -22,16 +23,16 @@ const OrdersPage = () => {
 	if (isLoading) return <PageSpinner />;
 
 	return (
-		<div className="p-8 max-w-5xl mx-auto">
-			<div className="flex items-center justify-between mb-6">
-				<div className="flex flex-col gap-1">
+		<div className={shared.pageContainer}>
+			<Flex justify="between" align="center" className="mb-6">
+				<Stack gap="1">
 					<Heading size="6" iconLeft={<OrdersIcon size={20} />}>Orders</Heading>
 					{lastSyncedAt && (
 						<Text size="1" color="secondary">
 							Last synced {formatRelativeTime(lastSyncedAt)}
 						</Text>
 					)}
-				</div>
+				</Stack>
 				<Button
 					onClick={() => syncMutation.mutate()}
 					disabled={syncMutation.isPending}
@@ -40,7 +41,7 @@ const OrdersPage = () => {
 				>
 					{syncMutation.isPending ? 'Syncing...' : 'Sync Orders'}
 				</Button>
-			</div>
+			</Flex>
 
 			{error && (
 				<Text color="danger">Failed to load orders. Try again later.</Text>

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Table, Text, Button } from '@artifact-ui/core';
+import { Table, Text, Button, Flex } from '@artifact-ui/core';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import { useCompletedOrders } from '../api/orders-queries';
@@ -126,7 +126,7 @@ export const CompletedOrdersTable = () => {
 				</Table.Body>
 			</Table.Root>
 			{hasNextPage && (
-				<div className="flex justify-center pt-4">
+				<Flex justify="center" className="pt-4">
 					<Button
 						variant="outline"
 						onClick={() => fetchNextPage()}
@@ -134,7 +134,7 @@ export const CompletedOrdersTable = () => {
 					>
 						{isFetchingNextPage ? 'Loading...' : 'Load More'}
 					</Button>
-				</div>
+				</Flex>
 			)}
 		</>
 	);

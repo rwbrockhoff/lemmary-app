@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Text, Card, TextArea, Button } from '@artifact-ui/core';
-import { useUpdateOrderNotes } from '../api/orders-queries';
+import { Text, Card, TextArea, Button, Stack, Flex } from '@artifact-ui/core';
+import { useUpdateOrderNotes } from '../../api/orders-queries';
 import { formatDate, formatCurrency } from '@/utils/format';
 import type { OrderDetail } from '@/types/api';
+import styles from './order-metadata-card.module.css';
 
 type OrderMetadataCardProps = {
 	order: OrderDetail;
@@ -15,8 +16,8 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 
 	return (
 		<Card.Root className="mb-6">
-			<Card.Body className="grid grid-cols-2 gap-6">
-				<div className="flex flex-col gap-3">
+			<Card.Body className={styles.metadataGrid}>
+				<Stack gap="3">
 					<MetadataRow label="Date" value={formatDate(order.order_date)} />
 					{order.due_date && (
 						<MetadataRow label="Due" value={formatDate(order.due_date)} />
@@ -26,15 +27,15 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 						<MetadataRow label="Shipping" value={order.shipping_method} />
 					)}
 					{order.order_url && (
-						<div className="flex gap-4">
-							<Text size="2" color="secondary" className="w-20 shrink-0">Order Page</Text>
-							<a href={order.order_url} target="_blank" rel="noopener noreferrer" className="text-sm underline opacity-80 hover:opacity-100">
+						<Flex gap="4">
+							<Text size="2" color="secondary" className={styles.label}>Order Page</Text>
+							<a href={order.order_url} target="_blank" rel="noopener noreferrer" className={styles.link}>
 								View on Squarespace
 							</a>
-						</div>
+						</Flex>
 					)}
-				</div>
-				<div className="flex flex-col">
+				</Stack>
+				<Stack>
 					<Text size="2" color="secondary" className="mb-1">Notes</Text>
 					<TextArea.Standalone
 						value={notes}
@@ -53,7 +54,7 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 							Save Notes
 						</Button>
 					)}
-				</div>
+				</Stack>
 			</Card.Body>
 		</Card.Root>
 	);
@@ -65,8 +66,8 @@ type MetadataRowProps = {
 };
 
 const MetadataRow = ({ label, value }: MetadataRowProps) => (
-	<div className="flex gap-4">
-		<Text size="2" color="secondary" className="w-20 shrink-0">{label}</Text>
+	<Flex gap="4">
+		<Text size="2" color="secondary" className={styles.label}>{label}</Text>
 		<Text size="2">{value}</Text>
-	</div>
+	</Flex>
 );

@@ -1,11 +1,11 @@
 import { useParams, useSearchParams } from 'react-router';
-import { Heading, Text, Table } from '@artifact-ui/core';
+import { Heading, Text, Table, Flex } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { PageSpinner } from '@/components/page-spinner';
-import { ImageIcon } from '@/components/icons';
-import shared from '@/styles/shared.module.css';
+import { ProductThumbnail } from '@/components/product-thumbnail/product-thumbnail';
 import { VariantBadges } from '@/components/variant-badges';
-import { OrderMetadataCard } from './components/order-metadata-card';
+import shared from '@/styles/shared.module.css';
+import { OrderMetadataCard } from './components/order-metadata-card/order-metadata-card';
 import { StageSelect } from './components/stage-select';
 import {
 	useOrder,
@@ -37,8 +37,8 @@ const OrderDetailPage = () => {
 	const breadcrumbs = getBreadcrumbs(from, batchId);
 
 	return (
-		<div className="p-8 max-w-5xl mx-auto">
-			<div className="flex items-center gap-4 mb-6">
+		<div className={shared.pageContainer}>
+			<Flex align="center" gap="4" className="mb-6">
 				<Breadcrumbs segments={breadcrumbs} />
 				<Heading size="6">
 					{order.order_number} — {order.customer_name}
@@ -50,7 +50,7 @@ const OrderDetailPage = () => {
 						updateOrderStage.mutate({ orderId: orderId!, stageId })
 					}
 				/>
-			</div>
+			</Flex>
 
 			<OrderMetadataCard order={order} />
 
@@ -81,18 +81,7 @@ const OrderDetailPage = () => {
 						return (
 						<Table.Row key={item.id} className={rowClass}>
 							<Table.Cell>
-								{item.image_url ? (
-									<img
-										src={item.image_url}
-										alt={item.product_name}
-										className="w-8 h-8 rounded object-cover shrink-0"
-										style={{ minWidth: '32px', minHeight: '32px' }}
-									/>
-								) : (
-									<div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center">
-										<ImageIcon size={14} className="text-gray-400" />
-									</div>
-								)}
+								<ProductThumbnail src={item.image_url} alt={item.product_name} />
 							</Table.Cell>
 							<Table.Cell>{item.product_name}</Table.Cell>
 							<Table.Cell><VariantBadges variants={item.variant_label} /></Table.Cell>

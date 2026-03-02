@@ -1,3 +1,9 @@
+.pageContainer {
+	padding: var(--space-8);
+	max-width: 64rem;
+	margin-inline: auto;
+}
+
 .completedRow {
 	background-color: var(--green-50);
 }

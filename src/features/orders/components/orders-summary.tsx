@@ -1,4 +1,4 @@
-import { Heading, Text, Card } from '@artifact-ui/core';
+import { Heading, Text, Card, Grid } from '@artifact-ui/core';
 import { formatCurrency } from '@/utils/format';
 import type { Order } from '@/types/api';
 
@@ -14,7 +14,7 @@ export const OrdersSummary = ({ orders }: OrdersSummaryProps) => {
 	);
 
 	return (
-		<div className="grid grid-cols-3 gap-4 mb-6">
+		<Grid columns={3} gap="4" className="mb-6">
 			<Card.Root size="1">
 				<Card.Body>
 					<Text color="secondary" size="2">
@@ -41,6 +41,6 @@ export const OrdersSummary = ({ orders }: OrdersSummaryProps) => {
 					</Heading>
 				</Card.Body>
 			</Card.Root>
-		</div>
+		</Grid>
 	);
 };
