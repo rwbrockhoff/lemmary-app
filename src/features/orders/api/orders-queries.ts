@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { orderKeys } from './orders-keys';
 import { batchKeys } from '@/features/batches/api/batches-keys';
@@ -11,6 +11,7 @@ import {
 import type {
 	OrderDetail,
 	OrdersWithItemsResponse,
+	CompletedOrdersResponse,
 	WorkflowStage,
 	WorkflowStagesResponse,
 	WorkflowBoardResponse,
@@ -20,6 +21,22 @@ export const useOrdersWithItems = () => {
 	return useQuery({
 		queryKey: orderKeys.withItems,
 		queryFn: () => api.get<OrdersWithItemsResponse>('/orders/with-items'),
+	});
+};
+
+const COMPLETED_PAGE_SIZE = 15;
+
+export const useCompletedOrders = () => {
+	return useInfiniteQuery({
+		queryKey: orderKeys.completed,
+		queryFn: ({ pageParam = 0 }) =>
+			api.get<CompletedOrdersResponse>('/orders/completed', {
+				limit: String(COMPLETED_PAGE_SIZE),
+				offset: String(pageParam),
+			}),
+		initialPageParam: 0,
+		getNextPageParam: (lastPage, allPages) =>
+			lastPage.hasMore ? allPages.length * COMPLETED_PAGE_SIZE : undefined,
 	});
 };
 
@@ -83,6 +100,7 @@ export const useUpdateOrderItemStage = (orderId: string, stages: WorkflowStage[]
 				queryKey: orderKeys.detail(orderId),
 			});
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
 			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
 	});

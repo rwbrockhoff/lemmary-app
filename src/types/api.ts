@@ -29,6 +29,10 @@ export type Order = {
 	shipping_method: string | null;
 	order_notes: string | null;
 	order_url: string | null;
+	fulfilled_on: string | null;
+	tracking_number: string | null;
+	tracking_url: string | null;
+	carrier_name: string | null;
 	currency: string;
 	batch_name: string | null;
 	batch_id: string | null;
@@ -60,6 +64,11 @@ export type OrderDetail = Order & {
 
 export type OrderWithItems = Order & {
 	items: OrderItem[];
+};
+
+export type CompletedOrdersResponse = {
+	orders: Order[];
+	hasMore: boolean;
 };
 
 export type OrdersWithItemsResponse = {

@@ -1,9 +1,10 @@
 import { Heading, Text, Button, Tabs } from '@artifact-ui/core';
 import { RefreshIcon, OrdersIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
-import { useOrdersWithItems, useSyncOrders } from './api/orders-queries';
+import { useOrdersWithItems, useCompletedOrders, useSyncOrders } from './api/orders-queries';
 import { OrdersTable } from './components/orders-table';
 import { OrdersOverviewTable } from './components/orders-overview-table';
+import { CompletedOrdersTable } from './components/completed-orders-table';
 import { OrdersSummary } from './components/orders-summary';
 import { formatRelativeTime } from '@/utils/format';
 
@@ -60,6 +61,7 @@ const OrdersPage = () => {
 					<Tabs.List>
 						<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
 						<Tabs.Trigger value="orders">Order Details</Tabs.Trigger>
+						<Tabs.Trigger value="completed">Completed</Tabs.Trigger>
 					</Tabs.List>
 
 					<Tabs.Content value="overview">
@@ -68,6 +70,10 @@ const OrdersPage = () => {
 
 					<Tabs.Content value="orders">
 						<OrdersTable orders={orders ?? []} />
+					</Tabs.Content>
+
+					<Tabs.Content value="completed">
+						<CompletedOrdersTable />
 					</Tabs.Content>
 				</Tabs.Root>
 			)}
