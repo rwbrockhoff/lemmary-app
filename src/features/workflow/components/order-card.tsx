@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { useDraggable } from '@dnd-kit/core';
-import { Text, Badge, Card } from '@artifact-ui/core';
+import { Text, Badge, Card, Flex, Stack } from '@artifact-ui/core';
 import { formatDate } from '@/utils/format';
 import type { WorkflowBoardOrder } from '@/types/api';
 import { getProgressColor } from '@/features/batches/batch-utils';
@@ -36,7 +36,7 @@ const OrderCardContent = ({ order }: { order: WorkflowBoardOrder }) => {
 	return (
 		<Card.Root className="cursor-pointer hover:shadow-md transition-shadow">
 			<Card.Body className="p-3">
-				<div className="flex items-center justify-between mb-1">
+				<Flex justify="between" align="center" className="mb-1">
 					<Text size="2" weight="medium">
 						{order.order_number}
 					</Text>
@@ -45,11 +45,11 @@ const OrderCardContent = ({ order }: { order: WorkflowBoardOrder }) => {
 							{order.batch_name}
 						</Badge>
 					)}
-				</div>
+				</Flex>
 				<Text size="2" color="secondary" className="mb-2">
 					{order.customer_name}
 				</Text>
-				<div className="flex flex-col gap-0.5">
+				<Stack gap="1">
 					<Text size="1" color="secondary">
 						Ordered: {formatDate(order.order_date)}
 					</Text>
@@ -58,7 +58,7 @@ const OrderCardContent = ({ order }: { order: WorkflowBoardOrder }) => {
 							Due: {formatDate(order.due_date)}
 						</Text>
 					)}
-				</div>
+				</Stack>
 				<Badge
 					variant="soft"
 					size="1"

@@ -1,4 +1,4 @@
-import { Text, Checkbox } from '@artifact-ui/core';
+import { Text, Checkbox, Flex } from '@artifact-ui/core';
 
 type BatchFilterProps = {
 	batches: { id: string; name: string }[];
@@ -16,7 +16,7 @@ export const BatchFilter = ({
 	onToggleShowAll,
 }: BatchFilterProps) => {
 	return (
-		<div className="flex items-center gap-4 mb-6 flex-wrap">
+		<Flex align="center" gap="4" className="mb-6 flex-wrap">
 			<Text size="2" color="secondary">
 				Active Batches:
 			</Text>
@@ -38,6 +38,6 @@ export const BatchFilter = ({
 				/>
 				<Text size="2">Show all orders</Text>
 			</label>
-		</div>
+		</Flex>
 	);
 };

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { TextField, Button, Heading } from '@artifact-ui/core';
+import { TextField, Button, Heading, Text, Stack, Flex } from '@artifact-ui/core';
 import { setAuthToken } from '@/api/client';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
@@ -39,22 +39,24 @@ const LoginPage = () => {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center">
-			<form onSubmit={handleSubmit} className="flex flex-col gap-4 w-72">
-				<Heading size="5">Assemblr</Heading>
-				<TextField.Standalone
-					type="password"
-					placeholder="Password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					autoFocus
-				/>
-				{error && <p className="text-red-500 text-sm">{error}</p>}
-				<Button type="submit" disabled={loading || !password}>
-					{loading ? 'Signing in...' : 'Sign in'}
-				</Button>
+		<Flex align="center" justify="center" className="min-h-screen">
+			<form onSubmit={handleSubmit}>
+				<Stack gap="4" className="w-72">
+					<Heading size="5">Assemblr</Heading>
+					<TextField.Standalone
+						type="password"
+						placeholder="Password"
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
+						autoFocus
+					/>
+					{error && <Text size="2" color="danger">{error}</Text>}
+					<Button type="submit" disabled={loading || !password}>
+						{loading ? 'Signing in...' : 'Sign in'}
+					</Button>
+				</Stack>
 			</form>
-		</div>
+		</Flex>
 	);
 };
 

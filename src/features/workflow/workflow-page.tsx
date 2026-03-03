@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
-import { Heading, Text } from '@artifact-ui/core';
+import { Heading, Text, Flex } from '@artifact-ui/core';
 import { WorkflowIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { useWorkflowBoard } from '@/features/orders/api/orders-queries';
@@ -74,9 +74,9 @@ const WorkflowPage = () => {
 
 	return (
 		<div className="p-8">
-			<div className="flex items-center justify-between mb-6">
+			<Flex justify="between" align="center" className="mb-6">
 				<Heading size="6" iconLeft={<WorkflowIcon />}>Workflow</Heading>
-			</div>
+			</Flex>
 
 			<BatchFilter
 				batches={activeBatches}
@@ -91,7 +91,7 @@ const WorkflowPage = () => {
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 			>
-				<div className="flex gap-4 overflow-x-auto pb-4 pl-1">
+				<Flex gap="4" className="overflow-x-auto pb-4 pl-1">
 					{stages.map((stage) => (
 						<KanbanColumn
 							key={stage.id}
@@ -105,7 +105,7 @@ const WorkflowPage = () => {
 							}
 						/>
 					))}
-				</div>
+				</Flex>
 
 				<DragOverlay dropAnimation={null}>
 					{activeOrder && <OrderCardOverlay order={activeOrder} />}
