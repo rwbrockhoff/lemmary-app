@@ -18,7 +18,7 @@ type BatchesTableProps = {
 export const BatchesTable = ({ batches }: BatchesTableProps) => {
 	const navigate = useNavigate();
 	const { sortedData, sortKey, sortDirection, toggleSort } =
-		useSortableTable(batches, {
+		useSortableTable<Batch, Extract<keyof Batch, string> | 'progress'>(batches, {
 			defaultKey: 'created_at',
 			defaultDirection: 'desc',
 			storageKey: 'batches',
