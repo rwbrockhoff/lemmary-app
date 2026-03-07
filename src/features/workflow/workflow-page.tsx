@@ -17,15 +17,10 @@ const loadSavedBatchIds = (): Set<string> | null => {
 	const stored = localStorage.getItem(BATCH_FILTER_KEY);
 	if (!stored) return null;
 	try {
-		const ids = JSON.parse(stored) as string[];
-		return new Set(ids);
+		return new Set(JSON.parse(stored) as string[]);
 	} catch {
 		return null;
 	}
-};
-
-const saveBatchIds = (ids: Set<string>) => {
-	localStorage.setItem(BATCH_FILTER_KEY, JSON.stringify([...ids]));
 };
 
 const WorkflowPage = () => {
@@ -41,48 +36,40 @@ const WorkflowPage = () => {
 	);
 
 	const activeBatches = data?.activeBatches ?? [];
+	const activeIds = useMemo(
+		() => new Set(activeBatches.map((b) => b.id)),
+		[activeBatches],
+	);
 
-	const initializedBatchIds = useMemo(() => {
-		if (activeBatches.length === 0) return new Set<string>();
-		if (selectedBatchIds === null)
-			return new Set(activeBatches.map((b) => b.id));
-		const activeSet = new Set(activeBatches.map((b) => b.id));
-		const validIds = new Set(
-			[...selectedBatchIds].filter((id) => activeSet.has(id)),
-		);
-		if (validIds.size < selectedBatchIds.size) {
-			saveBatchIds(validIds);
-		}
-		if (validIds.size === 0) return new Set(activeBatches.map((b) => b.id));
-		return validIds;
-	}, [selectedBatchIds, activeBatches]);
-
-	const effectiveShowAll = activeBatches.length === 0 || showAll;
+	const checkedIds = selectedBatchIds ?? activeIds;
 
 	const filteredOrders = useMemo(() => {
 		if (!data) return [];
-		if (effectiveShowAll) return data.orders;
+		if (showAll) return data.orders;
 		return data.orders.filter(
-			(o) => o.batch_id && initializedBatchIds.has(o.batch_id),
+			(o) => o.batch_id && checkedIds.has(o.batch_id),
 		);
-	}, [data, effectiveShowAll, initializedBatchIds]);
+	}, [data, showAll, checkedIds]);
 
 	const { sensors, activeOrder, displayOrders, handleDragStart, handleDragEnd } =
 		useWorkflowDnd(filteredOrders);
 
 	const toggleBatch = (batchId: string) => {
-		setSelectedBatchIds((prev) => {
-			const current = prev ?? new Set(activeBatches.map((b) => b.id));
-			const next = new Set(current);
+		let next: Set<string>;
+		if (showAll) {
+			next = new Set([batchId]);
+		} else {
+			const current = selectedBatchIds ?? new Set(activeIds);
+			next = new Set(current);
 			if (next.has(batchId)) {
 				next.delete(batchId);
 			} else {
 				next.add(batchId);
 			}
-			saveBatchIds(next);
-			return next;
-		});
+		}
+		setSelectedBatchIds(next);
 		setShowAll(false);
+		localStorage.setItem(BATCH_FILTER_KEY, JSON.stringify([...next]));
 		localStorage.setItem(SHOW_ALL_KEY, 'false');
 	};
 
@@ -113,8 +100,8 @@ const WorkflowPage = () => {
 
 			<BatchFilter
 				batches={activeBatches}
-				selectedIds={initializedBatchIds}
-				showAll={effectiveShowAll}
+				selectedIds={checkedIds}
+				showAll={showAll}
 				onToggleBatch={toggleBatch}
 				onToggleShowAll={() => {
 					setShowAll((prev) => {
