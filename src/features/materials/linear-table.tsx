@@ -12,6 +12,7 @@ export const LinearTable = ({ items }: LinearTableProps) => {
 		useSortableTable(items, {
 			defaultKey: 'material_type',
 			defaultDirection: 'asc',
+			storageKey: 'materials-linear',
 		});
 
 	return (

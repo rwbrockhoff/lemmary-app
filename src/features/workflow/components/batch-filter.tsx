@@ -1,4 +1,4 @@
-import { Text, Checkbox } from '@artifact-ui/core';
+import { Text, Checkbox, Flex } from '@artifact-ui/core';
 
 type BatchFilterProps = {
 	batches: { id: string; name: string }[];
@@ -16,28 +16,39 @@ export const BatchFilter = ({
 	onToggleShowAll,
 }: BatchFilterProps) => {
 	return (
-		<div className="flex items-center gap-4 mb-6 flex-wrap">
+		<Flex align="center" gap="4" className="mb-6 flex-wrap">
 			<Text size="2" color="secondary">
 				Active Batches:
 			</Text>
 			{batches.map((batch) => (
-				<label key={batch.id} className="flex items-center gap-2 cursor-pointer">
+				<button
+					key={batch.id}
+					type="button"
+					onClick={() => onToggleBatch(batch.id)}
+					className="flex items-center gap-2 cursor-pointer select-none"
+				>
 					<Checkbox
 						checked={!showAll && selectedIds.has(batch.id)}
-						onCheckedChange={() => onToggleBatch(batch.id)}
+						tabIndex={-1}
+						className="pointer-events-none"
 						size="1"
 					/>
 					<Text size="2">{batch.name}</Text>
-				</label>
+				</button>
 			))}
-			<label className="flex items-center gap-2 cursor-pointer ml-2">
+			<button
+				type="button"
+				onClick={onToggleShowAll}
+				className="flex items-center gap-2 cursor-pointer select-none ml-2"
+			>
 				<Checkbox
 					checked={showAll}
-					onCheckedChange={onToggleShowAll}
+					tabIndex={-1}
+					className="pointer-events-none"
 					size="1"
 				/>
 				<Text size="2">Show all orders</Text>
-			</label>
-		</div>
+			</button>
+		</Flex>
 	);
 };

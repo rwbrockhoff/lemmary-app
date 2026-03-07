@@ -1,18 +1,42 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { orderKeys } from './orders-keys';
-import { optimisticallyUpdateOrderStage, rollbackOrderStage } from './orders-cache';
+import { batchKeys } from '@/features/batches/api/batches-keys';
+import {
+	optimisticallyUpdateOrderStage,
+	optimisticallyUpdateItemStage,
+	rollbackOrderStage,
+	rollbackOrderDetail,
+} from './orders-cache';
 import type {
-	OrdersResponse,
 	OrderDetail,
+	OrdersWithItemsResponse,
+	CompletedOrdersResponse,
+	WorkflowStage,
 	WorkflowStagesResponse,
 	WorkflowBoardResponse,
 } from '@/types/api';
 
-export const useOrders = () => {
+export const useOrdersWithItems = () => {
 	return useQuery({
-		queryKey: orderKeys.all,
-		queryFn: () => api.get<OrdersResponse>('/orders'),
+		queryKey: orderKeys.withItems,
+		queryFn: () => api.get<OrdersWithItemsResponse>('/orders/with-items'),
+	});
+};
+
+const COMPLETED_PAGE_SIZE = 15;
+
+export const useCompletedOrders = () => {
+	return useInfiniteQuery({
+		queryKey: orderKeys.completed,
+		queryFn: ({ pageParam = 0 }) =>
+			api.get<CompletedOrdersResponse>('/orders/completed', {
+				limit: String(COMPLETED_PAGE_SIZE),
+				offset: String(pageParam),
+			}),
+		initialPageParam: 0,
+		getNextPageParam: (lastPage, allPages) =>
+			lastPage.hasMore ? allPages.length * COMPLETED_PAGE_SIZE : undefined,
 	});
 };
 
@@ -53,11 +77,12 @@ export const useUpdateOrderStage = () => {
 			});
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
 	});
 };
 
-export const useUpdateOrderItemStage = (orderId: string) => {
+export const useUpdateOrderItemStage = (orderId: string, stages: WorkflowStage[]) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
@@ -65,11 +90,35 @@ export const useUpdateOrderItemStage = (orderId: string) => {
 			api.put(`/orders/${orderId}/items/${params.itemId}/stage`, {
 				stageId: params.stageId,
 			}),
-		onSuccess: () => {
+		onMutate: (variables) =>
+			optimisticallyUpdateItemStage(queryClient, orderId, variables, stages),
+		onError: (_error, _variables, context) => {
+			rollbackOrderDetail(queryClient, orderId, context?.previous);
+		},
+		onSettled: () => {
 			queryClient.invalidateQueries({
 				queryKey: orderKeys.detail(orderId),
 			});
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
+export const useCompleteAllOrderItems = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (orderId: string) =>
+			api.put(`/orders/${orderId}/items/complete-all`),
+		onSuccess: (_data, orderId) => {
+			queryClient.invalidateQueries({
+				queryKey: orderKeys.detail(orderId),
+			});
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
 	});
 };

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { Heading, Text, Tabs, DropdownMenu, IconButton } from '@artifact-ui/core';
+import { Heading, Text, Tabs, DropdownMenu, IconButton, Flex } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { EllipsisHorizontalIcon, PencilIcon, TrashIcon } from '@/components/icons/icons';
+import { PageSpinner } from '@/components/page-spinner';
+import { EllipsisHorizontalIcon, PencilIcon, TrashIcon, ListChecksIcon } from '@/components/icons/icons';
 import { BatchStatusSelect } from './components/batch-status-select';
 import {
 	useBatch,
@@ -17,6 +18,7 @@ import { DeleteBatchModal } from './components/delete-batch-modal';
 import { BatchOrdersTable } from './components/batch-orders-table';
 import { BatchItemsTable } from './components/batch-items-table';
 import { BatchMaterialsTable } from './components/batch-materials-table';
+import shared from '@/styles/shared.module.css';
 
 const BatchDetailPage = () => {
 	const { batchId } = useParams<{ batchId: string }>();
@@ -56,12 +58,7 @@ const BatchDetailPage = () => {
 		updateMaterialQty.mutate({ id, completedQty });
 	};
 
-	if (isLoading)
-		return (
-			<Text color="secondary" className="p-8">
-				Loading batch...
-			</Text>
-		);
+	if (isLoading) return <PageSpinner />;
 	if (error || !batch)
 		return (
 			<Text color="danger" className="p-8">
@@ -80,8 +77,8 @@ const BatchDetailPage = () => {
 	);
 
 	return (
-		<div className="p-8 max-w-5xl mx-auto">
-			<div className="flex items-center gap-3 mb-6">
+		<div className={shared.pageContainer}>
+			<Flex align="center" gap="3" className="mb-6">
 				<Breadcrumbs segments={[{ label: 'Batches', to: '/batches' }]} />
 				<Heading size="6">{batch.name}</Heading>
 				<BatchStatusSelect
@@ -101,6 +98,10 @@ const BatchDetailPage = () => {
 						/>
 					</DropdownMenu.DropdownMenuTrigger>
 					<DropdownMenu.DropdownMenuContent align="end" size="1">
+						<DropdownMenu.DropdownMenuItem onClick={() => navigate(`/batches/${batchId}/edit`)}>
+							<ListChecksIcon size={14} />
+							Edit Orders
+						</DropdownMenu.DropdownMenuItem>
 						<DropdownMenu.DropdownMenuItem onClick={() => setShowRename(true)}>
 							<PencilIcon size={14} />
 							Rename
@@ -112,7 +113,7 @@ const BatchDetailPage = () => {
 						</DropdownMenu.DropdownMenuItem>
 					</DropdownMenu.DropdownMenuContent>
 				</DropdownMenu.DropdownMenu>
-			</div>
+			</Flex>
 
 			<Tabs.Root defaultValue="orders">
 				<Tabs.List>

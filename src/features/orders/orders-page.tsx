@@ -1,12 +1,16 @@
-import { Heading, Text, Button } from '@artifact-ui/core';
+import { Heading, Text, Button, Tabs, Stack, Flex } from '@artifact-ui/core';
 import { RefreshIcon, OrdersIcon } from '@/components/icons';
-import { useOrders, useSyncOrders } from './api/orders-queries';
+import { PageSpinner } from '@/components/page-spinner';
+import { useOrdersWithItems, useSyncOrders } from './api/orders-queries';
 import { OrdersTable } from './components/orders-table';
+import { OrdersOverviewTable } from './components/orders-overview-table';
+import { CompletedOrdersTable } from './components/completed-orders-table';
 import { OrdersSummary } from './components/orders-summary';
 import { formatRelativeTime } from '@/utils/format';
+import shared from '@/styles/shared.module.css';
 
 const OrdersPage = () => {
-	const { data, isLoading, error } = useOrders();
+	const { data, isLoading, error } = useOrdersWithItems();
 	const syncMutation = useSyncOrders();
 
 	const orders = data?.orders;
@@ -16,17 +20,19 @@ const OrdersPage = () => {
 		(o) => o.fulfillment_status === 'pending',
 	);
 
+	if (isLoading) return <PageSpinner />;
+
 	return (
-		<div className="p-8 max-w-5xl mx-auto">
-			<div className="flex items-center justify-between mb-6">
-				<div className="flex flex-col gap-1">
+		<div className={shared.pageContainer}>
+			<Flex justify="between" align="center" className="mb-6">
+				<Stack gap="1">
 					<Heading size="6" iconLeft={<OrdersIcon size={20} />}>Orders</Heading>
 					{lastSyncedAt && (
 						<Text size="1" color="secondary">
 							Last synced {formatRelativeTime(lastSyncedAt)}
 						</Text>
 					)}
-				</div>
+				</Stack>
 				<Button
 					onClick={() => syncMutation.mutate()}
 					disabled={syncMutation.isPending}
@@ -35,16 +41,10 @@ const OrdersPage = () => {
 				>
 					{syncMutation.isPending ? 'Syncing...' : 'Sync Orders'}
 				</Button>
-			</div>
-
-			{pendingOrders && pendingOrders.length > 0 && (
-				<OrdersSummary orders={pendingOrders} />
-			)}
-
-			{isLoading && <Text color="secondary">Loading orders...</Text>}
+			</Flex>
 
 			{error && (
-				<Text color="danger">Failed to load orders. Is the API running?</Text>
+				<Text color="danger">Failed to load orders. Try again later.</Text>
 			)}
 
 			{orders && orders.length === 0 && (
@@ -53,7 +53,31 @@ const OrdersPage = () => {
 				</Text>
 			)}
 
-			{orders && orders.length > 0 && <OrdersTable orders={orders} />}
+			{pendingOrders && pendingOrders.length > 0 && (
+				<OrdersSummary orders={pendingOrders} />
+			)}
+
+			{orders && orders.length > 0 && (
+				<Tabs.Root defaultValue="overview">
+					<Tabs.List>
+						<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
+						<Tabs.Trigger value="orders">Order Details</Tabs.Trigger>
+						<Tabs.Trigger value="completed">Completed</Tabs.Trigger>
+					</Tabs.List>
+
+					<Tabs.Content value="overview">
+						<OrdersOverviewTable orders={pendingOrders ?? []} />
+					</Tabs.Content>
+
+					<Tabs.Content value="orders">
+						<OrdersTable orders={orders ?? []} />
+					</Tabs.Content>
+
+					<Tabs.Content value="completed">
+						<CompletedOrdersTable />
+					</Tabs.Content>
+				</Tabs.Root>
+			)}
 		</div>
 	);
 };

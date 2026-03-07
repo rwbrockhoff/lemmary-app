@@ -12,6 +12,7 @@ export const HardwareTable = ({ items }: HardwareTableProps) => {
 		useSortableTable(items, {
 			defaultKey: 'piece',
 			defaultDirection: 'asc',
+			storageKey: 'materials-hardware',
 		});
 
 	return (

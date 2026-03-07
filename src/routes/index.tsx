@@ -12,6 +12,8 @@ const WorkflowPage = lazy(() => import('@/features/workflow/workflow-page'));
 const BatchesPage = lazy(() => import('@/features/batches/batches-page'));
 const CreateBatchPage = lazy(() => import('@/features/batches/create-batch-page'));
 const BatchDetailPage = lazy(() => import('@/features/batches/batch-detail-page'));
+const EditBatchPage = lazy(() => import('@/features/batches/edit-batch-page'));
+const SettingsPage = lazy(() => import('@/features/settings/settings-page'));
 
 const router = createBrowserRouter([
 	{
@@ -85,10 +87,26 @@ const router = createBrowserRouter([
 						),
 					},
 					{
+						path: '/batches/:batchId/edit',
+						element: (
+							<Suspense>
+								<EditBatchPage />
+							</Suspense>
+						),
+					},
+					{
 						path: '/batches/new',
 						element: (
 							<Suspense>
 								<CreateBatchPage />
+							</Suspense>
+						),
+					},
+					{
+						path: '/settings',
+						element: (
+							<Suspense>
+								<SettingsPage />
 							</Suspense>
 						),
 					},

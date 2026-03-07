@@ -12,6 +12,7 @@ export const FabricTable = ({ items }: FabricTableProps) => {
 		useSortableTable(items, {
 			defaultKey: 'product_name',
 			defaultDirection: 'asc',
+			storageKey: 'materials-fabric',
 		});
 
 	return (

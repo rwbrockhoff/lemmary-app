@@ -1,3 +1,9 @@
+.pageContainer {
+	padding: var(--space-8);
+	max-width: 64rem;
+	margin-inline: auto;
+}
+
 .completedRow {
 	background-color: var(--green-50);
 }
@@ -51,4 +57,13 @@
 
 .statusSuccess:hover {
 	background-color: var(--color-success-bg);
+}
+
+.expandIcon {
+	transition: transform 150ms;
+	transform: rotate(-90deg);
+}
+
+.expandIconOpen {
+	transform: rotate(0deg);
 }

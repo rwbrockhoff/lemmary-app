@@ -1,6 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { batchKeys } from './batches-keys';
+import {
+	optimisticallyToggleComplete,
+	optimisticallyUpdateMaterialQty,
+	rollbackBatchDetail,
+} from './batches-cache';
+import { orderKeys } from '@/features/orders/api/orders-keys';
 import type { Batch, BatchDetail } from '@/types/api';
 
 export const useBatches = () => {
@@ -29,7 +35,12 @@ export const useToggleComplete = (batchId: string) => {
 			api.put(`/batches/${batchId}/${params.type}/${params.id}`, {
 				completed: params.completed,
 			}),
-		onSuccess: () => {
+		onMutate: (variables) =>
+			optimisticallyToggleComplete(queryClient, batchId, variables),
+		onError: (_error, _variables, context) => {
+			rollbackBatchDetail(queryClient, batchId, context?.previous);
+		},
+		onSettled: () => {
 			queryClient.invalidateQueries({
 				queryKey: batchKeys.detail(batchId),
 			});
@@ -63,7 +74,12 @@ export const useUpdateMaterialQty = (batchId: string) => {
 			api.put(`/batches/${batchId}/materials/${params.id}/qty`, {
 				completedQty: params.completedQty,
 			}),
-		onSuccess: () => {
+		onMutate: (variables) =>
+			optimisticallyUpdateMaterialQty(queryClient, batchId, variables),
+		onError: (_error, _variables, context) => {
+			rollbackBatchDetail(queryClient, batchId, context?.previous);
+		},
+		onSettled: () => {
 			queryClient.invalidateQueries({
 				queryKey: batchKeys.detail(batchId),
 			});
@@ -80,6 +96,7 @@ export const useCreateBatch = () => {
 			api.post<Batch>('/batches', body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 		},
 	});
 };
@@ -104,6 +121,19 @@ export const useUpdateBatchStatus = () => {
 			api.put(`/batches/${params.batchId}`, { status: params.status }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
+export const useUpdateBatchOrders = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (params: { batchId: string; orderIds: string[] }) =>
+			api.put(`/batches/${params.batchId}`, { orderIds: params.orderIds }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 		},
 	});
 };

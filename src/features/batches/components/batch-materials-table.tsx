@@ -1,4 +1,4 @@
-import { Table, Checkbox, Button, Badge, cn } from '@artifact-ui/core';
+import { Table, Checkbox, Button, Badge, Flex, cn } from '@artifact-ui/core';
 import { getProgressColor } from '../batch-utils';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
@@ -25,6 +25,7 @@ export const BatchMaterialsTable = ({
 		useSortableTable<BatchMaterial, MaterialSortKey>(materials, {
 			defaultKey: 'piece',
 			defaultDirection: 'asc',
+			storageKey: 'batch-materials',
 			customSortFns: {
 				progress: (a, b) => {
 					const aTotal = Number(a.quantity);
@@ -41,12 +42,23 @@ export const BatchMaterialsTable = ({
 			<Table.Header>
 				<Table.Row>
 					{!isFabric && <Table.HeaderCell className="w-10" />}
+					{isFabric && (
+						<SortableHeader<MaterialSortKey>
+							label="Product"
+							sortKey="product_name"
+							activeSortKey={sortKey}
+							sortDirection={sortDirection}
+							onSort={toggleSort}
+							className="w-1/4"
+						/>
+					)}
 					<SortableHeader<MaterialSortKey>
 						label="Piece"
 						sortKey="piece"
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
+						className="w-1/4"
 					/>
 					<SortableHeader<MaterialSortKey>
 						label="Detail"
@@ -85,6 +97,9 @@ export const BatchMaterialsTable = ({
 								className={cn(material.completed && styles.completedRow)}
 							>
 								<Table.Cell>
+									{material.product_name ?? '—'}
+								</Table.Cell>
+								<Table.Cell>
 									{material.piece}
 								</Table.Cell>
 								<Table.Cell>
@@ -94,7 +109,7 @@ export const BatchMaterialsTable = ({
 									{formatMaterialQuantity(material)}
 								</Table.Cell>
 								<Table.Cell textAlign="center">
-									<div className="flex items-center justify-center gap-2">
+									<Flex align="center" justify="center" gap="2">
 										<Button
 											size="1"
 											variant="ghost"
@@ -135,7 +150,7 @@ export const BatchMaterialsTable = ({
 										>
 											<PlusIcon size={14} />
 										</Button>
-									</div>
+									</Flex>
 								</Table.Cell>
 							</Table.Row>
 						);

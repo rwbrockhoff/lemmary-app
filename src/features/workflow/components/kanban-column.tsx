@@ -1,5 +1,5 @@
 import { useDroppable } from '@dnd-kit/core';
-import { Text, DropdownMenu } from '@artifact-ui/core';
+import { Text, Flex, DropdownMenu } from '@artifact-ui/core';
 import { EllipsisHorizontalIcon } from '@/components/icons/icons';
 import { StatusBadge } from '@/features/orders/components/status-badge';
 import { DraggableOrderCard } from './order-card';
@@ -22,7 +22,7 @@ export const KanbanColumn = ({
 
 	return (
 		<div className="flex flex-col min-w-[280px] max-w-[320px] shrink-0">
-			<div className="flex items-center gap-2 mb-3 px-1">
+			<Flex align="center" gap="2" className="mb-3 px-1">
 				<StatusBadge name={stage.name} color={stage.color} />
 				<Text size="1" color="secondary">
 					{orders.length}
@@ -45,7 +45,7 @@ export const KanbanColumn = ({
 						</DropdownMenu.DropdownMenuContent>
 					</DropdownMenu.DropdownMenu>
 				</div>)}
-			</div>
+			</Flex>
 			<div
 				ref={setNodeRef}
 				className={`flex flex-col gap-2 min-h-[200px] rounded-lg p-2 transition-colors ${

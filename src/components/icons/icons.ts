@@ -14,3 +14,7 @@ export { Pencil as PencilIcon } from 'lucide-react';
 export { Trash2 as TrashIcon } from 'lucide-react';
 export { Columns3 as WorkflowIcon } from 'lucide-react';
 export { Image as ImageIcon } from 'lucide-react';
+export { ExternalLink as ExternalLinkIcon } from 'lucide-react';
+export { ListChecks as ListChecksIcon } from 'lucide-react';
+export { Settings as SettingsIcon } from 'lucide-react';
+export { Square as SquareIcon } from 'lucide-react';

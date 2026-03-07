@@ -37,6 +37,7 @@ export const BatchItemsTable = ({
 		useSortableTable<BatchItem, ItemSortKey>(items, {
 			defaultKey: 'product_name',
 			defaultDirection: 'asc',
+			storageKey: 'batch-items',
 			customSortFns: {
 				progress: (a, b) =>
 					(progressByItem.get(a.id) ?? 0) -

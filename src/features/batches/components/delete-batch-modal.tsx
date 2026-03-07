@@ -1,4 +1,4 @@
-import { Modal, Button, Text } from '@artifact-ui/core';
+import { Modal, Button, Text, Flex } from '@artifact-ui/core';
 import { TrashIcon } from '@/components/icons/icons';
 
 type DeleteBatchModalProps = {
@@ -29,7 +29,7 @@ export const DeleteBatchModal = ({
 					</Text>
 				</Modal.Body>
 				<Modal.Footer>
-					<div className="flex justify-end gap-2">
+					<Flex justify="end" gap="2">
 						<Button
 							variant="ghost"
 							color="neutral"
@@ -47,7 +47,7 @@ export const DeleteBatchModal = ({
 						>
 							Delete
 						</Button>
-					</div>
+					</Flex>
 				</Modal.Footer>
 			</Modal.Content>
 		</Modal.Root>

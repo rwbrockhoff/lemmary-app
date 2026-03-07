@@ -1,32 +1,59 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Heading, Text, Button, Table, Checkbox } from '@artifact-ui/core';
-import { useOrders } from '@/features/orders/api/orders-queries';
+import { Heading, Text, Button, Flex } from '@artifact-ui/core';
+import { useOrdersWithItems } from '@/features/orders/api/orders-queries';
 import { useCreateBatch } from './api/batches-queries';
-import { StatusBadge } from '@/features/orders/components/status-badge';
-import { formatDate, formatCurrency } from '@/utils/format';
+import { PageSpinner } from '@/components/page-spinner';
+import { SelectOrdersTable } from './components/select-orders-table';
+import shared from '@/styles/shared.module.css';
+
+type Tab = 'available' | 'in-batches';
 
 const CreateBatchPage = () => {
 	const navigate = useNavigate();
-	const { data, isLoading } = useOrders();
+	const { data, isLoading } = useOrdersWithItems();
 	const orders = data?.orders;
 	const createBatch = useCreateBatch();
 
 	const [name, setName] = useState('');
+	const [tab, setTab] = useState<Tab>('available');
 	const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(
 		new Set(),
 	);
+	const [expandedOrderIds, setExpandedOrderIds] = useState<Set<string>>(
+		new Set(),
+	);
 
-	const pendingOrders = orders
-		?.filter((o) => o.fulfillment_status === 'pending')
-		.sort(
-			(a, b) =>
-				new Date(a.order_date).getTime() -
-				new Date(b.order_date).getTime(),
-		);
+	const pendingOrders = useMemo(
+		() =>
+			orders
+				?.filter((o) => o.fulfillment_status === 'pending')
+				.sort(
+					(a, b) =>
+						new Date(a.order_date).getTime() -
+						new Date(b.order_date).getTime(),
+				),
+		[orders],
+	);
+
+	const availableOrders = pendingOrders?.filter((o) => !o.batch_name) ?? [];
+	const batchedOrders = pendingOrders?.filter((o) => o.batch_name) ?? [];
+	const displayedOrders = tab === 'available' ? availableOrders : batchedOrders;
 
 	const toggleOrder = (orderId: string) => {
 		setSelectedOrderIds((prev) => {
+			const next = new Set(prev);
+			if (next.has(orderId)) {
+				next.delete(orderId);
+			} else {
+				next.add(orderId);
+			}
+			return next;
+		});
+	};
+
+	const toggleExpand = (orderId: string) => {
+		setExpandedOrderIds((prev) => {
 			const next = new Set(prev);
 			if (next.has(orderId)) {
 				next.delete(orderId);
@@ -49,10 +76,10 @@ const CreateBatchPage = () => {
 	};
 
 	return (
-		<div className="p-8 max-w-5xl mx-auto">
-			<div className="flex items-center justify-between mb-6">
+		<div className={shared.pageContainer}>
+			<Flex justify="between" align="center" className="mb-6">
 				<Heading size="6">New Batch</Heading>
-				<div className="flex items-center gap-3">
+				<Flex gap="3" align="center">
 					<Button variant="outline" onClick={() => navigate('/batches')}>
 						Cancel
 					</Button>
@@ -66,8 +93,8 @@ const CreateBatchPage = () => {
 					>
 						{createBatch.isPending ? 'Creating...' : 'Create Batch'}
 					</Button>
-				</div>
-			</div>
+				</Flex>
+			</Flex>
 
 			<div className="mb-6">
 				<label className="block mb-2">
@@ -82,62 +109,49 @@ const CreateBatchPage = () => {
 				/>
 			</div>
 
-			<div className="mb-4">
-				<Text weight="medium">
-					Select Orders ({selectedOrderIds.size} selected)
+			<Flex justify="between" align="center" className="mb-4">
+				<Flex gap="4" align="center">
+					<button
+						type="button"
+						onClick={() => setTab('available')}
+						className={`text-sm font-medium pb-1 cursor-pointer ${tab === 'available' ? 'border-b-2 border-current' : 'opacity-50'}`}
+					>
+						Available ({availableOrders.length})
+					</button>
+					<button
+						type="button"
+						onClick={() => setTab('in-batches')}
+						className={`text-sm font-medium pb-1 cursor-pointer ${tab === 'in-batches' ? 'border-b-2 border-current' : 'opacity-50'}`}
+					>
+						In Batches ({batchedOrders.length})
+					</button>
+				</Flex>
+				{tab === 'available' && selectedOrderIds.size > 0 && (
+					<Text size="2" color="secondary">
+						{selectedOrderIds.size} selected
+					</Text>
+				)}
+			</Flex>
+
+			{isLoading && <PageSpinner />}
+
+			{!isLoading && displayedOrders.length === 0 && (
+				<Text color="secondary">
+					{tab === 'available'
+						? 'No available orders.'
+						: 'No orders in batches yet.'}
 				</Text>
-			</div>
-
-			{isLoading && <Text color="secondary">Loading orders...</Text>}
-
-			{pendingOrders && pendingOrders.length === 0 && (
-				<Text color="secondary">No pending orders available.</Text>
 			)}
 
-			{pendingOrders && pendingOrders.length > 0 && (
-				<Table.Root>
-					<Table.Header>
-						<Table.Row>
-							<Table.HeaderCell className="w-10" />
-							<Table.HeaderCell className="w-24">Order #</Table.HeaderCell>
-							<Table.HeaderCell>Customer</Table.HeaderCell>
-							<Table.HeaderCell>Date</Table.HeaderCell>
-							<Table.HeaderCell>Due</Table.HeaderCell>
-							<Table.HeaderCell className="text-end">Total</Table.HeaderCell>
-							<Table.HeaderCell>Status</Table.HeaderCell>
-							<Table.HeaderCell>Items</Table.HeaderCell>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{pendingOrders.map((order) => (
-							<Table.Row
-								key={order.id}
-								className="cursor-pointer"
-								onClick={() => toggleOrder(order.id)}
-							>
-								<Table.Cell>
-									<Checkbox
-										checked={selectedOrderIds.has(order.id)}
-										onCheckedChange={() => toggleOrder(order.id)}
-									/>
-								</Table.Cell>
-								<Table.Cell>{order.order_number}</Table.Cell>
-								<Table.Cell>{order.customer_name}</Table.Cell>
-								<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
-								<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
-								<Table.Cell className="text-end">
-									{formatCurrency(order.grand_total)}
-								</Table.Cell>
-								<Table.Cell>
-									<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
-								</Table.Cell>
-								<Table.Cell className="text-center">
-									{order.item_count}
-								</Table.Cell>
-							</Table.Row>
-						))}
-					</Table.Body>
-				</Table.Root>
+			{displayedOrders.length > 0 && (
+				<SelectOrdersTable
+					orders={displayedOrders}
+					tab={tab}
+					selectedOrderIds={selectedOrderIds}
+					expandedOrderIds={expandedOrderIds}
+					onToggle={toggleOrder}
+					onExpand={toggleExpand}
+				/>
 			)}
 		</div>
 	);

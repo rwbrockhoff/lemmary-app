@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
 	PointerSensor,
 	useSensor,
@@ -9,11 +9,23 @@ import {
 import { useUpdateOrderStage } from '@/features/orders/api/orders-queries';
 import type { WorkflowBoardOrder } from '@/types/api';
 
+type PendingMove = { orderId: string; stageId: string };
+
 export const useWorkflowDnd = (orders: WorkflowBoardOrder[]) => {
 	const updateStage = useUpdateOrderStage();
 	const [activeOrder, setActiveOrder] = useState<WorkflowBoardOrder | null>(
 		null,
 	);
+	const [pendingMove, setPendingMove] = useState<PendingMove | null>(null);
+
+	const displayOrders = useMemo(() => {
+		if (!pendingMove) return orders;
+		return orders.map((o) =>
+			o.id === pendingMove.orderId
+				? { ...o, workflow_stage_id: pendingMove.stageId }
+				: o,
+		);
+	}, [orders, pendingMove]);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -36,8 +48,13 @@ export const useWorkflowDnd = (orders: WorkflowBoardOrder[]) => {
 
 		if (!order || order.workflow_stage_id === newStageId) return;
 
-		updateStage.mutate({ orderId, stageId: newStageId });
+		setPendingMove({ orderId, stageId: newStageId });
+
+		updateStage.mutate(
+			{ orderId, stageId: newStageId },
+			{ onSettled: () => setPendingMove(null) },
+		);
 	};
 
-	return { sensors, activeOrder, handleDragStart, handleDragEnd };
+	return { sensors, activeOrder, displayOrders, handleDragStart, handleDragEnd };
 };

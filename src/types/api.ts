@@ -29,7 +29,13 @@ export type Order = {
 	shipping_method: string | null;
 	order_notes: string | null;
 	order_url: string | null;
+	fulfilled_on: string | null;
+	tracking_number: string | null;
+	tracking_url: string | null;
+	carrier_name: string | null;
 	currency: string;
+	batch_name: string | null;
+	batch_id: string | null;
 	item_count: number;
 	items_completed: number;
 	created_at: string;
@@ -54,6 +60,20 @@ export type OrderItem = {
 export type OrderDetail = Order & {
 	workflow_stage_name: string | null;
 	items: OrderItem[];
+};
+
+export type OrderWithItems = Order & {
+	items: OrderItem[];
+};
+
+export type CompletedOrdersResponse = {
+	orders: Order[];
+	hasMore: boolean;
+};
+
+export type OrdersWithItemsResponse = {
+	orders: OrderWithItems[];
+	lastSyncedAt: string | null;
 };
 
 export type WorkflowStage = {
@@ -144,6 +164,7 @@ export type BatchOrder = {
 	order_date: string;
 	due_date: string | null;
 	grand_total: string | null;
+	workflow_stage_id: string | null;
 	workflow_stage_name: string | null;
 	workflow_stage_color: string | null;
 };
@@ -176,6 +197,7 @@ export type BatchMaterial = {
 	id: string;
 	batch_id: string;
 	category: string;
+	product_name: string | null;
 	material_type: string | null;
 	piece: string;
 	color: string | null;
