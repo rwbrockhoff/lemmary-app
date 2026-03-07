@@ -1,8 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Table, Checkbox, Badge, Text, cn } from '@artifact-ui/core';
-import { StatusBadge } from '@/features/orders/components/status-badge';
+import { StageSelect } from '@/features/orders/components/stage-select';
+import { CompleteItemsModal } from './complete-items-modal';
 import { getProgressColor } from '../batch-utils';
+import { useWorkflowStages, useUpdateOrderStage, useCompleteAllOrderItems } from '@/features/orders/api/orders-queries';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import styles from '@/styles/shared.module.css';
@@ -25,6 +27,41 @@ export const BatchOrdersTable = ({
 	onToggle,
 }: BatchOrdersTableProps) => {
 	const navigate = useNavigate();
+	const { data: stages, isLoading: stagesLoading } = useWorkflowStages();
+	const updateOrderStage = useUpdateOrderStage();
+	const completeAllItems = useCompleteAllOrderItems();
+	const orderStages = stages?.orderStages ?? [];
+
+	const [completeModalOrder, setCompleteModalOrder] = useState<{
+		orderId: string;
+		items: BatchOrderItem[];
+	} | null>(null);
+
+	const getIncompleteItems = (order: BatchOrder) => {
+		const items = orderItems.filter((i) => i.batch_order_id === order.id);
+		return items.filter((i) => !i.is_complete);
+	};
+
+	const handleCheckboxToggle = (order: BatchOrder) => {
+		onToggle(order.id, !order.completed);
+		if (!order.completed) {
+			const incomplete = getIncompleteItems(order);
+			if (incomplete.length > 0) {
+				setCompleteModalOrder({ orderId: order.order_id, items: incomplete });
+			}
+		}
+	};
+
+	const handleStageChange = (order: BatchOrder, stageId: string) => {
+		updateOrderStage.mutate({ orderId: order.order_id, stageId });
+		const newStage = orderStages.find((s) => s.id === stageId);
+		if (newStage?.is_complete) {
+			const incomplete = getIncompleteItems(order);
+			if (incomplete.length > 0) {
+				setCompleteModalOrder({ orderId: order.order_id, items: incomplete });
+			}
+		}
+	};
 
 	const progressByOrder = useMemo(() => {
 		const map = new Map<string, number>();
@@ -51,7 +88,7 @@ export const BatchOrdersTable = ({
 			},
 		});
 
-	return (
+	return (<>
 		<Table.Root>
 			<Table.Header>
 				<Table.Row>
@@ -107,10 +144,19 @@ export const BatchOrdersTable = ({
 					const completed = items.filter((i) => i.is_complete).length;
 					const total = items.length;
 
+					const currentStage = orderStages.find((s) => s.id === order.workflow_stage_id);
+					const isStageComplete = currentStage?.is_complete;
+					const isInProgress = !isStageComplete && !currentStage?.is_default;
+					const rowClass = isStageComplete || order.completed
+						? styles.completedRow
+						: isInProgress
+							? styles.inProgressRow
+							: '';
+
 					return (
 						<Table.Row
 							key={order.id}
-							className={cn('cursor-pointer', order.completed && styles.completedRow)}
+							className={cn('cursor-pointer', rowClass)}
 							onClick={() =>
 								navigate(`/orders/${order.order_id}?from=batch&batchId=${batchId}`)
 							}
@@ -118,9 +164,7 @@ export const BatchOrdersTable = ({
 							<Table.Cell onClick={(e) => e.stopPropagation()}>
 								<Checkbox
 									checked={order.completed}
-									onCheckedChange={() =>
-										onToggle(order.id, !order.completed)
-									}
+									onCheckedChange={() => handleCheckboxToggle(order)}
 								/>
 							</Table.Cell>
 							<Table.Cell>{order.order_number}</Table.Cell>
@@ -140,13 +184,36 @@ export const BatchOrdersTable = ({
 									{completed}/{total}
 								</Badge>
 							</Table.Cell>
-							<Table.Cell>
-								<StatusBadge name={order.workflow_stage_name} color={order.workflow_stage_color} />
+							<Table.Cell onClick={(e) => e.stopPropagation()}>
+								{!stagesLoading && (
+									<StageSelect
+										stages={orderStages}
+										value={order.workflow_stage_id}
+										onChange={(stageId) => handleStageChange(order, stageId)}
+									/>
+								)}
 							</Table.Cell>
 						</Table.Row>
 					);
 				})}
 			</Table.Body>
 		</Table.Root>
+
+		<CompleteItemsModal
+			open={completeModalOrder !== null}
+			onOpenChange={(open) => {
+				if (!open) setCompleteModalOrder(null);
+			}}
+			items={completeModalOrder?.items ?? []}
+			onConfirm={() => {
+				if (completeModalOrder) {
+					completeAllItems.mutate(completeModalOrder.orderId, {
+						onSuccess: () => setCompleteModalOrder(null),
+					});
+				}
+			}}
+			isPending={completeAllItems.isPending}
+		/>
+	</>
 	);
 };

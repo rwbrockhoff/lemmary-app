@@ -106,6 +106,23 @@ export const useUpdateOrderItemStage = (orderId: string, stages: WorkflowStage[]
 	});
 };
 
+export const useCompleteAllOrderItems = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (orderId: string) =>
+			api.put(`/orders/${orderId}/items/complete-all`),
+		onSuccess: (_data, orderId) => {
+			queryClient.invalidateQueries({
+				queryKey: orderKeys.detail(orderId),
+			});
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
 export const useUpdateOrderNotes = (orderId: string) => {
 	const queryClient = useQueryClient();
 

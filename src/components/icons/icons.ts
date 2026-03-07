@@ -17,3 +17,4 @@ export { Image as ImageIcon } from 'lucide-react';
 export { ExternalLink as ExternalLinkIcon } from 'lucide-react';
 export { ListChecks as ListChecksIcon } from 'lucide-react';
 export { Settings as SettingsIcon } from 'lucide-react';
+export { Square as SquareIcon } from 'lucide-react';

@@ -164,6 +164,7 @@ export type BatchOrder = {
 	order_date: string;
 	due_date: string | null;
 	grand_total: string | null;
+	workflow_stage_id: string | null;
 	workflow_stage_name: string | null;
 	workflow_stage_color: string | null;
 };
