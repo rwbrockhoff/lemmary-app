@@ -10,13 +10,32 @@ import { OrderCardOverlay } from './components/order-card';
 import { useWorkflowDnd } from './hooks/use-workflow-dnd';
 
 const STORAGE_KEY = 'workflow-completed-collapsed';
+const BATCH_FILTER_KEY = 'workflow-batch-filter';
+const SHOW_ALL_KEY = 'workflow-show-all';
+
+const loadSavedBatchIds = (): Set<string> | null => {
+	const stored = localStorage.getItem(BATCH_FILTER_KEY);
+	if (!stored) return null;
+	try {
+		const ids = JSON.parse(stored) as string[];
+		return new Set(ids);
+	} catch {
+		return null;
+	}
+};
+
+const saveBatchIds = (ids: Set<string>) => {
+	localStorage.setItem(BATCH_FILTER_KEY, JSON.stringify([...ids]));
+};
 
 const WorkflowPage = () => {
 	const { data, isLoading, error } = useWorkflowBoard();
 	const [selectedBatchIds, setSelectedBatchIds] = useState<Set<string> | null>(
-		null,
+		loadSavedBatchIds,
 	);
-	const [showAll, setShowAll] = useState(false);
+	const [showAll, setShowAll] = useState(
+		() => localStorage.getItem(SHOW_ALL_KEY) === 'true',
+	);
 	const [completedCollapsed, setCompletedCollapsed] = useState(
 		() => localStorage.getItem(STORAGE_KEY) === 'true',
 	);
@@ -24,17 +43,29 @@ const WorkflowPage = () => {
 	const activeBatches = data?.activeBatches ?? [];
 
 	const initializedBatchIds = useMemo(() => {
-		if (selectedBatchIds !== null) return selectedBatchIds;
-		return new Set(activeBatches.map((b) => b.id));
+		if (activeBatches.length === 0) return new Set<string>();
+		if (selectedBatchIds === null)
+			return new Set(activeBatches.map((b) => b.id));
+		const activeSet = new Set(activeBatches.map((b) => b.id));
+		const validIds = new Set(
+			[...selectedBatchIds].filter((id) => activeSet.has(id)),
+		);
+		if (validIds.size < selectedBatchIds.size) {
+			saveBatchIds(validIds);
+		}
+		if (validIds.size === 0) return new Set(activeBatches.map((b) => b.id));
+		return validIds;
 	}, [selectedBatchIds, activeBatches]);
+
+	const effectiveShowAll = activeBatches.length === 0 || showAll;
 
 	const filteredOrders = useMemo(() => {
 		if (!data) return [];
-		if (showAll) return data.orders;
+		if (effectiveShowAll) return data.orders;
 		return data.orders.filter(
 			(o) => o.batch_id && initializedBatchIds.has(o.batch_id),
 		);
-	}, [data, showAll, initializedBatchIds]);
+	}, [data, effectiveShowAll, initializedBatchIds]);
 
 	const { sensors, activeOrder, displayOrders, handleDragStart, handleDragEnd } =
 		useWorkflowDnd(filteredOrders);
@@ -48,9 +79,11 @@ const WorkflowPage = () => {
 			} else {
 				next.add(batchId);
 			}
+			saveBatchIds(next);
 			return next;
 		});
 		setShowAll(false);
+		localStorage.setItem(SHOW_ALL_KEY, 'false');
 	};
 
 	const toggleCompletedCollapsed = () => {
@@ -81,9 +114,15 @@ const WorkflowPage = () => {
 			<BatchFilter
 				batches={activeBatches}
 				selectedIds={initializedBatchIds}
-				showAll={showAll}
+				showAll={effectiveShowAll}
 				onToggleBatch={toggleBatch}
-				onToggleShowAll={() => setShowAll((prev) => !prev)}
+				onToggleShowAll={() => {
+					setShowAll((prev) => {
+						const next = !prev;
+						localStorage.setItem(SHOW_ALL_KEY, String(next));
+						return next;
+					});
+				}}
 			/>
 
 			<DndContext
