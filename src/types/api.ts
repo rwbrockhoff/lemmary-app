@@ -240,6 +240,10 @@ export type Product = {
 	updated_at: string;
 };
 
+export type ProductDetail = Product & {
+	variants: ProductVariant[];
+};
+
 export type ProductsResponse = {
 	products: Product[];
 	lastSyncedAt: string | null;

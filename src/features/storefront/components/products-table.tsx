@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router';
 import { Table, Badge, Flex, Text } from '@artifact-ui/core';
 import { SortableHeader } from '@/components/sortable-header';
 import { ProductThumbnail } from '@/components/product-thumbnail/product-thumbnail';
@@ -34,6 +35,7 @@ function getStockDisplay(variants: ProductVariant[]) {
 
 
 export const ProductsTable = ({ products }: ProductsTableProps) => {
+	const navigate = useNavigate();
 	const { sortedData, sortKey, sortDirection, toggleSort } =
 		useSortableTable(products, {
 			defaultKey: 'is_visible',
@@ -83,22 +85,15 @@ export const ProductsTable = ({ products }: ProductsTableProps) => {
 			</Table.Header>
 			<Table.Body>
 				{sortedData.map((product) => (
-					<Table.Row key={product.id}>
+					<Table.Row
+						key={product.id}
+						className="cursor-pointer"
+						onClick={() => navigate(`/storefront/${product.id}`)}
+					>
 						<Table.Cell>
 							<Flex align="center" gap="3">
 								<ProductThumbnail src={product.image_url} alt={product.name} />
-								{product.product_url ? (
-									<a
-										href={product.product_url}
-										target="_blank"
-										rel="noopener noreferrer"
-										onClick={(e) => e.stopPropagation()}
-									>
-										{product.name}
-									</a>
-								) : (
-									product.name
-								)}
+								{product.name}
 							</Flex>
 						</Table.Cell>
 						<Table.Cell>
