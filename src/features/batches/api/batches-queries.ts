@@ -96,6 +96,7 @@ export const useCreateBatch = () => {
 			api.post<Batch>('/batches', body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 		},
 	});
 };

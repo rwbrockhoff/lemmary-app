@@ -53,7 +53,7 @@ export const SelectOrdersTable = ({
 								onClick={tab === 'available' ? () => onToggle(order.id) : undefined}
 							>
 								{tab === 'available' && (
-									<Table.Cell>
+									<Table.Cell onClick={(e) => e.stopPropagation()}>
 										<Checkbox
 											checked={selectedOrderIds.has(order.id)}
 											onCheckedChange={() => onToggle(order.id)}
