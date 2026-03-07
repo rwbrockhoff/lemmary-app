@@ -18,3 +18,4 @@ export { ExternalLink as ExternalLinkIcon } from 'lucide-react';
 export { ListChecks as ListChecksIcon } from 'lucide-react';
 export { Settings as SettingsIcon } from 'lucide-react';
 export { Square as SquareIcon } from 'lucide-react';
+export { Store as StorefrontIcon } from 'lucide-react';

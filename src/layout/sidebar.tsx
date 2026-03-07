@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router';
 import { Heading } from '@artifact-ui/core';
-import { OrdersIcon, ProductionIcon, MaterialsIcon, BatchesIcon, WorkflowIcon, SidebarIcon, SettingsIcon } from '@/components/icons';
+import { OrdersIcon, StorefrontIcon, ProductionIcon, MaterialsIcon, BatchesIcon, WorkflowIcon, SidebarIcon, SettingsIcon } from '@/components/icons';
 import styles from './sidebar.module.css';
 
 type SidebarProps = {
@@ -10,6 +10,7 @@ type SidebarProps = {
 
 const navItems = [
 	{ to: '/', label: 'Orders', icon: OrdersIcon },
+	{ to: '/storefront', label: 'Storefront', icon: StorefrontIcon },
 	{ to: '/production', label: 'Production', icon: ProductionIcon },
 	{ to: '/materials', label: 'Materials', icon: MaterialsIcon },
 	{ to: '/workflow', label: 'Workflow', icon: WorkflowIcon },

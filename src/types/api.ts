@@ -208,6 +208,43 @@ export type BatchMaterial = {
 	created_at: string;
 };
 
+export type ProductVariant = {
+	id: string;
+	product_id: string;
+	platform_variant_id: string;
+	platform_sku: string | null;
+	name: string;
+	price: string | null;
+	sale_price: string | null;
+	on_sale: boolean;
+	stock_quantity: number | null;
+	stock_unlimited: boolean;
+	image_url: string | null;
+	created_at: string;
+	updated_at: string;
+};
+
+export type Product = {
+	id: string;
+	store_id: string;
+	platform_product_id: string;
+	name: string;
+	description: string | null;
+	slug: string | null;
+	is_visible: boolean;
+	image_url: string | null;
+	product_url: string | null;
+	variant_count: number;
+	variants: ProductVariant[];
+	created_at: string;
+	updated_at: string;
+};
+
+export type ProductsResponse = {
+	products: Product[];
+	lastSyncedAt: string | null;
+};
+
 export type BatchDetail = {
 	id: string;
 	store_id: string;
