@@ -1,19 +1,23 @@
 import { ImageIcon } from '@/components/icons';
+import { cn } from '@artifact-ui/core';
 import styles from './product-thumbnail.module.css';
 
 type ProductThumbnailProps = {
 	src: string | null;
 	alt: string;
+	size?: 'sm' | 'lg';
 };
 
-export const ProductThumbnail = ({ src, alt }: ProductThumbnailProps) => {
+const iconSizes = { sm: 14, lg: 24 } as const;
+
+export const ProductThumbnail = ({ src, alt, size = 'sm' }: ProductThumbnailProps) => {
 	if (src) {
-		return <img src={src} alt={alt} className={styles.thumbnail} />;
+		return <img src={src} alt={alt} className={cn(styles.thumbnail, styles[size])} />;
 	}
 
 	return (
-		<div className={styles.placeholder}>
-			<ImageIcon size={14} className="text-gray-400" />
+		<div className={cn(styles.placeholder, styles[size])}>
+			<ImageIcon size={iconSizes[size]} className="text-gray-400" />
 		</div>
 	);
 };

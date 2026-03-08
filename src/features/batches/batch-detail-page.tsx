@@ -121,7 +121,7 @@ const BatchDetailPage = () => {
 						Orders ({batch.orders.length})
 					</Tabs.Trigger>
 					<Tabs.Trigger value="items">
-						Items ({batch.items.length})
+						Items ({batch.items.reduce((sum, i) => sum + i.quantity, 0)})
 					</Tabs.Trigger>
 					<Tabs.Trigger value="fabric">
 						Fabric ({fabricMaterials.length})

@@ -13,6 +13,9 @@ const BatchesPage = lazy(() => import('@/features/batches/batches-page'));
 const CreateBatchPage = lazy(() => import('@/features/batches/create-batch-page'));
 const BatchDetailPage = lazy(() => import('@/features/batches/batch-detail-page'));
 const EditBatchPage = lazy(() => import('@/features/batches/edit-batch-page'));
+const StorefrontPage = lazy(() => import('@/features/storefront/storefront-page'));
+const ProductDetailPage = lazy(() => import('@/features/storefront/product-detail-page'));
+const VariantDetailPage = lazy(() => import('@/features/storefront/variant-detail-page'));
 const SettingsPage = lazy(() => import('@/features/settings/settings-page'));
 
 const router = createBrowserRouter([
@@ -43,6 +46,30 @@ const router = createBrowserRouter([
 						element: (
 							<Suspense>
 								<OrderDetailPage />
+							</Suspense>
+						),
+					},
+					{
+						path: '/storefront',
+						element: (
+							<Suspense>
+								<StorefrontPage />
+							</Suspense>
+						),
+					},
+					{
+						path: '/storefront/:productId',
+						element: (
+							<Suspense>
+								<ProductDetailPage />
+							</Suspense>
+						),
+					},
+					{
+						path: '/storefront/:productId/:variantId',
+						element: (
+							<Suspense>
+								<VariantDetailPage />
 							</Suspense>
 						),
 					},

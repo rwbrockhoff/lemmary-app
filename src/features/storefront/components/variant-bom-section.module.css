@@ -1,0 +1,10 @@
+.copyMenuItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: var(--space-6);
+}
+
+.copyMenuItem:focus-visible {
+	outline: none;
+}

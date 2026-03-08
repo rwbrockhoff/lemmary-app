@@ -1,0 +1,21 @@
+.trigger {
+	background: transparent;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	color: var(--color-text-muted);
+}
+
+.trigger:hover {
+	color: var(--color-text-subtle);
+}
+
+.triggerActive {
+	color: var(--color-info);
+}
+
+.triggerActive:hover {
+	color: var(--color-info-hover);
+}

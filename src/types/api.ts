@@ -99,6 +99,7 @@ export type ProductionSummaryItem = {
 };
 
 export type FabricEntry = {
+	material_type: string;
 	product_name: string;
 	piece: string;
 	color: string;
@@ -114,6 +115,7 @@ export type LinearEntry = {
 };
 
 export type HardwareEntry = {
+	material_type: string;
 	piece: string;
 	total_count: number;
 };
@@ -206,6 +208,113 @@ export type BatchMaterial = {
 	completed: boolean;
 	completed_qty: number;
 	created_at: string;
+};
+
+export type ProductVariant = {
+	id: string;
+	product_id: string;
+	platform_variant_id: string;
+	platform_sku: string | null;
+	name: string;
+	price: string | null;
+	sale_price: string | null;
+	on_sale: boolean;
+	stock_quantity: number | null;
+	stock_unlimited: boolean;
+	image_url: string | null;
+	bom_item_count: number;
+	created_at: string;
+	updated_at: string;
+};
+
+export type Product = {
+	id: string;
+	store_id: string;
+	platform_product_id: string;
+	name: string;
+	description: string | null;
+	slug: string | null;
+	is_visible: boolean;
+	image_url: string | null;
+	product_url: string | null;
+	variant_count: number;
+	variants: ProductVariant[];
+	created_at: string;
+	updated_at: string;
+};
+
+export type ProductDetail = Product & {
+	variants: ProductVariant[];
+};
+
+export type ProductsResponse = {
+	products: Product[];
+	lastSyncedAt: string | null;
+};
+
+export type BomMaterialType = {
+	id: string;
+	store_id: string;
+	name: string;
+	measurement: 'count' | 'linear' | 'area';
+	unit: string;
+	tracks_color: boolean;
+	tracks_size: boolean;
+	position: number;
+	created_at: string;
+	updated_at: string;
+};
+
+export type Material = {
+	id: string;
+	store_id: string;
+	material_type_id: string;
+	color: string | null;
+	size: string | null;
+	purchase_url: string | null;
+	created_at: string;
+	updated_at: string;
+};
+
+export type BomItem = {
+	id: string;
+	store_id: string;
+	material_id: string | null;
+	measurement: 'count' | 'linear' | 'area';
+	platform_sku: string;
+	product_name: string;
+	variant: string | null;
+	piece: string;
+	length: string | null;
+	quantity: number;
+	position: number;
+	created_at: string;
+	updated_at: string;
+	material_type_id: string | null;
+	material_type_name: string | null;
+	color: string | null;
+	size: string | null;
+	purchase_url: string | null;
+};
+
+export type MaterialCatalogEntry = {
+	material_type_id: string;
+	material_type_name: string;
+	color: string | null;
+	size: string | null;
+	purchase_url: string | null;
+};
+
+export type BomSuggestion = {
+	piece: string;
+	material_id: string | null;
+	measurement: string;
+	material_type_name: string | null;
+	color: string | null;
+	size: string | null;
+	length: string | null;
+	quantity: number;
+	purchase_url: string | null;
 };
 
 export type BatchDetail = {
