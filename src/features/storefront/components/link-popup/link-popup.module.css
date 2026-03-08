@@ -19,7 +19,3 @@
 .triggerActive:hover {
 	color: var(--color-info-hover);
 }
-
-.popoverInput:focus-visible {
-	outline: none;
-}

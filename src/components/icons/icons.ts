@@ -23,3 +23,6 @@ export { Check as CheckIcon } from 'lucide-react';
 export { Link as LinkIcon } from 'lucide-react';
 export { Save as SaveIcon } from 'lucide-react';
 export { X as XIcon } from 'lucide-react';
+export { Scissors as ScissorsIcon } from 'lucide-react';
+export { Ruler as RulerIcon } from 'lucide-react';
+export { Wrench as WrenchIcon } from 'lucide-react';

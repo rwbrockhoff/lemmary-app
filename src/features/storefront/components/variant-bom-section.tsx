@@ -1,4 +1,5 @@
 import { Heading, Text, Stack } from '@artifact-ui/core';
+import { ScissorsIcon, RulerIcon, WrenchIcon } from '@/components/icons/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { useVariantBom } from '../api/bom-queries';
 import { BomCategorySection } from './bom-category-section/bom-category-section';
@@ -40,6 +41,7 @@ export const VariantBomSection = ({
 				<>
 					<BomCategorySection
 						title="Fabric"
+						icon={<ScissorsIcon size={16} />}
 						items={fabricItems}
 						measurement="area"
 						tracksColor
@@ -50,7 +52,8 @@ export const VariantBomSection = ({
 						productName={productName}
 					/>
 					<BomCategorySection
-						title="Linear"
+						title="Notions"
+						icon={<RulerIcon size={16} />}
 						items={linearItems}
 						measurement="linear"
 						tracksColor={false}
@@ -62,6 +65,7 @@ export const VariantBomSection = ({
 					/>
 					<BomCategorySection
 						title="Hardware"
+						icon={<WrenchIcon size={16} />}
 						items={hardwareItems}
 						measurement="count"
 						tracksColor={false}

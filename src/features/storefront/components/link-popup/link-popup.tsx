@@ -19,6 +19,11 @@ export const LinkPopup = ({ url, onSave }: LinkPopupProps) => {
 
 	const hasUrl = url.trim().length > 0;
 
+	const getFullUrl = (raw: string) => {
+		if (/^https?:\/\//.test(raw)) return raw;
+		return `https://${raw}`;
+	};
+
 	const handleOpenChange = (isOpen: boolean) => {
 		if (isOpen) setValue(url);
 		setOpen(isOpen);
@@ -26,13 +31,11 @@ export const LinkPopup = ({ url, onSave }: LinkPopupProps) => {
 
 	const handleSave = () => {
 		onSave(value.trim());
-		setOpen(false);
 	};
 
 	const handleDelete = () => {
 		setValue('');
 		onSave('');
-		setOpen(false);
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -58,12 +61,11 @@ export const LinkPopup = ({ url, onSave }: LinkPopupProps) => {
 					<TextField.Standalone
 						label="Purchase URL"
 						variant="icon"
-						size="2"
+						size="1"
 						value={value}
 						onChange={(e) => setValue(e.target.value)}
 						onKeyDown={handleKeyDown}
 						placeholder="https://..."
-						className={styles.popoverInput}
 						autoFocus
 						iconRight={
 							hasUrl ? (
@@ -71,7 +73,12 @@ export const LinkPopup = ({ url, onSave }: LinkPopupProps) => {
 									href={url}
 									target="_blank"
 									rel="noopener noreferrer"
-									onClick={(e) => e.stopPropagation()}
+									onClick={(e) => {
+										e.stopPropagation();
+										e.nativeEvent.stopImmediatePropagation();
+										window.open(getFullUrl(url), '_blank', 'noopener,noreferrer');
+										e.preventDefault();
+									}}
 								>
 									<ExternalLinkIcon size={14} />
 								</a>

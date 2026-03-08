@@ -9,6 +9,7 @@ import {
 	TextField,
 	DropdownMenu,
 	Stack,
+	cn,
 } from '@artifact-ui/core';
 import {
 	PlusIcon,
@@ -27,6 +28,7 @@ import styles from './bom-category-section.module.css';
 
 type BomCategorySectionProps = {
 	title: string;
+	icon?: React.ReactNode;
 	items: BomItem[];
 	measurement: 'area' | 'linear' | 'count';
 	tracksColor: boolean;
@@ -81,12 +83,31 @@ const BomRow = ({
 		if (isNew) return { ...data, materialTypeName: '' };
 		return data;
 	});
+	const [menuOpen, setMenuOpen] = useState(false);
 	const savedRef = useRef<RowData>(itemToRowData(item));
 	const updateMutation = useUpdateBomItem(variantId);
 	const deleteMutation = useDeleteBomItem(variantId);
 
 	const handleFieldChange = (field: keyof RowData, value: string) => {
 		setForm((prev) => ({ ...prev, [field]: value }));
+	};
+
+	const handleLinkSave = (url: string) => {
+		const updated = { ...form, purchaseUrl: url };
+		setForm(updated);
+		savedRef.current = { ...updated };
+		updateMutation.mutate({
+			bomItemId: item.id,
+			piece: updated.piece.trim(),
+			length: updated.length || null,
+			quantity: Number(updated.quantity) || 1,
+			measurement,
+			material_type_id: updated.materialTypeId || null,
+			material_type_name: updated.materialTypeName || null,
+			color: updated.color || null,
+			size: updated.size || null,
+			purchase_url: updated.purchaseUrl || null,
+		});
 	};
 
 	const handleTypeSelect = (entry: MaterialCatalogEntry) => {
@@ -204,7 +225,7 @@ const BomRow = ({
 					/>
 				</Table.Cell>
 			)}
-			<Table.Cell>
+			<Table.Cell className={styles.qtyColumn}>
 				<TextField.Standalone
 					label="Quantity"
 					variant="minimal"
@@ -222,12 +243,12 @@ const BomRow = ({
 			<Table.Cell>
 				<LinkPopup
 					url={form.purchaseUrl}
-					onSave={(url) => handleFieldChange('purchaseUrl', url)}
+					onSave={handleLinkSave}
 				/>
 			</Table.Cell>
-			<Table.Cell>
-				<div className={styles.rowActions}>
-					<DropdownMenu.DropdownMenu>
+			<Table.Cell className={styles.actionsColumn}>
+				<div className={cn(styles.rowActions, menuOpen && styles.rowActionsVisible)}>
+					<DropdownMenu.DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
 						<DropdownMenu.DropdownMenuTrigger asChild>
 							<IconButton
 								size="1"
@@ -243,6 +264,7 @@ const BomRow = ({
 							align="end"
 						>
 							<DropdownMenu.DropdownMenuItem
+								className={styles.menuItem}
 								onClick={() =>
 									deleteMutation.mutate(item.id)
 								}
@@ -262,6 +284,7 @@ const BomRow = ({
 
 export const BomCategorySection = ({
 	title,
+	icon,
 	items,
 	measurement,
 	tracksColor,
@@ -297,6 +320,7 @@ export const BomCategorySection = ({
 	return (
 		<Stack gap="3">
 			<Flex align="center" gap="2">
+				{icon}
 				<Heading size="3">{title}</Heading>
 				{items.length > 0 && (
 					<Text size="1" color="secondary">
@@ -307,7 +331,7 @@ export const BomCategorySection = ({
 			</Flex>
 
 			{items.length > 0 && (
-				<Table.Root variant="surface" size="2">
+				<Table.Root variant="surface" size="1" className={styles.table}>
 					<Table.Header>
 						<Table.Row>
 							<Table.HeaderCell>
@@ -315,6 +339,7 @@ export const BomCategorySection = ({
 									size="2"
 									weight="medium"
 									color="secondary"
+									className={styles.headerLabel}
 								>
 									Type
 								</Text>
@@ -324,6 +349,7 @@ export const BomCategorySection = ({
 									size="2"
 									weight="medium"
 									color="secondary"
+									className={styles.headerLabel}
 								>
 									Piece
 								</Text>
@@ -334,6 +360,7 @@ export const BomCategorySection = ({
 										size="2"
 										weight="medium"
 										color="secondary"
+										className={styles.headerLabel}
 									>
 										Color
 									</Text>
@@ -345,22 +372,24 @@ export const BomCategorySection = ({
 										size="2"
 										weight="medium"
 										color="secondary"
+										className={styles.headerLabel}
 									>
 										Size
 									</Text>
 								</Table.HeaderCell>
 							)}
-							<Table.HeaderCell>
+							<Table.HeaderCell className={styles.qtyColumn}>
 								<Text
 									size="2"
 									weight="medium"
 									color="secondary"
+									className={styles.headerLabel}
 								>
 									Qty
 								</Text>
 							</Table.HeaderCell>
 							<Table.HeaderCell className="w-10" />
-							<Table.HeaderCell className="w-10" />
+							<Table.HeaderCell className={styles.actionsColumn} />
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>

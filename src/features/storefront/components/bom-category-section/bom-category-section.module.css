@@ -1,7 +1,32 @@
-.rowActions {
-	opacity: 0;
+.table {
+	border-top: 3px solid var(--color-primary);
 }
 
-.row:hover .rowActions {
+.headerLabel {
+	padding-left: var(--space-2);
+}
+
+.qtyColumn {
+	width: 100px;
+}
+
+.actionsColumn {
+	width: 60px;
+	text-align: center;
+}
+
+.rowActions {
+	opacity: 0;
+	display: flex;
+	justify-content: center;
+}
+
+.row:hover .rowActions,
+.rowActionsVisible {
 	opacity: 1;
 }
+
+.menuItem:focus-visible {
+	outline: none;
+}
+

@@ -1,8 +1,10 @@
 import { useParams } from 'react-router';
 import { Heading, Text, Flex, Badge, Stack } from '@artifact-ui/core';
+import { ExternalLinkIcon } from '@/components/icons/icons';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { PageSpinner } from '@/components/page-spinner';
 import { ProductThumbnail } from '@/components/product-thumbnail/product-thumbnail';
+import { formatCurrency } from '@/utils/format';
 import { useProduct } from './api/storefront-queries';
 import { VariantBomSection } from './components/variant-bom-section';
 import shared from '@/styles/shared.module.css';
@@ -46,8 +48,9 @@ const VariantDetailPage = () => {
 						<ProductThumbnail
 							src={variant.image_url ?? product.image_url}
 							alt={variant.name}
+							size="lg"
 						/>
-						<Stack gap="1">
+						<Stack gap="3">
 							<Heading size="5">{variant.name}</Heading>
 							<Flex align="center" gap="3">
 								<Text size="2" color="secondary">
@@ -57,6 +60,33 @@ const VariantDetailPage = () => {
 									<Badge size="1" variant="soft" color="danger">
 										Missing SKU
 									</Badge>
+								)}
+								<Text size="2" color="secondary">
+									{variant.on_sale && variant.sale_price
+										? formatCurrency(variant.sale_price)
+										: formatCurrency(variant.price)}
+								</Text>
+								<Badge
+									size="1"
+									variant="soft"
+									color={product.is_visible ? 'success' : 'neutral'}
+								>
+									{product.is_visible ? 'Visible' : 'Hidden'}
+								</Badge>
+								<Text size="2" color="secondary">
+									{variant.stock_unlimited
+										? 'Unlimited'
+										: `${variant.stock_quantity ?? 0} in stock`}
+								</Text>
+								{product.product_url && (
+									<a
+										href={product.product_url}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="ml-2 text-gray-400 hover:text-gray-600"
+									>
+										<ExternalLinkIcon size={14} />
+									</a>
 								)}
 							</Flex>
 						</Stack>
