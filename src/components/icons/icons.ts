@@ -19,3 +19,7 @@ export { ListChecks as ListChecksIcon } from 'lucide-react';
 export { Settings as SettingsIcon } from 'lucide-react';
 export { Square as SquareIcon } from 'lucide-react';
 export { Store as StorefrontIcon } from 'lucide-react';
+export { Check as CheckIcon } from 'lucide-react';
+export { Link as LinkIcon } from 'lucide-react';
+export { Save as SaveIcon } from 'lucide-react';
+export { X as XIcon } from 'lucide-react';
