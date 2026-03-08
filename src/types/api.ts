@@ -115,6 +115,7 @@ export type LinearEntry = {
 };
 
 export type HardwareEntry = {
+	material_type: string;
 	piece: string;
 	total_count: number;
 };

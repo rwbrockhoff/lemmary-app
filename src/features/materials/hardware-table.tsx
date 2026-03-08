@@ -10,7 +10,7 @@ type HardwareTableProps = {
 export const HardwareTable = ({ items }: HardwareTableProps) => {
 	const { sortedData, sortKey, sortDirection, toggleSort } =
 		useSortableTable(items, {
-			defaultKey: 'piece',
+			defaultKey: 'material_type',
 			defaultDirection: 'asc',
 			storageKey: 'materials-hardware',
 		});
@@ -19,6 +19,13 @@ export const HardwareTable = ({ items }: HardwareTableProps) => {
 		<Table.Root variant="surface" size="2">
 			<Table.Header>
 				<Table.Row>
+					<SortableHeader
+						label="Type"
+						sortKey="material_type"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
 					<SortableHeader
 						label="Piece"
 						sortKey="piece"
@@ -38,8 +45,9 @@ export const HardwareTable = ({ items }: HardwareTableProps) => {
 			</Table.Header>
 			<Table.Body>
 				{sortedData.map((item, index) => (
-					<Table.Row key={`${item.piece}-${index}`}>
-						<Table.Cell>{item.piece}</Table.Cell>
+					<Table.Row key={`${item.material_type}-${item.piece}-${index}`}>
+						<Table.Cell>{item.material_type}</Table.Cell>
+						<Table.Cell>{item.piece || '—'}</Table.Cell>
 						<Table.Cell textAlign="center">{item.total_count}</Table.Cell>
 					</Table.Row>
 				))}
