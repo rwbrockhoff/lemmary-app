@@ -220,6 +220,7 @@ export type ProductVariant = {
 	stock_quantity: number | null;
 	stock_unlimited: boolean;
 	image_url: string | null;
+	bom_item_count: number;
 	created_at: string;
 	updated_at: string;
 };

@@ -1,14 +1,17 @@
-import { Heading, Text, Stack } from '@artifact-ui/core';
-import { ScissorsIcon, RulerIcon, WrenchIcon } from '@/components/icons/icons';
+import { Heading, Text, Stack, Flex, Button, DropdownMenu } from '@artifact-ui/core';
+import { ScissorsIcon, RulerIcon, WrenchIcon, CopyPlusIcon } from '@/components/icons/icons';
+import styles from './variant-bom-section.module.css';
 import { PageSpinner } from '@/components/page-spinner';
-import { useVariantBom } from '../api/bom-queries';
+import { useVariantBom, useCopyBomFromVariant } from '../api/bom-queries';
 import { BomCategorySection } from './bom-category-section/bom-category-section';
+import type { ProductVariant } from '@/types/api';
 
 type VariantBomSectionProps = {
 	variantId: string;
 	variantName: string;
 	platformSku: string | null;
 	productName: string;
+	siblingVariants: ProductVariant[];
 };
 
 export const VariantBomSection = ({
@@ -16,8 +19,10 @@ export const VariantBomSection = ({
 	variantName,
 	platformSku,
 	productName,
+	siblingVariants,
 }: VariantBomSectionProps) => {
 	const { data: bomItems, isLoading, error } = useVariantBom(variantId);
+	const copyMutation = useCopyBomFromVariant(variantId);
 
 	if (isLoading) return <PageSpinner />;
 	if (error) return <Text color="danger">Failed to load BOM data.</Text>;
@@ -26,9 +31,44 @@ export const VariantBomSection = ({
 	const linearItems = (bomItems ?? []).filter((i) => i.measurement === 'linear');
 	const hardwareItems = (bomItems ?? []).filter((i) => i.measurement === 'count');
 
+	const copyableVariants = siblingVariants.filter(
+		(v) => v.id !== variantId && v.platform_sku && v.bom_item_count > 0,
+	);
+
 	return (
 		<Stack gap="8">
-			<Heading size="4">Bill of Materials</Heading>
+			<Flex align="center" justify="between">
+				<Heading size="4">Bill of Materials</Heading>
+				{copyableVariants.length > 0 && platformSku && (
+					<DropdownMenu.DropdownMenu>
+						<DropdownMenu.DropdownMenuTrigger asChild>
+							<Button
+								size="1"
+								variant="outline"
+								color="neutral"
+								iconLeft={<CopyPlusIcon size={14} />}
+								disabled={copyMutation.isPending}
+							>
+								{copyMutation.isPending ? 'Duplicating' : 'Fill from variant'}
+							</Button>
+						</DropdownMenu.DropdownMenuTrigger>
+						<DropdownMenu.DropdownMenuContent size="1" align="end">
+							{copyableVariants.map((v) => (
+								<DropdownMenu.DropdownMenuItem
+									key={v.id}
+									className={styles.copyMenuItem}
+									onClick={() => copyMutation.mutate(v.id)}
+								>
+									{v.name}
+									<Text size="1" color="secondary">
+										{v.bom_item_count} {v.bom_item_count === 1 ? 'item' : 'items'}
+									</Text>
+								</DropdownMenu.DropdownMenuItem>
+							))}
+						</DropdownMenu.DropdownMenuContent>
+					</DropdownMenu.DropdownMenu>
+				)}
+			</Flex>
 
 			{!platformSku && (
 				<Text size="2" color="danger">
@@ -46,6 +86,7 @@ export const VariantBomSection = ({
 						measurement="area"
 						tracksColor
 						tracksSize={false}
+						tracksLength={false}
 						variantId={variantId}
 						variantName={variantName}
 						platformSku={platformSku}
@@ -58,6 +99,7 @@ export const VariantBomSection = ({
 						measurement="linear"
 						tracksColor={false}
 						tracksSize
+						tracksLength
 						variantId={variantId}
 						variantName={variantName}
 						platformSku={platformSku}
@@ -70,6 +112,7 @@ export const VariantBomSection = ({
 						measurement="count"
 						tracksColor={false}
 						tracksSize
+						tracksLength={false}
 						variantId={variantId}
 						variantName={variantName}
 						platformSku={platformSku}

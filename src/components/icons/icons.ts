@@ -26,3 +26,4 @@ export { X as XIcon } from 'lucide-react';
 export { Scissors as ScissorsIcon } from 'lucide-react';
 export { Ruler as RulerIcon } from 'lucide-react';
 export { Wrench as WrenchIcon } from 'lucide-react';
+export { CopyPlus as CopyPlusIcon } from 'lucide-react';

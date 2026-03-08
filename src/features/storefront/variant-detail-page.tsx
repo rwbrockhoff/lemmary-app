@@ -98,6 +98,7 @@ const VariantDetailPage = () => {
 					variantName={variant.name}
 					platformSku={variant.platform_sku}
 					productName={product.name}
+					siblingVariants={product.variants}
 				/>
 			</Stack>
 		</div>

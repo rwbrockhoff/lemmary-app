@@ -6,10 +6,6 @@
 	padding-left: var(--space-2);
 }
 
-.qtyColumn {
-	width: 100px;
-}
-
 .actionsColumn {
 	width: 60px;
 	text-align: center;

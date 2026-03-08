@@ -138,6 +138,23 @@ export const useDeleteBomItem = (variantId: string) => {
 	});
 };
 
+export const useCopyBomFromVariant = (targetVariantId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (sourceVariantId: string) =>
+			api.post<BomItem[]>('/bom/copy', {
+				targetVariantId,
+				sourceVariantId,
+			}),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: bomKeys.forVariant(targetVariantId),
+			});
+		},
+	});
+};
+
 export const useGetOrCreateMaterial = () => {
 	return useMutation({
 		mutationFn: (input: {

@@ -13,6 +13,7 @@ import {
 } from '@artifact-ui/core';
 import {
 	PlusIcon,
+	CopyPlusIcon,
 	TrashIcon,
 	EllipsisHorizontalIcon,
 } from '@/components/icons/icons';
@@ -33,6 +34,7 @@ type BomCategorySectionProps = {
 	measurement: 'area' | 'linear' | 'count';
 	tracksColor: boolean;
 	tracksSize: boolean;
+	tracksLength: boolean;
 	variantId: string;
 	variantName: string;
 	platformSku: string;
@@ -65,18 +67,22 @@ type BomRowProps = {
 	item: BomItem;
 	tracksColor: boolean;
 	tracksSize: boolean;
+	tracksLength: boolean;
 	measurement: string;
 	variantId: string;
 	isNew?: boolean;
+	onDuplicate: (item: BomItem) => void;
 };
 
 const BomRow = ({
 	item,
 	tracksColor,
 	tracksSize,
+	tracksLength,
 	measurement,
 	variantId,
 	isNew,
+	onDuplicate,
 }: BomRowProps) => {
 	const [form, setForm] = useState<RowData>(() => {
 		const data = itemToRowData(item);
@@ -225,7 +231,23 @@ const BomRow = ({
 					/>
 				</Table.Cell>
 			)}
-			<Table.Cell className={styles.qtyColumn}>
+			{tracksLength && (
+				<Table.Cell>
+					<TextField.Standalone
+						label="Length"
+						variant="minimal"
+						size="1"
+						compact
+						override
+						value={form.length}
+						onChange={(e) =>
+							handleFieldChange('length', e.target.value)
+						}
+						placeholder="Length"
+					/>
+				</Table.Cell>
+			)}
+			<Table.Cell >
 				<TextField.Standalone
 					label="Quantity"
 					variant="minimal"
@@ -265,6 +287,15 @@ const BomRow = ({
 						>
 							<DropdownMenu.DropdownMenuItem
 								className={styles.menuItem}
+								onClick={() => onDuplicate(item)}
+							>
+								<Flex align="center" gap="2">
+									<CopyPlusIcon size={14} />
+									Duplicate
+								</Flex>
+							</DropdownMenu.DropdownMenuItem>
+							<DropdownMenu.DropdownMenuItem
+								className={styles.menuItem}
 								onClick={() =>
 									deleteMutation.mutate(item.id)
 								}
@@ -289,6 +320,7 @@ export const BomCategorySection = ({
 	measurement,
 	tracksColor,
 	tracksSize,
+	tracksLength,
 	variantId,
 	variantName,
 	platformSku,
@@ -296,6 +328,22 @@ export const BomCategorySection = ({
 }: BomCategorySectionProps) => {
 	const [newItemId, setNewItemId] = useState<string | null>(null);
 	const createMutation = useCreateBomItem(variantId);
+
+	const dynamicCols = [tracksColor, tracksSize, tracksLength].filter(Boolean).length + 1;
+	const colWidth = `${40 / dynamicCols}%`;
+
+	const handleDuplicate = (item: BomItem) => {
+		createMutation.mutate({
+			measurement,
+			platform_sku: platformSku,
+			product_name: productName,
+			variant: variantName,
+			piece: item.piece,
+			length: item.length,
+			quantity: item.quantity,
+			material_id: item.material_id,
+		});
+	};
 
 	const handleAddItem = () => {
 		createMutation.mutate(
@@ -332,9 +380,19 @@ export const BomCategorySection = ({
 
 			{items.length > 0 && (
 				<Table.Root variant="surface" size="1" className={styles.table}>
+					<colgroup>
+						<col style={{ width: '25%' }} />
+						<col style={{ width: '25%' }} />
+						{tracksColor && <col style={{ width: colWidth }} />}
+						{tracksSize && <col style={{ width: colWidth }} />}
+						{tracksLength && <col style={{ width: colWidth }} />}
+						<col style={{ width: colWidth }} />
+						<col style={{ width: '5%' }} />
+						<col style={{ width: '5%' }} />
+					</colgroup>
 					<Table.Header>
 						<Table.Row>
-							<Table.HeaderCell>
+							<Table.HeaderCell >
 								<Text
 									size="2"
 									weight="medium"
@@ -344,7 +402,7 @@ export const BomCategorySection = ({
 									Type
 								</Text>
 							</Table.HeaderCell>
-							<Table.HeaderCell>
+							<Table.HeaderCell >
 								<Text
 									size="2"
 									weight="medium"
@@ -378,7 +436,19 @@ export const BomCategorySection = ({
 									</Text>
 								</Table.HeaderCell>
 							)}
-							<Table.HeaderCell className={styles.qtyColumn}>
+							{tracksLength && (
+								<Table.HeaderCell>
+									<Text
+										size="2"
+										weight="medium"
+										color="secondary"
+										className={styles.headerLabel}
+									>
+										Length
+									</Text>
+								</Table.HeaderCell>
+							)}
+							<Table.HeaderCell >
 								<Text
 									size="2"
 									weight="medium"
@@ -399,9 +469,11 @@ export const BomCategorySection = ({
 								item={item}
 								tracksColor={tracksColor}
 								tracksSize={tracksSize}
+								tracksLength={tracksLength}
 								measurement={measurement}
 								variantId={variantId}
 								isNew={item.id === newItemId}
+								onDuplicate={handleDuplicate}
 							/>
 						))}
 					</Table.Body>
