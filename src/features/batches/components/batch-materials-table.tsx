@@ -49,7 +49,15 @@ export const BatchMaterialsTable = ({
 							activeSortKey={sortKey}
 							sortDirection={sortDirection}
 							onSort={toggleSort}
-							className="w-1/4"
+						/>
+					)}
+					{isFabric && (
+						<SortableHeader<MaterialSortKey>
+							label="Material"
+							sortKey="material_type"
+							activeSortKey={sortKey}
+							sortDirection={sortDirection}
+							onSort={toggleSort}
 						/>
 					)}
 					<SortableHeader<MaterialSortKey>
@@ -58,10 +66,9 @@ export const BatchMaterialsTable = ({
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-1/4"
 					/>
 					<SortableHeader<MaterialSortKey>
-						label="Detail"
+						label={isFabric ? 'Color' : 'Detail'}
 						sortKey="color"
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
@@ -73,6 +80,7 @@ export const BatchMaterialsTable = ({
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
+						className="w-16"
 					/>
 					{isFabric && (
 						<SortableHeader<MaterialSortKey>
@@ -100,10 +108,13 @@ export const BatchMaterialsTable = ({
 									{material.product_name ?? '—'}
 								</Table.Cell>
 								<Table.Cell>
+									{material.material_type ?? '—'}
+								</Table.Cell>
+								<Table.Cell>
 									{material.piece}
 								</Table.Cell>
 								<Table.Cell>
-									{formatMaterialDetail(material)}
+									{material.color ?? '—'}
 								</Table.Cell>
 								<Table.Cell>
 									{formatMaterialQuantity(material)}
@@ -191,9 +202,6 @@ export const BatchMaterialsTable = ({
 };
 
 function formatMaterialDetail(material: BatchMaterial): string {
-	if (material.category === 'fabric') {
-		return material.color ?? '—';
-	}
 	if (material.category === 'linear') {
 		const type = material.material_type ?? '';
 		const width = material.width ? `${material.width}"` : '';

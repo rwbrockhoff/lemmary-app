@@ -1,5 +1,6 @@
-import { Heading, Text, Card, Grid } from '@artifact-ui/core';
+import { Grid } from '@artifact-ui/core';
 import { formatCurrency } from '@/utils/format';
+import { StatCard } from './stat-card';
 import type { Order } from '@/types/api';
 
 type OrdersSummaryProps = {
@@ -15,32 +16,9 @@ export const OrdersSummary = ({ orders }: OrdersSummaryProps) => {
 
 	return (
 		<Grid columns={3} gap="4" className="mb-6">
-			<Card.Root size="1">
-				<Card.Body>
-					<Text color="secondary" size="2">
-						Open Orders
-					</Text>
-					<Heading size="5">{orders.length}</Heading>
-				</Card.Body>
-			</Card.Root>
-			<Card.Root size="1">
-				<Card.Body>
-					<Text color="secondary" size="2">
-						Total Items
-					</Text>
-					<Heading size="5">{totalItems}</Heading>
-				</Card.Body>
-			</Card.Root>
-			<Card.Root size="1">
-				<Card.Body>
-					<Text color="secondary" size="2">
-						Revenue
-					</Text>
-					<Heading size="5">
-						{formatCurrency(String(totalRevenue))}
-					</Heading>
-				</Card.Body>
-			</Card.Root>
+			<StatCard label="Open Orders" value={orders.length} />
+			<StatCard label="Total Items" value={totalItems} />
+			<StatCard label="Revenue" value={formatCurrency(String(totalRevenue))} />
 		</Grid>
 	);
 };

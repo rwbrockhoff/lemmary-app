@@ -99,6 +99,7 @@ export type ProductionSummaryItem = {
 };
 
 export type FabricEntry = {
+	material_type: string;
 	product_name: string;
 	piece: string;
 	color: string;

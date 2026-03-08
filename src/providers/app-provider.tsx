@@ -10,7 +10,7 @@ type AppProviderProps = {
 export const AppProvider = ({ children }: AppProviderProps) => {
 	return (
 		<StrictMode>
-			<ArtifactProvider theme="light" accent="blush" radius="medium">
+			<ArtifactProvider theme="canvas" accent="canopy" radius="full">
 				<QueryProvider>{children}</QueryProvider>
 			</ArtifactProvider>
 		</StrictMode>

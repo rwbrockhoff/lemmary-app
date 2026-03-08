@@ -27,6 +27,13 @@ export const FabricTable = ({ items }: FabricTableProps) => {
 						onSort={toggleSort}
 					/>
 					<SortableHeader
+						label="Material"
+						sortKey="material_type"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+					/>
+					<SortableHeader
 						label="Piece"
 						sortKey="piece"
 						activeSortKey={sortKey}
@@ -52,8 +59,9 @@ export const FabricTable = ({ items }: FabricTableProps) => {
 			</Table.Header>
 			<Table.Body>
 				{sortedData.map((item, index) => (
-					<Table.Row key={`${item.product_name}-${item.piece}-${item.color}-${index}`}>
+					<Table.Row key={`${item.product_name}-${item.material_type}-${item.piece}-${item.color}-${index}`}>
 						<Table.Cell>{item.product_name}</Table.Cell>
+						<Table.Cell>{item.material_type}</Table.Cell>
 						<Table.Cell>{item.piece}</Table.Cell>
 						<Table.Cell>{item.color || '—'}</Table.Cell>
 						<Table.Cell textAlign="center">{item.total_quantity}</Table.Cell>
