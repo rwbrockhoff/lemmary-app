@@ -249,6 +249,71 @@ export type ProductsResponse = {
 	lastSyncedAt: string | null;
 };
 
+export type BomMaterialType = {
+	id: string;
+	store_id: string;
+	name: string;
+	measurement: 'count' | 'linear' | 'area';
+	unit: string;
+	tracks_color: boolean;
+	tracks_size: boolean;
+	position: number;
+	created_at: string;
+	updated_at: string;
+};
+
+export type Material = {
+	id: string;
+	store_id: string;
+	material_type_id: string;
+	color: string | null;
+	size: string | null;
+	purchase_url: string | null;
+	created_at: string;
+	updated_at: string;
+};
+
+export type BomItem = {
+	id: string;
+	store_id: string;
+	material_id: string | null;
+	measurement: 'count' | 'linear' | 'area';
+	platform_sku: string;
+	product_name: string;
+	variant: string | null;
+	piece: string;
+	length: string | null;
+	quantity: number;
+	position: number;
+	created_at: string;
+	updated_at: string;
+	material_type_id: string | null;
+	material_type_name: string | null;
+	color: string | null;
+	size: string | null;
+	purchase_url: string | null;
+};
+
+export type MaterialCatalogEntry = {
+	material_type_id: string;
+	material_type_name: string;
+	color: string | null;
+	size: string | null;
+	purchase_url: string | null;
+};
+
+export type BomSuggestion = {
+	piece: string;
+	material_id: string | null;
+	measurement: string;
+	material_type_name: string | null;
+	color: string | null;
+	size: string | null;
+	length: string | null;
+	quantity: number;
+	purchase_url: string | null;
+};
+
 export type BatchDetail = {
 	id: string;
 	store_id: string;

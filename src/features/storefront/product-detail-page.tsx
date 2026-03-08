@@ -1,4 +1,4 @@
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import { Heading, Text, Flex, Table, Badge } from '@artifact-ui/core';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { PageSpinner } from '@/components/page-spinner';
@@ -9,6 +9,7 @@ import shared from '@/styles/shared.module.css';
 
 const ProductDetailPage = () => {
 	const { productId } = useParams<{ productId: string }>();
+	const navigate = useNavigate();
 	const { data: product, isLoading, error } = useProduct(productId!);
 
 	if (isLoading) return <PageSpinner />;
@@ -58,7 +59,13 @@ const ProductDetailPage = () => {
 				</Table.Header>
 				<Table.Body>
 					{product.variants.map((variant) => (
-						<Table.Row key={variant.id}>
+						<Table.Row
+							key={variant.id}
+							className="cursor-pointer"
+							onClick={() =>
+								navigate(`/storefront/${productId}/${variant.id}`)
+							}
+						>
 							<Table.Cell>
 								<Flex align="center" gap="3">
 									<ProductThumbnail
