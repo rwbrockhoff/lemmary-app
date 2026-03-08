@@ -1,0 +1,7 @@
+.rowActions {
+	opacity: 0;
+}
+
+.row:hover .rowActions {
+	opacity: 1;
+}
