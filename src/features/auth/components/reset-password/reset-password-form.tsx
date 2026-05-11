@@ -1,8 +1,14 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router';
 import { TextField, Button, Heading, Text, Stack } from '@artifact-ui/core';
 import { useResetPasswordFlow } from './use-reset-password-flow';
 import { ResetPasswordSuccess } from './reset-password-success';
+import {
+	resetPasswordSchema,
+	type ResetPasswordFormData,
+} from '../../schemas/auth-schemas';
 
 export const ResetPasswordForm = () => {
 	const [accessToken] = useState<string | null>(() => {
@@ -10,14 +16,14 @@ export const ResetPasswordForm = () => {
 		const params = new URLSearchParams(hash);
 		return params.get('access_token');
 	});
-	const [newPassword, setNewPassword] = useState('');
 	const mutation = useResetPasswordFlow();
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!accessToken) return;
-		mutation.mutate({ accessToken, newPassword });
-	};
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<ResetPasswordFormData>({
+		resolver: zodResolver(resetPasswordSchema),
+	});
 
 	if (mutation.isSuccess) {
 		return <ResetPasswordSuccess />;
@@ -40,23 +46,31 @@ export const ResetPasswordForm = () => {
 	const errorMessage =
 		mutation.error instanceof Error ? mutation.error.message : 'Something went wrong';
 
+	const onSubmit = (data: ResetPasswordFormData) => {
+		mutation.mutate({ accessToken, newPassword: data.newPassword });
+	};
+
 	return (
-		<form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit(onSubmit)}>
 			<Stack gap="4" className="w-72">
 				<Heading size="5">Set a new password</Heading>
 				<TextField.Standalone
 					type="password"
 					placeholder="New password (min 8 characters)"
-					value={newPassword}
-					onChange={(e) => setNewPassword(e.target.value)}
 					autoFocus
+					{...register('newPassword')}
+					error={
+						errors.newPassword
+							? { error: true, message: errors.newPassword.message ?? '' }
+							: undefined
+					}
 				/>
 				{mutation.isError && (
 					<Text size="2" color="danger">
 						{errorMessage}
 					</Text>
 				)}
-				<Button type="submit" disabled={mutation.isPending || newPassword.length < 8}>
+				<Button type="submit" disabled={mutation.isPending}>
 					{mutation.isPending ? 'Updating...' : 'Update password'}
 				</Button>
 			</Stack>
