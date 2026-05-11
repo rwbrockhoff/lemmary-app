@@ -4,6 +4,8 @@ import { AppLayout } from '@/layout/app-layout';
 import { AuthGuard } from '@/features/auth/auth-guard';
 
 const LoginPage = lazy(() => import('@/features/auth/routes/login'));
+const RegisterPage = lazy(() => import('@/features/auth/routes/register'));
+
 const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
 const OrderDetailPage = lazy(() => import('@/features/orders/order-detail-page'));
 const ProductionPage = lazy(() => import('@/features/production/production-page'));
@@ -24,6 +26,14 @@ const router = createBrowserRouter([
 		element: (
 			<Suspense>
 				<LoginPage />
+			</Suspense>
+		),
+	},
+	{
+		path: '/register',
+		element: (
+			<Suspense>
+				<RegisterPage />
 			</Suspense>
 		),
 	},

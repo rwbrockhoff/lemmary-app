@@ -1,25 +1,32 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { TextField, Button, Heading, Text, Stack } from '@artifact-ui/core';
-import { useLoginFlow } from './use-login-flow';
+import { useRegisterFlow } from './use-register-flow';
+import { RegisterSuccess } from './register-success';
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const loginMutation = useLoginFlow();
+	const registerMutation = useRegisterFlow();
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		loginMutation.mutate({ email, password });
+		registerMutation.mutate({ email, password });
 	};
 
+	if (registerMutation.isSuccess && registerMutation.data) {
+		return <RegisterSuccess email={registerMutation.data.email} />;
+	}
+
 	const errorMessage =
-		loginMutation.error instanceof Error ? loginMutation.error.message : 'Login failed';
+		registerMutation.error instanceof Error
+			? registerMutation.error.message
+			: 'Registration failed';
 
 	return (
 		<form onSubmit={handleSubmit}>
 			<Stack gap="4" className="w-72">
-				<Heading size="5">Lemmary</Heading>
+				<Heading size="5">Create your account</Heading>
 				<TextField.Standalone
 					type="email"
 					placeholder="Email"
@@ -29,20 +36,22 @@ export const LoginForm = () => {
 				/>
 				<TextField.Standalone
 					type="password"
-					placeholder="Password"
+					placeholder="Password (min 8 characters)"
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 				/>
-				{loginMutation.isError && (
+				{registerMutation.isError && (
 					<Text size="2" color="danger">
 						{errorMessage}
 					</Text>
 				)}
-				<Button type="submit" disabled={loginMutation.isPending || !email || !password}>
-					{loginMutation.isPending ? 'Signing in...' : 'Sign in'}
+				<Button
+					type="submit"
+					disabled={registerMutation.isPending || !email || password.length < 8}>
+					{registerMutation.isPending ? 'Creating account...' : 'Sign up'}
 				</Button>
 				<Text size="2">
-					Don't have an account? <Link to="/register">Sign up</Link>
+					Already have an account? <Link to="/login">Sign in</Link>
 				</Text>
 			</Stack>
 		</form>
