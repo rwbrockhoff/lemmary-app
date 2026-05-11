@@ -1,6 +1,14 @@
+export type AuthUser = {
+	userId: string;
+	email: string;
+	firstName: string | null;
+	lastName: string | null;
+	avatarUrl: string | null;
+};
+
 export type AuthStatusResponse = {
 	isAuthenticated: boolean;
-	userId: string | null;
+	user: AuthUser | null;
 };
 
 export type LoginResponse = {

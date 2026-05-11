@@ -5,13 +5,15 @@ import { useRegisterFlow } from './use-register-flow';
 import { RegisterSuccess } from './register-success';
 
 export const RegisterForm = () => {
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const registerMutation = useRegisterFlow();
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		registerMutation.mutate({ email, password });
+		registerMutation.mutate({ firstName, lastName, email, password });
 	};
 
 	if (registerMutation.isSuccess && registerMutation.data) {
@@ -28,11 +30,23 @@ export const RegisterForm = () => {
 			<Stack gap="4" className="w-72">
 				<Heading size="5">Create your account</Heading>
 				<TextField.Standalone
+					type="text"
+					placeholder="First name"
+					value={firstName}
+					onChange={(e) => setFirstName(e.target.value)}
+					autoFocus
+				/>
+				<TextField.Standalone
+					type="text"
+					placeholder="Last name"
+					value={lastName}
+					onChange={(e) => setLastName(e.target.value)}
+				/>
+				<TextField.Standalone
 					type="email"
 					placeholder="Email"
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
-					autoFocus
 				/>
 				<TextField.Standalone
 					type="password"
@@ -47,7 +61,13 @@ export const RegisterForm = () => {
 				)}
 				<Button
 					type="submit"
-					disabled={registerMutation.isPending || !email || password.length < 8}>
+					disabled={
+						registerMutation.isPending ||
+						!firstName ||
+						!lastName ||
+						!email ||
+						password.length < 8
+					}>
 					{registerMutation.isPending ? 'Creating account...' : 'Sign up'}
 				</Button>
 				<Text size="2">
