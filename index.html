@@ -1,9 +1,28 @@
 <!doctype html>
-<html lang="en" data-theme="light" data-accent="blush">
+<html lang="en" data-accent="patina" data-radius="medium">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Assemblr</title>
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta
+			name="description"
+			content="Production management dashboard for makers — automated reporting, BOM management, and order tracking." />
+		<title>Lemmary — Production management for makers</title>
+		<script>
+			(function () {
+				try {
+					var stored = localStorage.getItem('artifact-theme');
+					var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+					var theme =
+						stored === 'light' || stored === 'dark'
+							? stored
+							: systemDark
+								? 'dark'
+								: 'light';
+					document.documentElement.setAttribute('data-theme', theme);
+				} catch (e) {}
+			})();
+		</script>
 	</head>
 	<body>
 		<div id="root"></div>

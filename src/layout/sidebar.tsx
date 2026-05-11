@@ -1,6 +1,15 @@
 import { NavLink } from 'react-router';
-import { Heading } from '@artifact-ui/core';
-import { OrdersIcon, StorefrontIcon, ProductionIcon, MaterialsIcon, BatchesIcon, WorkflowIcon, SidebarIcon, SettingsIcon } from '@/components/icons';
+import {
+	OrdersIcon,
+	StorefrontIcon,
+	ProductionIcon,
+	MaterialsIcon,
+	BatchesIcon,
+	WorkflowIcon,
+	SidebarIcon,
+} from '@/components/icons';
+import { BrandMark } from '@/components/brand-mark';
+import { SidebarUserMenu } from './sidebar-user-menu';
 import styles from './sidebar.module.css';
 
 type SidebarProps = {
@@ -15,16 +24,21 @@ const navItems = [
 	{ to: '/materials', label: 'Materials', icon: MaterialsIcon },
 	{ to: '/workflow', label: 'Workflow', icon: WorkflowIcon },
 	{ to: '/batches', label: 'Batches', icon: BatchesIcon },
-	{ to: '/settings', label: 'Settings', icon: SettingsIcon },
 ];
 
 export const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 	return (
-		<aside className={styles.sidebar} data-collapsed={isCollapsed} aria-label="Main navigation">
+		<aside
+			className={styles.sidebar}
+			data-collapsed={isCollapsed}
+			aria-label="Main navigation">
 			<div className={styles.container}>
 				<div className={styles.header}>
-					{!isCollapsed && <Heading size="4">Assemblr</Heading>}
-					<button className={styles.toggleButton} onClick={onToggle} aria-label="Toggle sidebar">
+					{!isCollapsed && <BrandMark size="sm" />}
+					<button
+						className={styles.toggleButton}
+						onClick={onToggle}
+						aria-label="Toggle sidebar">
 						<SidebarIcon size={18} />
 					</button>
 				</div>
@@ -37,13 +51,16 @@ export const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 							end
 							className={({ isActive }) =>
 								`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-							}
-						>
+							}>
 							<Icon size={18} />
 							{!isCollapsed && label}
 						</NavLink>
 					))}
 				</nav>
+
+				<div className={styles.footer}>
+					<SidebarUserMenu isCollapsed={isCollapsed} />
+				</div>
 			</div>
 		</aside>
 	);

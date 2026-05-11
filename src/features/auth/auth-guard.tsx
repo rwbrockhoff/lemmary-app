@@ -1,10 +1,12 @@
 import { Navigate, Outlet } from 'react-router';
-import { getAuthToken } from '@/api/client';
+import { useAuthStatus } from './hooks/use-auth-status';
 
 export const AuthGuard = () => {
-	const token = getAuthToken();
+	const { data, isLoading } = useAuthStatus();
 
-	if (!token) {
+	if (isLoading) return null;
+
+	if (!data?.isAuthenticated) {
 		return <Navigate to="/login" replace />;
 	}
 

@@ -1,0 +1,8 @@
+.container {
+	min-height: 100vh;
+	background: var(--color-bg-subtle);
+}
+
+.card {
+	width: 24rem;
+}

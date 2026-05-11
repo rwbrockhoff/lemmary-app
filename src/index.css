@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+html {
+	background: var(--color-bg-default);
+}
+
 tr[class] {
 	transition: none;
 }

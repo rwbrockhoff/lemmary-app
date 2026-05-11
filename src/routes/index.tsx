@@ -3,7 +3,16 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { AppLayout } from '@/layout/app-layout';
 import { AuthGuard } from '@/features/auth/auth-guard';
 
-const LoginPage = lazy(() => import('@/features/auth/login-page'));
+const LoginPage = lazy(() => import('@/features/auth/routes/login'));
+const RegisterPage = lazy(() => import('@/features/auth/routes/register'));
+const CallbackPage = lazy(() => import('@/features/auth/routes/callback'));
+const ForgotPasswordPage = lazy(
+	() => import('@/features/auth/routes/forgot-password'),
+);
+const ResetPasswordPage = lazy(
+	() => import('@/features/auth/routes/reset-password'),
+);
+
 const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
 const OrderDetailPage = lazy(() => import('@/features/orders/order-detail-page'));
 const ProductionPage = lazy(() => import('@/features/production/production-page'));
@@ -24,6 +33,38 @@ const router = createBrowserRouter([
 		element: (
 			<Suspense>
 				<LoginPage />
+			</Suspense>
+		),
+	},
+	{
+		path: '/register',
+		element: (
+			<Suspense>
+				<RegisterPage />
+			</Suspense>
+		),
+	},
+	{
+		path: '/auth/callback',
+		element: (
+			<Suspense>
+				<CallbackPage />
+			</Suspense>
+		),
+	},
+	{
+		path: '/forgot-password',
+		element: (
+			<Suspense>
+				<ForgotPasswordPage />
+			</Suspense>
+		),
+	},
+	{
+		path: '/auth/reset-password',
+		element: (
+			<Suspense>
+				<ResetPasswordPage />
 			</Suspense>
 		),
 	},
