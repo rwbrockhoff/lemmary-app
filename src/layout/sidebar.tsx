@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router';
 import {
+	DashboardIcon,
 	OrdersIcon,
 	StorefrontIcon,
 	ProductionIcon,
@@ -17,13 +18,27 @@ type SidebarProps = {
 	onToggle: () => void;
 };
 
-const navItems = [
-	{ to: '/', label: 'Orders', icon: OrdersIcon },
-	{ to: '/storefront', label: 'Storefront', icon: StorefrontIcon },
-	{ to: '/production', label: 'Production', icon: ProductionIcon },
-	{ to: '/materials', label: 'Materials', icon: MaterialsIcon },
-	{ to: '/workflow', label: 'Workflow', icon: WorkflowIcon },
-	{ to: '/batches', label: 'Batches', icon: BatchesIcon },
+const navSections = [
+	{
+		label: 'Operations',
+		items: [
+			{ to: '/', label: 'Dashboard', icon: DashboardIcon },
+			{ to: '/orders', label: 'Orders', icon: OrdersIcon },
+			{ to: '/workflow', label: 'Workflow', icon: WorkflowIcon },
+			{ to: '/batches', label: 'Batches', icon: BatchesIcon },
+		],
+	},
+	{
+		label: 'Reports',
+		items: [
+			{ to: '/materials', label: 'Materials', icon: MaterialsIcon },
+			{ to: '/production', label: 'Production', icon: ProductionIcon },
+		],
+	},
+	{
+		label: 'Setup',
+		items: [{ to: '/storefront', label: 'Storefront', icon: StorefrontIcon }],
+	},
 ];
 
 export const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
@@ -44,17 +59,22 @@ export const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 				</div>
 
 				<nav className={styles.nav}>
-					{navItems.map(({ to, label, icon: Icon }) => (
-						<NavLink
-							key={to}
-							to={to}
-							end
-							className={({ isActive }) =>
-								`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-							}>
-							<Icon size={18} />
-							{!isCollapsed && label}
-						</NavLink>
+					{navSections.map((section) => (
+						<div key={section.label} className={styles.section}>
+							{!isCollapsed && <div className={styles.sectionLabel}>{section.label}</div>}
+							{section.items.map(({ to, label, icon: Icon }) => (
+								<NavLink
+									key={to}
+									to={to}
+									end
+									className={({ isActive }) =>
+										`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+									}>
+									<Icon size={18} />
+									{!isCollapsed && label}
+								</NavLink>
+							))}
+						</div>
 					))}
 				</nav>
 

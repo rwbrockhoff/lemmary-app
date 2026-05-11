@@ -13,6 +13,7 @@ const ResetPasswordPage = lazy(
 	() => import('@/features/auth/routes/reset-password'),
 );
 
+const DashboardPage = lazy(() => import('@/features/dashboard/dashboard-page'));
 const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
 const OrderDetailPage = lazy(() => import('@/features/orders/order-detail-page'));
 const ProductionPage = lazy(() => import('@/features/production/production-page'));
@@ -76,6 +77,14 @@ const router = createBrowserRouter([
 				children: [
 					{
 						path: '/',
+						element: (
+							<Suspense>
+								<DashboardPage />
+							</Suspense>
+						),
+					},
+					{
+						path: '/orders',
 						element: (
 							<Suspense>
 								<OrdersPage />
