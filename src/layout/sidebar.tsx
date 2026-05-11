@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router';
 import {
+	DashboardIcon,
 	OrdersIcon,
 	StorefrontIcon,
 	ProductionIcon,
@@ -18,7 +19,8 @@ type SidebarProps = {
 };
 
 const navItems = [
-	{ to: '/', label: 'Orders', icon: OrdersIcon },
+	{ to: '/', label: 'Dashboard', icon: DashboardIcon },
+	{ to: '/orders', label: 'Orders', icon: OrdersIcon },
 	{ to: '/storefront', label: 'Storefront', icon: StorefrontIcon },
 	{ to: '/production', label: 'Production', icon: ProductionIcon },
 	{ to: '/materials', label: 'Materials', icon: MaterialsIcon },

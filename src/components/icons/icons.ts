@@ -31,3 +31,4 @@ export { LogOut as LogoutIcon } from 'lucide-react';
 export { SquaresUnite as LogoIcon } from 'lucide-react';
 export { Sun as SunIcon } from 'lucide-react';
 export { Moon as MoonIcon } from 'lucide-react';
+export { LayoutDashboard as DashboardIcon } from 'lucide-react';
