@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { TextField, Button, Heading, Text, Stack } from '@artifact-ui/core';
 import { useRegisterFlow } from './use-register-flow';
 import { RegisterSuccess } from './register-success';
+import { GoogleButton, OrDivider } from '../google-auth/google-button';
 
 export const RegisterForm = () => {
 	const [firstName, setFirstName] = useState('');
@@ -29,6 +30,8 @@ export const RegisterForm = () => {
 		<form onSubmit={handleSubmit}>
 			<Stack gap="4" className="w-72">
 				<Heading size="5">Create your account</Heading>
+				<GoogleButton label="Sign up with Google" />
+				<OrDivider />
 				<TextField.Standalone
 					type="text"
 					placeholder="First name"

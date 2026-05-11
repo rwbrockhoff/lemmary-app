@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { TextField, Button, Heading, Text, Stack } from '@artifact-ui/core';
 import { useLoginFlow } from './use-login-flow';
+import { GoogleButton, OrDivider } from '../google-auth/google-button';
 
 export const LoginForm = () => {
 	const [email, setEmail] = useState('');
@@ -20,6 +21,8 @@ export const LoginForm = () => {
 		<form onSubmit={handleSubmit}>
 			<Stack gap="4" className="w-72">
 				<Heading size="5">Lemmary</Heading>
+				<GoogleButton label="Sign in with Google" />
+				<OrDivider />
 				<TextField.Standalone
 					type="email"
 					placeholder="Email"
