@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router';
-import { TextField, Button, Heading, Text, Stack } from '@artifact-ui/core';
+import { TextField, Button, Text, Stack } from '@artifact-ui/core';
 import { useLoginFlow } from './use-login-flow';
 import { GoogleButton, OrDivider } from '../google-auth/google-button';
 import { loginSchema, type LoginFormData } from '../../schemas/auth-schemas';
@@ -25,8 +25,7 @@ export const LoginForm = () => {
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
-			<Stack gap="4" className="w-72">
-				<Heading size="5">Lemmary</Heading>
+			<Stack gap="4">
 				<GoogleButton label="Sign in with Google" />
 				<OrDivider />
 				<TextField.Standalone
@@ -55,8 +54,11 @@ export const LoginForm = () => {
 						{errorMessage}
 					</Text>
 				)}
-				<Button type="submit" disabled={loginMutation.isPending}>
-					{loginMutation.isPending ? 'Signing in...' : 'Sign in'}
+				<Button
+					type="submit"
+					loading={loginMutation.isPending}
+					disabled={loginMutation.isPending}>
+					Sign in
 				</Button>
 				<Text size="2">
 					<Link to="/forgot-password">Forgot password?</Link>

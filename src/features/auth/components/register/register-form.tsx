@@ -32,7 +32,7 @@ export const RegisterForm = () => {
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
-			<Stack gap="4" className="w-72">
+			<Stack gap="4">
 				<Heading size="5">Create your account</Heading>
 				<GoogleButton label="Sign up with Google" />
 				<OrDivider />
@@ -82,8 +82,11 @@ export const RegisterForm = () => {
 						{errorMessage}
 					</Text>
 				)}
-				<Button type="submit" disabled={registerMutation.isPending}>
-					{registerMutation.isPending ? 'Creating account...' : 'Sign up'}
+				<Button
+					type="submit"
+					loading={registerMutation.isPending}
+					disabled={registerMutation.isPending}>
+					Sign up
 				</Button>
 				<Text size="2">
 					Already have an account? <Link to="/login">Sign in</Link>

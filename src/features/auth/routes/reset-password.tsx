@@ -1,11 +1,11 @@
-import { Flex } from '@artifact-ui/core';
+import { AuthLayout } from '@/features/auth/components/auth-layout';
 import { ResetPasswordForm } from '@/features/auth/components/reset-password/reset-password-form';
 
 const ResetPasswordPage = () => {
 	return (
-		<Flex align="center" justify="center" className="min-h-screen">
+		<AuthLayout>
 			<ResetPasswordForm />
-		</Flex>
+		</AuthLayout>
 	);
 };
 

@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
-import { Heading, Text, Stack, Flex } from '@artifact-ui/core';
+import { Heading, Text, Stack } from '@artifact-ui/core';
+import { AuthLayout } from '@/features/auth/components/auth-layout';
 import { useCallbackFlow } from '@/features/auth/components/callback/use-callback-flow';
 
 const CallbackPage = () => {
@@ -8,8 +9,8 @@ const CallbackPage = () => {
 	const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
 
 	return (
-		<Flex align="center" justify="center" className="min-h-screen">
-			<Stack gap="4" className="w-72">
+		<AuthLayout>
+			<Stack gap="4">
 				{isError ? (
 					<>
 						<Heading size="5">Sign-in error</Heading>
@@ -27,7 +28,7 @@ const CallbackPage = () => {
 					</>
 				)}
 			</Stack>
-		</Flex>
+		</AuthLayout>
 	);
 };
 

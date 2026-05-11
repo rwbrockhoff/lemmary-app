@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router';
-import { Heading } from '@artifact-ui/core';
 import {
 	OrdersIcon,
 	StorefrontIcon,
@@ -9,6 +8,7 @@ import {
 	WorkflowIcon,
 	SidebarIcon,
 } from '@/components/icons';
+import { BrandMark } from '@/components/brand-mark';
 import { SidebarUserMenu } from './sidebar-user-menu';
 import styles from './sidebar.module.css';
 
@@ -34,7 +34,7 @@ export const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 			aria-label="Main navigation">
 			<div className={styles.container}>
 				<div className={styles.header}>
-					{!isCollapsed && <Heading size="4">Lemmary</Heading>}
+					{!isCollapsed && <BrandMark size="sm" />}
 					<button
 						className={styles.toggleButton}
 						onClick={onToggle}

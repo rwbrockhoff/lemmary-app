@@ -32,7 +32,7 @@ export const ForgotPasswordForm = () => {
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
-			<Stack gap="4" className="w-72">
+			<Stack gap="4">
 				<Heading size="5">Reset your password</Heading>
 				<Text size="2">
 					Enter your email and we'll send you a link to reset your password.
@@ -53,8 +53,8 @@ export const ForgotPasswordForm = () => {
 						{errorMessage}
 					</Text>
 				)}
-				<Button type="submit" disabled={mutation.isPending}>
-					{mutation.isPending ? 'Sending...' : 'Send reset link'}
+				<Button type="submit" loading={mutation.isPending} disabled={mutation.isPending}>
+					Send reset link
 				</Button>
 				<Text size="2">
 					<Link to="/login">Back to sign in</Link>

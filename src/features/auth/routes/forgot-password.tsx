@@ -1,11 +1,11 @@
-import { Flex } from '@artifact-ui/core';
+import { AuthLayout } from '@/features/auth/components/auth-layout';
 import { ForgotPasswordForm } from '@/features/auth/components/forgot-password/forgot-password-form';
 
 const ForgotPasswordPage = () => {
 	return (
-		<Flex align="center" justify="center" className="min-h-screen">
+		<AuthLayout>
 			<ForgotPasswordForm />
-		</Flex>
+		</AuthLayout>
 	);
 };
 

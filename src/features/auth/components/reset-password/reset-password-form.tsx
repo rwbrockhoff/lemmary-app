@@ -31,7 +31,7 @@ export const ResetPasswordForm = () => {
 
 	if (!accessToken) {
 		return (
-			<Stack gap="4" className="w-72">
+			<Stack gap="4">
 				<Heading size="5">Invalid reset link</Heading>
 				<Text size="2">
 					This reset link is missing or invalid. Try requesting a new one.
@@ -52,7 +52,7 @@ export const ResetPasswordForm = () => {
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
-			<Stack gap="4" className="w-72">
+			<Stack gap="4">
 				<Heading size="5">Set a new password</Heading>
 				<TextField.Standalone
 					type="password"
@@ -70,8 +70,11 @@ export const ResetPasswordForm = () => {
 						{errorMessage}
 					</Text>
 				)}
-				<Button type="submit" disabled={mutation.isPending}>
-					{mutation.isPending ? 'Updating...' : 'Update password'}
+				<Button
+					type="submit"
+					loading={mutation.isPending}
+					disabled={mutation.isPending}>
+					Update password
 				</Button>
 			</Stack>
 		</form>

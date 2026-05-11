@@ -1,11 +1,11 @@
-import { Flex } from '@artifact-ui/core';
+import { AuthLayout } from '@/features/auth/components/auth-layout';
 import { LoginForm } from '@/features/auth/components/login/login-form';
 
 const LoginPage = () => {
 	return (
-		<Flex align="center" justify="center" className="min-h-screen">
+		<AuthLayout>
 			<LoginForm />
-		</Flex>
+		</AuthLayout>
 	);
 };
 

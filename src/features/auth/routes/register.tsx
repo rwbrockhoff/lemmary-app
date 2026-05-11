@@ -1,11 +1,11 @@
-import { Flex } from '@artifact-ui/core';
+import { AuthLayout } from '@/features/auth/components/auth-layout';
 import { RegisterForm } from '@/features/auth/components/register/register-form';
 
 const RegisterPage = () => {
 	return (
-		<Flex align="center" justify="center" className="min-h-screen">
+		<AuthLayout>
 			<RegisterForm />
-		</Flex>
+		</AuthLayout>
 	);
 };
 
