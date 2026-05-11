@@ -18,8 +18,7 @@ export const Breadcrumbs = ({ segments }: BreadcrumbsProps) => {
 				<button
 					key={segment.to}
 					onClick={() => navigate(segment.to)}
-					className="text-sm opacity-60 hover:opacity-100 cursor-pointer"
-				>
+					className="text-sm text-[var(--color-text-subtle)] hover:text-[var(--color-text-default)] cursor-pointer">
 					{segment.label} /
 				</button>
 			))}
