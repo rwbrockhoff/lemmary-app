@@ -1,5 +1,6 @@
 import { Heading, Flex } from '@artifact-ui/core';
 import { LogoIcon } from './icons';
+import styles from './brand-mark.module.css';
 
 type BrandMarkProps = {
 	size?: 'sm' | 'md' | 'lg';
@@ -15,7 +16,7 @@ export const BrandMark = ({ size = 'md' }: BrandMarkProps) => {
 	const { icon, heading } = sizeMap[size];
 
 	return (
-		<Flex align="center" gap="2">
+		<Flex align="center" gap="2" className={styles.brandMark}>
 			<LogoIcon size={icon} />
 			<Heading size={heading}>Lemmary</Heading>
 		</Flex>

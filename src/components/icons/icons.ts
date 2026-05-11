@@ -29,3 +29,5 @@ export { Wrench as WrenchIcon } from 'lucide-react';
 export { CopyPlus as CopyPlusIcon } from 'lucide-react';
 export { LogOut as LogoutIcon } from 'lucide-react';
 export { SquaresUnite as LogoIcon } from 'lucide-react';
+export { Sun as SunIcon } from 'lucide-react';
+export { Moon as MoonIcon } from 'lucide-react';

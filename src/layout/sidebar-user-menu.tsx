@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router';
 import { Avatar, DropdownMenu, Stack, Text } from '@artifact-ui/core';
-import { SettingsIcon, LogoutIcon } from '@/components/icons';
+import { SettingsIcon, LogoutIcon, SunIcon, MoonIcon } from '@/components/icons';
 import { useAuthStatus } from '@/features/auth/hooks/use-auth-status';
 import { useLogoutFlow } from '@/features/auth/hooks/use-logout-flow';
+import { useTheme } from '@/providers';
 import styles from './sidebar-user-menu.module.css';
 
 type SidebarUserMenuProps = {
@@ -13,6 +14,7 @@ export const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
 	const navigate = useNavigate();
 	const { data } = useAuthStatus();
 	const logoutMutation = useLogoutFlow();
+	const { theme, toggleTheme } = useTheme();
 
 	const user = data?.user;
 	if (!user) return null;
@@ -47,6 +49,12 @@ export const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
 					<span className={styles.menuItem}>
 						<SettingsIcon size={16} />
 						Settings
+					</span>
+				</DropdownMenu.DropdownMenuItem>
+				<DropdownMenu.DropdownMenuItem onClick={toggleTheme}>
+					<span className={styles.menuItem}>
+						{theme === 'light' ? <MoonIcon size={16} /> : <SunIcon size={16} />}
+						{theme === 'light' ? 'Dark mode' : 'Light mode'}
 					</span>
 				</DropdownMenu.DropdownMenuItem>
 				<DropdownMenu.DropdownMenuItem onClick={() => logoutMutation.mutate()}>

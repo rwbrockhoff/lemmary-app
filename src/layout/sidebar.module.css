@@ -50,13 +50,11 @@
 	gap: var(--space-3);
 	padding: var(--space-2) var(--space-3);
 	border-radius: var(--radius-2);
-	color: var(--color-text-secondary);
+	color: var(--color-text-subtle);
 	text-decoration: none;
 	font-size: var(--font-size-2);
 	white-space: nowrap;
-	transition:
-		background 0.15s ease,
-		color 0.15s ease;
+	transition: color 0.15s ease;
 }
 
 .navLink svg {
@@ -65,13 +63,13 @@
 
 .navLink:hover {
 	background: var(--color-bg-muted);
-	color: var(--color-text-primary);
+	color: var(--color-text-default);
 	filter: none;
 }
 
 .navLinkActive {
 	background: var(--color-bg-muted);
-	color: var(--color-text-primary);
+	color: var(--color-text-default);
 	font-weight: 500;
 }
 
@@ -88,10 +86,10 @@
 	justify-content: center;
 	padding: var(--space-1);
 	border-radius: var(--radius-2);
-	color: var(--color-text-secondary);
+	color: var(--color-text-subtle);
 }
 
 .toggleButton:hover {
 	background: var(--color-bg-muted);
-	color: var(--color-text-primary);
+	color: var(--color-text-default);
 }
