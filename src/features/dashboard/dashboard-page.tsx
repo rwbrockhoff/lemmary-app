@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Heading, Text, SegmentControl, Flex } from '@artifact-ui/core';
+import { Heading, Text, SegmentControl, Flex, cn } from '@artifact-ui/core';
+import { DashboardIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
+import shared from '@/styles/shared.module.css';
 import { useDashboard, type DashboardRange } from './api/dashboard-queries';
 import { KpiCard } from './components/kpi-card';
 import { DueSoonList } from './components/due-soon-list';
@@ -30,7 +32,7 @@ const DashboardPage = () => {
 	if (isLoading) return <PageSpinner />;
 	if (error || !data) {
 		return (
-			<div className={styles.page}>
+			<div className={cn(shared.pageContainer, styles.page)}>
 				<Text color="danger">Failed to load dashboard. Try again later.</Text>
 			</div>
 		);
@@ -43,10 +45,12 @@ const DashboardPage = () => {
 		avgLeadTime.target !== null ? `Target: ${avgLeadTime.target}d` : undefined;
 
 	return (
-		<div className={styles.page}>
+		<div className={cn(shared.pageContainer, styles.page)}>
 			<Flex justify="between" align="center" className={styles.headerRow}>
 				<div className={styles.header}>
-					<Heading size="6">Dashboard</Heading>
+					<Heading size="6" iconLeft={<DashboardIcon size={20} />}>
+						Dashboard
+					</Heading>
 					<Text size="2" color="secondary">
 						Overview of orders, revenue, and production
 					</Text>

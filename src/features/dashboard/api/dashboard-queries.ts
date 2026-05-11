@@ -26,11 +26,16 @@ export type DashboardData = {
 		dueDate: string | null;
 		daysUntilDue: number | null;
 		grandTotal: string | null;
+		itemCount: number;
+		itemsCompleted: number;
+		workflowStageName: string | null;
+		workflowStageColor: string | null;
 	}>;
 	ordersTrend: Array<{
 		date: string;
 		count: number;
 		revenue: string;
+		avgOrderValue: string;
 	}>;
 };
 

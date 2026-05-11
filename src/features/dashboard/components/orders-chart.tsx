@@ -9,7 +9,8 @@ import {
 	type TooltipItem,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { Card, Heading, Text } from '@artifact-ui/core';
+import { Card, Heading, Text, Flex } from '@artifact-ui/core';
+import { TrendingUpIcon } from '@/components/icons';
 import type { DashboardBucket, DashboardData } from '../api/dashboard-queries';
 import styles from './orders-chart.module.css';
 
@@ -52,16 +53,16 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 				yAxisID: 'yOrders',
 			},
 			{
-				label: 'Revenue',
-				data: data.map((d) => Number(d.revenue)),
-				borderColor: 'rgb(156, 174, 184)',
-				backgroundColor: 'rgba(156, 174, 184, 0.08)',
+				label: 'Avg Order Value',
+				data: data.map((d) => Number(d.avgOrderValue)),
+				borderColor: 'rgb(178, 192, 200)',
+				backgroundColor: 'rgba(178, 192, 200, 0.08)',
 				tension: 0.3,
 				fill: false,
 				borderDash: [6, 4],
 				pointRadius: 3,
 				pointHoverRadius: 5,
-				yAxisID: 'yRevenue',
+				yAxisID: 'yAov',
 			},
 		],
 	};
@@ -77,8 +78,8 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 					label: (ctx: TooltipItem<'line'>) => {
 						const value = ctx.parsed.y;
 						if (value === null) return '';
-						if (ctx.dataset.label === 'Revenue')
-							return `Revenue: ${formatCurrency(value)}`;
+						if (ctx.dataset.label === 'Avg Order Value')
+							return `AOV: ${formatCurrency(value)}`;
 						return `Orders: ${value}`;
 					},
 				},
@@ -93,7 +94,7 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 				ticks: { precision: 0 },
 				title: { display: true, text: 'Orders' },
 			},
-			yRevenue: {
+			yAov: {
 				type: 'linear' as const,
 				position: 'right' as const,
 				beginAtZero: true,
@@ -101,7 +102,7 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 				ticks: {
 					callback: (value: number | string) => formatCurrency(Number(value)),
 				},
-				title: { display: true, text: 'Revenue' },
+				title: { display: true, text: 'Avg Order Value' },
 			},
 		},
 	};
@@ -109,9 +110,10 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 	return (
 		<Card.Root>
 			<div className={styles.container}>
-				<Heading size="5" className={styles.heading}>
-					Orders & Revenue
-				</Heading>
+				<Flex align="center" gap="2" className={styles.heading}>
+					<TrendingUpIcon size={18} />
+					<Heading size="5">Orders & AOV</Heading>
+				</Flex>
 				{data.length === 0 ? (
 					<Text className={styles.empty} size="2">
 						No order data for this period.
