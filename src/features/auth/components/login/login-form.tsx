@@ -42,6 +42,9 @@ export const LoginForm = () => {
 					{loginMutation.isPending ? 'Signing in...' : 'Sign in'}
 				</Button>
 				<Text size="2">
+					<Link to="/forgot-password">Forgot password?</Link>
+				</Text>
+				<Text size="2">
 					Don't have an account? <Link to="/register">Sign up</Link>
 				</Text>
 			</Stack>
