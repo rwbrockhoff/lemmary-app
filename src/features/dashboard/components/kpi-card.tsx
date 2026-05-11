@@ -28,7 +28,7 @@ export const KpiCard = ({ label, value, delta, subtitle }: KpiCardProps) => {
 				</Text>
 				{delta !== undefined && (
 					<Text size="2" color={deltaColor}>
-						{formatDelta(delta)} vs last month
+						{formatDelta(delta)} vs previous period
 					</Text>
 				)}
 				{subtitle && (

@@ -5,6 +5,10 @@
 	gap: var(--space-6);
 }
 
+.headerRow {
+	gap: var(--space-4);
+}
+
 .header {
 	display: flex;
 	flex-direction: column;

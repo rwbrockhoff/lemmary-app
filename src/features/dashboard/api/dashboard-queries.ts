@@ -1,14 +1,19 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { api } from '@/api/client';
 
+export type DashboardRange = '30' | '90' | '365';
+export type DashboardBucket = 'day' | 'week' | 'month';
+
 export type DashboardData = {
-	thisMonthRevenue: {
+	range: number;
+	bucket: DashboardBucket;
+	revenue: {
 		current: string;
-		previousMonth: string;
+		previous: string;
 		changePercent: number;
 	};
 	ordersInProgress: number;
-	ordersCompletedThisMonth: number;
+	ordersCompletedInPeriod: number;
 	avgLeadTime: {
 		days: number | null;
 		target: number | null;
@@ -22,19 +27,20 @@ export type DashboardData = {
 		daysUntilDue: number | null;
 		grandTotal: string | null;
 	}>;
-	ordersByDay: Array<{
+	ordersTrend: Array<{
 		date: string;
 		count: number;
 		revenue: string;
 	}>;
 };
 
-export const dashboardKey = ['dashboard'] as const;
+export const dashboardKey = (range: DashboardRange) => ['dashboard', range] as const;
 
-export const useDashboard = () => {
+export const useDashboard = (range: DashboardRange) => {
 	return useQuery({
-		queryKey: dashboardKey,
-		queryFn: () => api.get<DashboardData>('/dashboard'),
+		queryKey: dashboardKey(range),
+		queryFn: () => api.get<DashboardData>('/dashboard', { range }),
 		staleTime: 60 * 1000,
+		placeholderData: keepPreviousData,
 	});
 };

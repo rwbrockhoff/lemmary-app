@@ -1,10 +1,17 @@
-import { Heading, Text } from '@artifact-ui/core';
+import { useState } from 'react';
+import { Heading, Text, SegmentControl, Flex } from '@artifact-ui/core';
 import { PageSpinner } from '@/components/page-spinner';
-import { useDashboard } from './api/dashboard-queries';
+import { useDashboard, type DashboardRange } from './api/dashboard-queries';
 import { KpiCard } from './components/kpi-card';
 import { DueSoonList } from './components/due-soon-list';
 import { OrdersChart } from './components/orders-chart';
 import styles from './dashboard-page.module.css';
+
+const RANGE_OPTIONS: { value: DashboardRange; label: string }[] = [
+	{ value: '30', label: '30 days' },
+	{ value: '90', label: '90 days' },
+	{ value: '365', label: '1 year' },
+];
 
 const formatCurrency = (value: string) => {
 	const num = Number(value);
@@ -17,7 +24,8 @@ const formatCurrency = (value: string) => {
 };
 
 const DashboardPage = () => {
-	const { data, isLoading, error } = useDashboard();
+	const [range, setRange] = useState<DashboardRange>('30');
+	const { data, isLoading, error } = useDashboard(range);
 
 	if (isLoading) return <PageSpinner />;
 	if (error || !data) {
@@ -28,8 +36,7 @@ const DashboardPage = () => {
 		);
 	}
 
-	const { thisMonthRevenue, ordersInProgress, ordersCompletedThisMonth, avgLeadTime } =
-		data;
+	const { revenue, ordersInProgress, ordersCompletedInPeriod, avgLeadTime } = data;
 
 	const leadTimeValue = avgLeadTime.days !== null ? `${avgLeadTime.days}d` : '—';
 	const leadTimeSubtitle =
@@ -37,21 +44,29 @@ const DashboardPage = () => {
 
 	return (
 		<div className={styles.page}>
-			<div className={styles.header}>
-				<Heading size="6">Dashboard</Heading>
-				<Text size="2" color="secondary">
-					Overview of orders, revenue, and production status
-				</Text>
-			</div>
+			<Flex justify="between" align="center" className={styles.headerRow}>
+				<div className={styles.header}>
+					<Heading size="6">Dashboard</Heading>
+					<Text size="2" color="secondary">
+						Overview of orders, revenue, and production
+					</Text>
+				</div>
+				<SegmentControl
+					options={RANGE_OPTIONS}
+					value={range}
+					onChange={setRange}
+					size="2"
+				/>
+			</Flex>
 
 			<div className={styles.kpiGrid}>
 				<KpiCard
-					label="Revenue this month"
-					value={formatCurrency(thisMonthRevenue.current)}
-					delta={thisMonthRevenue.changePercent}
+					label="Revenue"
+					value={formatCurrency(revenue.current)}
+					delta={revenue.changePercent}
 				/>
 				<KpiCard label="Orders in progress" value={String(ordersInProgress)} />
-				<KpiCard label="Completed this month" value={String(ordersCompletedThisMonth)} />
+				<KpiCard label="Completed" value={String(ordersCompletedInPeriod)} />
 				<KpiCard
 					label="Avg lead time"
 					value={leadTimeValue}
@@ -59,7 +74,7 @@ const DashboardPage = () => {
 				/>
 			</div>
 
-			<OrdersChart data={data.ordersByDay} />
+			<OrdersChart data={data.ordersTrend} bucket={data.bucket} />
 			<DueSoonList orders={data.dueSoon} />
 		</div>
 	);

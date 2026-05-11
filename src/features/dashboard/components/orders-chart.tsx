@@ -10,17 +10,21 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { Card, Heading, Text } from '@artifact-ui/core';
-import type { DashboardData } from '../api/dashboard-queries';
+import type { DashboardBucket, DashboardData } from '../api/dashboard-queries';
 import styles from './orders-chart.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler);
 
 type OrdersChartProps = {
-	data: DashboardData['ordersByDay'];
+	data: DashboardData['ordersTrend'];
+	bucket: DashboardBucket;
 };
 
-const formatChartDate = (iso: string) => {
+const formatChartDate = (iso: string, bucket: DashboardBucket) => {
 	const d = new Date(iso);
+	if (bucket === 'month') {
+		return d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+	}
 	return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
@@ -32,9 +36,9 @@ const formatCurrency = (value: number) =>
 		maximumFractionDigits: 0,
 	});
 
-export const OrdersChart = ({ data }: OrdersChartProps) => {
+export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 	const chartData = {
-		labels: data.map((d) => formatChartDate(d.date)),
+		labels: data.map((d) => formatChartDate(d.date, bucket)),
 		datasets: [
 			{
 				label: 'Orders',
@@ -106,11 +110,11 @@ export const OrdersChart = ({ data }: OrdersChartProps) => {
 		<Card.Root>
 			<div className={styles.container}>
 				<Heading size="5" className={styles.heading}>
-					Orders & Revenue — last 30 days
+					Orders & Revenue
 				</Heading>
 				{data.length === 0 ? (
 					<Text className={styles.empty} size="2">
-						No order data in the last 30 days.
+						No order data for this period.
 					</Text>
 				) : (
 					<div className={styles.chartWrapper}>
