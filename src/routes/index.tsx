@@ -5,6 +5,7 @@ import { AuthGuard } from '@/features/auth/auth-guard';
 
 const LoginPage = lazy(() => import('@/features/auth/routes/login'));
 const RegisterPage = lazy(() => import('@/features/auth/routes/register'));
+const CallbackPage = lazy(() => import('@/features/auth/routes/callback'));
 
 const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
 const OrderDetailPage = lazy(() => import('@/features/orders/order-detail-page'));
@@ -34,6 +35,14 @@ const router = createBrowserRouter([
 		element: (
 			<Suspense>
 				<RegisterPage />
+			</Suspense>
+		),
+	},
+	{
+		path: '/auth/callback',
+		element: (
+			<Suspense>
+				<CallbackPage />
 			</Suspense>
 		),
 	},
