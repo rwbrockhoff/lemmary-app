@@ -21,34 +21,21 @@ export const BatchFilter = ({
 				Active Batches:
 			</Text>
 			{batches.map((batch) => (
-				<button
+				<label
 					key={batch.id}
-					type="button"
-					onClick={() => onToggleBatch(batch.id)}
-					className="flex items-center gap-2 cursor-pointer select-none"
-				>
+					className="flex items-center gap-2 cursor-pointer select-none">
 					<Checkbox
 						checked={!showAll && selectedIds.has(batch.id)}
-						tabIndex={-1}
-						className="pointer-events-none"
+						onCheckedChange={() => onToggleBatch(batch.id)}
 						size="1"
 					/>
 					<Text size="2">{batch.name}</Text>
-				</button>
+				</label>
 			))}
-			<button
-				type="button"
-				onClick={onToggleShowAll}
-				className="flex items-center gap-2 cursor-pointer select-none ml-2"
-			>
-				<Checkbox
-					checked={showAll}
-					tabIndex={-1}
-					className="pointer-events-none"
-					size="1"
-				/>
+			<label className="flex items-center gap-2 cursor-pointer select-none ml-2">
+				<Checkbox checked={showAll} onCheckedChange={onToggleShowAll} size="1" />
 				<Text size="2">Show all orders</Text>
-			</button>
+			</label>
 		</Flex>
 	);
 };
