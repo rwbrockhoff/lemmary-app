@@ -6,42 +6,13 @@
 	margin-bottom: var(--space-4);
 }
 
-.row {
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 120px;
-	gap: var(--space-3);
-	padding: var(--space-3) 0;
-	border-bottom: 1px solid var(--color-border-subtle);
-	align-items: center;
-}
-
-.row:last-child {
-	border-bottom: none;
-}
-
-.headerRow {
-	font-size: var(--font-size-1);
-	color: var(--color-text-muted);
-	font-weight: 500;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-}
-
-.orderNumber {
-	font-weight: 500;
+.headingGroup {
 	color: var(--color-text-default);
-}
-
-.customerName {
-	color: var(--color-text-default);
-}
-
-.dueDate {
-	color: var(--color-text-subtle);
 }
 
 .dueSoon {
 	color: var(--color-warning, var(--color-text-default));
+	font-weight: 500;
 }
 
 .overdue {

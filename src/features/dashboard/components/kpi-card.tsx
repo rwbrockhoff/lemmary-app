@@ -13,10 +13,12 @@ const formatDelta = (delta: number) => {
 	return `${sign}${delta.toFixed(1)}%`;
 };
 
-export const KpiCard = ({ label, value, delta, subtitle }: KpiCardProps) => {
-	const deltaColor =
-		delta === undefined || delta === 0 ? 'tertiary' : delta > 0 ? 'info' : 'danger';
+const deltaColorVar = (delta: number) => {
+	if (delta === 0) return 'var(--color-text-muted)';
+	return delta > 0 ? 'var(--color-success)' : 'var(--color-error)';
+};
 
+export const KpiCard = ({ label, value, delta, subtitle }: KpiCardProps) => {
 	return (
 		<Card.Root>
 			<div className={styles.card}>
@@ -27,7 +29,7 @@ export const KpiCard = ({ label, value, delta, subtitle }: KpiCardProps) => {
 					{value}
 				</Text>
 				{delta !== undefined && (
-					<Text size="2" color={deltaColor}>
+					<Text size="2" style={{ color: deltaColorVar(delta) }}>
 						{formatDelta(delta)} vs previous period
 					</Text>
 				)}

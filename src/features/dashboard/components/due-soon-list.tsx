@@ -1,6 +1,8 @@
-import { Link } from 'react-router';
-import { Card, Heading, Text } from '@artifact-ui/core';
-import { cn } from '@artifact-ui/core';
+import { useNavigate } from 'react-router';
+import { Card, Heading, Text, Table, Badge, Button, Flex, cn } from '@artifact-ui/core';
+import { ChevronRightIcon, ClockIcon } from '@/components/icons';
+import { StatusBadge } from '@/features/orders/components/status-badge';
+import { getProgressColor } from '@/features/batches/batch-utils';
 import type { DashboardData } from '../api/dashboard-queries';
 import styles from './due-soon-list.module.css';
 
@@ -26,48 +28,106 @@ const formatDaysUntilDue = (days: number | null) => {
 };
 
 export const DueSoonList = ({ orders }: DueSoonListProps) => {
+	const navigate = useNavigate();
+
 	return (
 		<Card.Root>
 			<div className={styles.container}>
-				<Heading size="5" className={styles.heading}>
-					Due Soon
-				</Heading>
+				<Flex justify="between" align="center" className={styles.heading}>
+					<Flex align="center" gap="2" className={styles.headingGroup}>
+						<ClockIcon size={18} />
+						<Heading size="5">Due Soon</Heading>
+					</Flex>
+					<Button
+						variant="ghost"
+						color="neutral"
+						size="1"
+						onClick={() => navigate('/orders')}
+						iconRight={<ChevronRightIcon size={14} />}>
+						View all
+					</Button>
+				</Flex>
 				{orders.length === 0 ? (
 					<Text className={styles.empty} size="2">
 						No pending orders with due dates.
 					</Text>
 				) : (
-					<>
-						<div className={cn(styles.row, styles.headerRow)}>
-							<span>Order</span>
-							<span>Customer</span>
-							<span>Due</span>
-							<span>Status</span>
-						</div>
-						{orders.map((order) => {
-							const isOverdue = order.daysUntilDue !== null && order.daysUntilDue < 0;
-							const isDueSoon =
-								order.daysUntilDue !== null &&
-								order.daysUntilDue >= 0 &&
-								order.daysUntilDue <= 3;
-							return (
-								<div key={order.id} className={styles.row}>
-									<Link to={`/orders/${order.id}`} className={styles.orderNumber}>
-										#{order.orderNumber}
-									</Link>
-									<span className={styles.customerName}>{order.customerName}</span>
-									<span className={styles.dueDate}>{formatDate(order.dueDate)}</span>
-									<span
-										className={cn(
-											isOverdue && styles.overdue,
-											isDueSoon && styles.dueSoon,
-										)}>
-										{formatDaysUntilDue(order.daysUntilDue)}
-									</span>
-								</div>
-							);
-						})}
-					</>
+					<Table.Root variant="ghost" size="2" radius="2">
+						<Table.Header>
+							<Table.Row>
+								<Table.HeaderCell>
+									<Text size="2" weight="medium" color="secondary">
+										Order
+									</Text>
+								</Table.HeaderCell>
+								<Table.HeaderCell>
+									<Text size="2" weight="medium" color="secondary">
+										Customer
+									</Text>
+								</Table.HeaderCell>
+								<Table.HeaderCell>
+									<Text size="2" weight="medium" color="secondary">
+										Due
+									</Text>
+								</Table.HeaderCell>
+								<Table.HeaderCell>
+									<Text size="2" weight="medium" color="secondary">
+										Progress
+									</Text>
+								</Table.HeaderCell>
+								<Table.HeaderCell>
+									<Text size="2" weight="medium" color="secondary">
+										Status
+									</Text>
+								</Table.HeaderCell>
+								<Table.HeaderCell>
+									<Text size="2" weight="medium" color="secondary">
+										Timing
+									</Text>
+								</Table.HeaderCell>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							{orders.map((order) => {
+								const isOverdue = order.daysUntilDue !== null && order.daysUntilDue < 0;
+								const isDueSoon =
+									order.daysUntilDue !== null &&
+									order.daysUntilDue >= 0 &&
+									order.daysUntilDue <= 3;
+								return (
+									<Table.Row
+										key={order.id}
+										className="cursor-pointer"
+										onClick={() => navigate(`/orders/${order.id}`)}>
+										<Table.Cell>#{order.orderNumber}</Table.Cell>
+										<Table.Cell>{order.customerName}</Table.Cell>
+										<Table.Cell>{formatDate(order.dueDate)}</Table.Cell>
+										<Table.Cell>
+											<Badge
+												size="1"
+												variant="soft"
+												color={getProgressColor(order.itemsCompleted, order.itemCount)}>
+												{order.itemsCompleted}/{order.itemCount}
+											</Badge>
+										</Table.Cell>
+										<Table.Cell>
+											<StatusBadge
+												name={order.workflowStageName}
+												color={order.workflowStageColor}
+											/>
+										</Table.Cell>
+										<Table.Cell
+											className={cn(
+												isOverdue && styles.overdue,
+												isDueSoon && styles.dueSoon,
+											)}>
+											{formatDaysUntilDue(order.daysUntilDue)}
+										</Table.Cell>
+									</Table.Row>
+								);
+							})}
+						</Table.Body>
+					</Table.Root>
 				)}
 			</div>
 		</Card.Root>

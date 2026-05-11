@@ -1,5 +1,11 @@
 .pageContainer {
-	padding: var(--space-8);
+	padding: var(--space-8) var(--space-12);
+	max-width: 80rem;
+	margin-inline: auto;
+}
+
+.pageContainerNarrow {
+	padding: var(--space-8) var(--space-12);
 	max-width: 64rem;
 	margin-inline: auto;
 }
