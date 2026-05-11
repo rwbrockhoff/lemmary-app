@@ -30,8 +30,8 @@ export const useCallbackFlow = () => {
 	const exchangeMutation = useMutation({
 		mutationFn: (tokens: Tokens) =>
 			api.post<LoginResponse>('/auth/oauth/session', tokens),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: authStatusKey });
+		onSuccess: async () => {
+			await queryClient.refetchQueries({ queryKey: authStatusKey });
 			navigate('/', { replace: true });
 		},
 	});

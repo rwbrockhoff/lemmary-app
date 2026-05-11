@@ -11,8 +11,8 @@ export const useLoginFlow = () => {
 
 	return useMutation({
 		mutationFn: (data: LoginFormData) => api.post<LoginResponse>('/auth/login', data),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: authStatusKey });
+		onSuccess: async () => {
+			await queryClient.refetchQueries({ queryKey: authStatusKey });
 			navigate('/');
 		},
 	});
