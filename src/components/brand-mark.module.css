@@ -1,3 +1,7 @@
+.brandMarkLink {
+	text-decoration: none;
+}
+
 .brandMark {
 	color: var(--color-text-default);
 }

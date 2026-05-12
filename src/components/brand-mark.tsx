@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { Heading, Flex } from '@artifact-ui/core';
 import { LogoIcon } from './icons';
 import styles from './brand-mark.module.css';
@@ -16,9 +17,11 @@ export const BrandMark = ({ size = 'md' }: BrandMarkProps) => {
 	const { icon, heading } = sizeMap[size];
 
 	return (
-		<Flex align="center" gap="2" className={styles.brandMark}>
-			<LogoIcon size={icon} />
-			<Heading size={heading}>Lemmary</Heading>
-		</Flex>
+		<Link to="/" className={styles.brandMarkLink}>
+			<Flex align="center" gap="2" className={styles.brandMark}>
+				<LogoIcon size={icon} />
+				<Heading size={heading}>Lemmary</Heading>
+			</Flex>
+		</Link>
 	);
 };
