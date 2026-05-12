@@ -123,7 +123,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 								<Table.Cell>
 									<button
 										type="button"
-										className="cursor-pointer p-1 rounded hover:bg-gray-100"
+										className="cursor-pointer p-1 rounded hover:bg-[var(--color-bg-muted)]"
 										onClick={(e) => {
 											e.stopPropagation();
 											toggleExpand(order.id);

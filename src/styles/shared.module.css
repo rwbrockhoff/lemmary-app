@@ -11,29 +11,29 @@
 }
 
 .completedRow {
-	background-color: var(--green-50);
+	background-color: var(--color-success-bg);
 }
 
 .completedRow [data-state='checked'] {
-	background-color: var(--green-500);
-	border-color: var(--green-500);
+	background-color: var(--color-success);
+	border-color: var(--color-success);
 }
 
 .completedRow [data-state='checked']:hover {
-	background-color: var(--green-600);
-	border-color: var(--green-600);
+	background-color: var(--color-success-hover);
+	border-color: var(--color-success-hover);
 }
 
 .completedRow button[role='combobox']:hover {
-	background-color: var(--green-100);
+	background-color: color-mix(in srgb, var(--color-success) 15%, transparent);
 }
 
 .inProgressRow {
-	background-color: var(--blue-50);
+	background-color: var(--color-info-bg);
 }
 
 .inProgressRow button[role='combobox']:hover {
-	background-color: var(--blue-100);
+	background-color: color-mix(in srgb, var(--color-info) 15%, transparent);
 }
 
 .badgePurple {

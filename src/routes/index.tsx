@@ -6,12 +6,9 @@ import { AuthGuard } from '@/features/auth/auth-guard';
 const LoginPage = lazy(() => import('@/features/auth/routes/login'));
 const RegisterPage = lazy(() => import('@/features/auth/routes/register'));
 const CallbackPage = lazy(() => import('@/features/auth/routes/callback'));
-const ForgotPasswordPage = lazy(
-	() => import('@/features/auth/routes/forgot-password'),
-);
-const ResetPasswordPage = lazy(
-	() => import('@/features/auth/routes/reset-password'),
-);
+const ForgotPasswordPage = lazy(() => import('@/features/auth/routes/forgot-password'));
+const ResetPasswordPage = lazy(() => import('@/features/auth/routes/reset-password'));
+const DemoPage = lazy(() => import('@/features/auth/routes/demo'));
 
 const DashboardPage = lazy(() => import('@/features/dashboard/dashboard-page'));
 const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
@@ -66,6 +63,14 @@ const router = createBrowserRouter([
 		element: (
 			<Suspense>
 				<ResetPasswordPage />
+			</Suspense>
+		),
+	},
+	{
+		path: '/demo',
+		element: (
+			<Suspense>
+				<DemoPage />
 			</Suspense>
 		),
 	},

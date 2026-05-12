@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
 import { SettingsIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
@@ -8,12 +8,12 @@ const SettingsPage = () => {
 	const { data: settings, isLoading } = useSettings();
 	const updateLeadTime = useUpdateLeadTime();
 	const [leadTime, setLeadTime] = useState('');
+	const [prevLeadTime, setPrevLeadTime] = useState<number | null | undefined>(undefined);
 
-	useEffect(() => {
-		if (settings?.leadTimeDays != null) {
-			setLeadTime(String(settings.leadTimeDays));
-		}
-	}, [settings]);
+	if (settings?.leadTimeDays != null && settings.leadTimeDays !== prevLeadTime) {
+		setPrevLeadTime(settings.leadTimeDays);
+		setLeadTime(String(settings.leadTimeDays));
+	}
 
 	if (isLoading) return <PageSpinner />;
 
@@ -39,7 +39,8 @@ const SettingsPage = () => {
 					<Card.Body>
 						<Stack gap="5">
 							<Text size="2" color="secondary">
-								Default number of days from order date to due date. Applied to new orders during sync.
+								Default number of days from order date to due date. Applied to new orders
+								during sync.
 							</Text>
 							<Flex gap="3" align="end">
 								<div className="w-32">
@@ -53,8 +54,7 @@ const SettingsPage = () => {
 								</div>
 								<Button
 									onClick={handleSave}
-									disabled={!hasChanged || updateLeadTime.isPending}
-								>
+									disabled={!hasChanged || updateLeadTime.isPending}>
 									{updateLeadTime.isPending ? 'Saving...' : 'Save'}
 								</Button>
 							</Flex>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Modal, Button, TextField, Flex } from '@artifact-ui/core';
 import { PencilIcon } from '@/components/icons/icons';
 
@@ -18,10 +18,12 @@ export const RenameBatchModal = ({
 	isPending,
 }: RenameBatchModalProps) => {
 	const [name, setName] = useState(currentName);
+	const [prevOpen, setPrevOpen] = useState(open);
 
-	useEffect(() => {
+	if (open !== prevOpen) {
+		setPrevOpen(open);
 		if (open) setName(currentName);
-	}, [open, currentName]);
+	}
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
