@@ -118,7 +118,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 												target="_blank"
 												rel="noopener noreferrer"
 												onClick={(e) => e.stopPropagation()}
-												className="text-gray-400 hover:text-gray-600"
+												className="text-[var(--color-text-muted)] hover:text-[var(--color-text-default)]"
 											>
 												<ExternalLinkIcon size={14} />
 											</a>
@@ -128,7 +128,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 								<Table.Cell>
 									<button
 										type="button"
-										className="cursor-pointer p-1 rounded hover:bg-gray-100"
+										className="cursor-pointer p-1 rounded hover:bg-[var(--color-bg-muted)]"
 										onClick={(e) => {
 											e.stopPropagation();
 											toggleExpand(order.id);

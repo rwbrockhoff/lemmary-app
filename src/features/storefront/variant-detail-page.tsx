@@ -83,7 +83,7 @@ const VariantDetailPage = () => {
 										href={product.product_url}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="ml-2 text-gray-400 hover:text-gray-600"
+										className="ml-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-default)]"
 									>
 										<ExternalLinkIcon size={14} />
 									</a>

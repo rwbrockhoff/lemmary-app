@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, Fragment } from 'react';
+import { useState, useMemo, Fragment } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { Heading, Text, Button, Table, Checkbox, Flex, cn } from '@artifact-ui/core';
 import { useOrdersWithItems } from '@/features/orders/api/orders-queries';
@@ -21,14 +21,12 @@ const EditBatchPage = () => {
 
 	const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(new Set());
 	const [expandedOrderIds, setExpandedOrderIds] = useState<Set<string>>(new Set());
-	const [initialized, setInitialized] = useState(false);
+	const [prevBatchId, setPrevBatchId] = useState<string | null>(null);
 
-	useEffect(() => {
-		if (batch && !initialized) {
-			setSelectedOrderIds(new Set(batch.orders.map((o) => o.order_id)));
-			setInitialized(true);
-		}
-	}, [batch, initialized]);
+	if (batch && batch.id !== prevBatchId) {
+		setPrevBatchId(batch.id);
+		setSelectedOrderIds(new Set(batch.orders.map((o) => o.order_id)));
+	}
 
 	const isLoading = batchLoading || ordersLoading;
 
@@ -192,7 +190,7 @@ const OrderRow = ({ order, isSelected, isExpanded, onToggle, onExpand }: OrderRo
 			<Table.Cell>
 				<button
 					type="button"
-					className="cursor-pointer p-1 rounded hover:bg-gray-100"
+					className="cursor-pointer p-1 rounded hover:bg-[var(--color-bg-muted)]"
 					onClick={(e) => {
 						e.stopPropagation();
 						onExpand(order.id);
