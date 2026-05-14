@@ -8,14 +8,25 @@ import {
 	useUpdateWorkflowStage,
 	useDeleteWorkflowStage,
 } from '@/features/orders/api/orders-queries';
+import { StageColorPicker } from '@/features/orders/components/stage-color-picker';
+import {
+	isWorkflowStageColor,
+	type WorkflowStageColor,
+} from '@/features/orders/constants/stage-colors';
 
 type StageRowProps = {
 	id: string;
 	name: string;
+	color: string | null;
 	isDefault: boolean;
 };
 
-export const StageRow = ({ id, name, isDefault }: StageRowProps) => {
+const resolveColor = (color: string | null): WorkflowStageColor => {
+	if (color && isWorkflowStageColor(color)) return color;
+	return 'slate';
+};
+
+export const StageRow = ({ id, name, color, isDefault }: StageRowProps) => {
 	const toast = useToast();
 	const updateStage = useUpdateWorkflowStage();
 	const deleteStage = useDeleteWorkflowStage();
@@ -30,15 +41,26 @@ export const StageRow = ({ id, name, isDefault }: StageRowProps) => {
 		opacity: isDragging ? 0.5 : 1,
 	};
 
+	const currentColor = resolveColor(color);
 	const hasChanged = value.trim().length > 0 && value !== name;
 
-	const handleSave = () => {
+	const handleSaveName = () => {
 		if (!hasChanged) return;
 		updateStage.mutate(
 			{ stageId: id, name: value.trim() },
 			{
 				onSuccess: () => toast.success('Stage renamed'),
 				onError: (error) => toast.error(error.message, 'Could not rename'),
+			},
+		);
+	};
+
+	const handleColorChange = (next: WorkflowStageColor) => {
+		if (next === currentColor) return;
+		updateStage.mutate(
+			{ stageId: id, color: next },
+			{
+				onError: (error) => toast.error(error.message, 'Could not update color'),
 			},
 		);
 	};
@@ -62,10 +84,14 @@ export const StageRow = ({ id, name, isDefault }: StageRowProps) => {
 					className="flex items-center justify-center text-gray-500 hover:text-gray-700 cursor-grab active:cursor-grabbing">
 					<GripIcon size={16} />
 				</button>
-				<TextField.Standalone value={value} onChange={(e) => setValue(e.target.value)} />
+				<StageColorPicker value={currentColor} onChange={handleColorChange} />
+				<TextField.Standalone
+					value={value}
+					onChange={(e) => setValue(e.target.value)}
+				/>
 				<Button
 					size="2"
-					onClick={handleSave}
+					onClick={handleSaveName}
 					disabled={!hasChanged || updateStage.isPending}
 					variant="secondary"
 					className="cursor-pointer">

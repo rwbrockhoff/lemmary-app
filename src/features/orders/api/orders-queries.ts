@@ -59,14 +59,18 @@ export const useWorkflowStages = () => {
 	});
 };
 
+type UpdateWorkflowStagePayload = {
+	stageId: string;
+	name?: string;
+	color?: string;
+};
+
 export const useUpdateWorkflowStage = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (params: { stageId: string; name: string }) =>
-			api.put<WorkflowStage>(`/workflow-stages/${params.stageId}`, {
-				name: params.name,
-			}),
+		mutationFn: ({ stageId, name, color }: UpdateWorkflowStagePayload) =>
+			api.put<WorkflowStage>(`/workflow-stages/${stageId}`, { name, color }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
 		},

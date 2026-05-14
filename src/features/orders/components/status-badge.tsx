@@ -1,6 +1,4 @@
-import { Badge } from '@artifact-ui/core';
-import { getBadgeColor } from './stage-select';
-import styles from '@/styles/shared.module.css';
+import { StageBadge } from './stage-badge';
 
 type StatusBadgeProps = {
 	name: string | null;
@@ -8,16 +6,5 @@ type StatusBadgeProps = {
 };
 
 export const StatusBadge = ({ name, color }: StatusBadgeProps) => {
-	const badgeColor = getBadgeColor(color ?? 'gray');
-
-	return (
-		<Badge
-			variant="soft"
-			color={badgeColor}
-			size="1"
-			className={color === 'purple' ? styles.badgePurple : ''}
-		>
-			{name ?? 'No status'}
-		</Badge>
-	);
+	return <StageBadge name={name} color={color} />;
 };

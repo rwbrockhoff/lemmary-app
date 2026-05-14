@@ -15,6 +15,7 @@ import {
 } from '@dnd-kit/sortable';
 import { Heading, Text, Card, Stack, Separator } from '@artifact-ui/core';
 import { useReorderWorkflowStages } from '@/features/orders/api/orders-queries';
+import { WORKFLOW_STAGE_COLORS } from '@/features/orders/constants/stage-colors';
 import type { WorkflowStage } from '@/types/api';
 import { StageRow } from './stage-row';
 import { AddStage } from './add-stage';
@@ -44,6 +45,8 @@ export const WorkflowStagesCard = ({ stages }: WorkflowStagesCardProps) => {
 	};
 
 	const stageIds = stages.map((s) => s.id);
+	const nextDefaultColor =
+		WORKFLOW_STAGE_COLORS[stages.length % WORKFLOW_STAGE_COLORS.length];
 
 	return (
 		<Card.Root>
@@ -57,7 +60,7 @@ export const WorkflowStagesCard = ({ stages }: WorkflowStagesCardProps) => {
 						board.
 					</Text>
 
-					<AddStage />
+					<AddStage defaultColor={nextDefaultColor} />
 
 					<Separator />
 
@@ -72,6 +75,7 @@ export const WorkflowStagesCard = ({ stages }: WorkflowStagesCardProps) => {
 										key={stage.id}
 										id={stage.id}
 										name={stage.name}
+										color={stage.color}
 										isDefault={stage.is_default}
 									/>
 								))}

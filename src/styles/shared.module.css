@@ -36,15 +36,6 @@
 	background-color: color-mix(in srgb, var(--color-info) 15%, transparent);
 }
 
-.badgePurple {
-	background-color: #f0ebf7;
-	color: #5e4a80;
-}
-
-.badgePurple:hover {
-	background-color: #ede2fe;
-}
-
 .statusInfo {
 	background-color: var(--color-info-bg);
 	color: var(--color-info);
