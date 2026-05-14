@@ -11,6 +11,7 @@ type UpdateStorePayload = {
 	storeName?: string;
 	leadTimeDays?: number | null;
 	accessToken?: string;
+	storeUrl?: string | null;
 };
 
 export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
@@ -19,6 +20,7 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 
 	const [prevSettings, setPrevSettings] = useState(settings);
 	const [storeName, setStoreName] = useState(settings.storeName);
+	const [storeUrl, setStoreUrl] = useState(settings.storeUrl ?? '');
 	const [leadTime, setLeadTime] = useState(
 		settings.leadTimeDays != null ? String(settings.leadTimeDays) : '',
 	);
@@ -27,6 +29,7 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 	if (settings !== prevSettings) {
 		setPrevSettings(settings);
 		setStoreName(settings.storeName);
+		setStoreUrl(settings.storeUrl ?? '');
 		setLeadTime(settings.leadTimeDays != null ? String(settings.leadTimeDays) : '');
 	}
 
@@ -35,6 +38,12 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 
 		if (storeName !== settings.storeName) {
 			payload.storeName = storeName.trim();
+		}
+
+		const currentUrl = settings.storeUrl ?? '';
+		const trimmedUrl = storeUrl.trim();
+		if (trimmedUrl !== currentUrl) {
+			payload.storeUrl = trimmedUrl === '' ? null : trimmedUrl;
 		}
 
 		const currentLeadTime = settings.leadTimeDays ?? null;
@@ -80,6 +89,21 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 						<TextField.Standalone
 							value={storeName}
 							onChange={(e) => setStoreName(e.target.value)}
+						/>
+					</Stack>
+
+					<Stack gap="2">
+						<Text size="2" weight="medium">
+							Store URL
+						</Text>
+						<Text size="2" color="secondary">
+							Used to generate links back to your Squarespace admin.
+						</Text>
+						<TextField.Standalone
+							type="url"
+							placeholder="https://yourstore.squarespace.com"
+							value={storeUrl}
+							onChange={(e) => setStoreUrl(e.target.value)}
 						/>
 					</Stack>
 

@@ -6,6 +6,7 @@ export type StoreSettings = {
 	storeName: string;
 	platform: string;
 	leadTimeDays: number | null;
+	storeUrl: string | null;
 };
 
 type UpdateStorePayload = {
