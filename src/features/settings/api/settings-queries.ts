@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { settingsKeys } from './settings-keys';
 
-type StoreSettings = {
+export type StoreSettings = {
 	storeName: string;
 	platform: string;
 	leadTimeDays: number | null;
