@@ -59,6 +59,12 @@ export const api = {
 			body: body ? JSON.stringify(body) : undefined,
 		}).then((r) => r.data),
 
+	patch: <T = void>(endpoint: string, body?: unknown) =>
+		request<ApiResponse<T>>(endpoint, {
+			method: 'PATCH',
+			body: body ? JSON.stringify(body) : undefined,
+		}).then((r) => r.data),
+
 	del: <T = void>(endpoint: string) =>
 		request<ApiResponse<T>>(endpoint, { method: 'DELETE' }).then((r) => r.data),
 };

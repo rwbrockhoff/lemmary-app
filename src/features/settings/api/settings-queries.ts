@@ -8,6 +8,13 @@ type StoreSettings = {
 	leadTimeDays: number | null;
 };
 
+type UpdateStorePayload = {
+	storeName?: string;
+	leadTimeDays?: number | null;
+	accessToken?: string;
+	storeUrl?: string | null;
+};
+
 export const useSettings = () => {
 	return useQuery({
 		queryKey: settingsKeys.all,
@@ -15,12 +22,12 @@ export const useSettings = () => {
 	});
 };
 
-export const useUpdateLeadTime = () => {
+export const useUpdateStore = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (leadTimeDays: number | null) =>
-			api.put('/settings/lead-time', { leadTimeDays }),
+		mutationFn: (payload: UpdateStorePayload) =>
+			api.patch<StoreSettings>('/store', payload),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: settingsKeys.all });
 		},

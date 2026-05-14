@@ -1,4 +1,9 @@
-import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+	useQuery,
+	useInfiniteQuery,
+	useMutation,
+	useQueryClient,
+} from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { orderKeys } from './orders-keys';
 import { batchKeys } from '@/features/batches/api/batches-keys';
@@ -51,6 +56,85 @@ export const useWorkflowStages = () => {
 	return useQuery({
 		queryKey: orderKeys.workflowStages,
 		queryFn: () => api.get<WorkflowStagesResponse>('/workflow-stages'),
+	});
+};
+
+export const useUpdateWorkflowStage = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (params: { stageId: string; name: string }) =>
+			api.put<WorkflowStage>(`/workflow-stages/${params.stageId}`, {
+				name: params.name,
+			}),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
+		},
+	});
+};
+
+export const useCreateWorkflowStage = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (params: { name: string; color?: string }) =>
+			api.post<WorkflowStage>('/workflow-stages', params),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
+		},
+	});
+};
+
+export const useDeleteWorkflowStage = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (stageId: string) =>
+			api.del<{ id: string }>(`/workflow-stages/${stageId}`),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
+		},
+	});
+};
+
+export const useReorderWorkflowStages = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (orderedIds: string[]) =>
+			api.put('/workflow-stages/reorder', { orderedIds }),
+		onMutate: async (orderedIds) => {
+			await queryClient.cancelQueries({ queryKey: orderKeys.workflowStages });
+
+			const previous = queryClient.getQueryData<WorkflowStagesResponse>(
+				orderKeys.workflowStages,
+			);
+
+			if (previous) {
+				const stageMap = new Map(previous.orderStages.map((s) => [s.id, s]));
+				const reordered = orderedIds
+					.map((id, index) => {
+						const stage = stageMap.get(id);
+						return stage ? { ...stage, position: index } : null;
+					})
+					.filter((s): s is WorkflowStage => s !== null);
+
+				queryClient.setQueryData<WorkflowStagesResponse>(orderKeys.workflowStages, {
+					...previous,
+					orderStages: reordered,
+				});
+			}
+
+			return { previous };
+		},
+		onError: (_error, _variables, context) => {
+			if (context?.previous) {
+				queryClient.setQueryData(orderKeys.workflowStages, context.previous);
+			}
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
+		},
 	});
 };
 
@@ -110,8 +194,7 @@ export const useCompleteAllOrderItems = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (orderId: string) =>
-			api.put(`/orders/${orderId}/items/complete-all`),
+		mutationFn: (orderId: string) => api.put(`/orders/${orderId}/items/complete-all`),
 		onSuccess: (_data, orderId) => {
 			queryClient.invalidateQueries({
 				queryKey: orderKeys.detail(orderId),
@@ -127,8 +210,7 @@ export const useUpdateOrderNotes = (orderId: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (notes: string) =>
-			api.put(`/orders/${orderId}/notes`, { notes }),
+		mutationFn: (notes: string) => api.put(`/orders/${orderId}/notes`, { notes }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: orderKeys.detail(orderId),
