@@ -46,9 +46,7 @@ const OrderDetailPage = () => {
 				<StageSelect
 					stages={orderStages}
 					value={order.workflow_stage_id}
-					onChange={(stageId) =>
-						updateOrderStage.mutate({ orderId: orderId!, stageId })
-					}
+					onChange={(stageId) => updateOrderStage.mutate({ orderId: orderId!, stageId })}
 				/>
 			</Flex>
 
@@ -66,9 +64,7 @@ const OrderDetailPage = () => {
 				</Table.Header>
 				<Table.Body>
 					{order.items.map((item) => {
-						const currentStage = itemStages.find(
-							(s) => s.id === item.workflow_stage_id,
-						);
+						const currentStage = itemStages.find((s) => s.id === item.workflow_stage_id);
 						const isComplete = currentStage?.is_complete;
 						const isInProgress = !isComplete && !currentStage?.is_default;
 
@@ -79,23 +75,25 @@ const OrderDetailPage = () => {
 								: '';
 
 						return (
-						<Table.Row key={item.id} className={rowClass}>
-							<Table.Cell>
-								<ProductThumbnail src={item.image_url} alt={item.product_name} />
-							</Table.Cell>
-							<Table.Cell>{item.product_name}</Table.Cell>
-							<Table.Cell><VariantBadges variants={item.variant_label} /></Table.Cell>
-							<Table.Cell>{item.quantity}</Table.Cell>
-							<Table.Cell>
-								<StageSelect
-									stages={itemStages}
-									value={item.workflow_stage_id}
-									onChange={(stageId) =>
-										updateItemStage.mutate({ itemId: item.id, stageId })
-									}
-								/>
-							</Table.Cell>
-						</Table.Row>
+							<Table.Row key={item.id} className={rowClass}>
+								<Table.Cell>
+									<ProductThumbnail src={item.image_url} alt={item.product_name} />
+								</Table.Cell>
+								<Table.Cell>{item.product_name}</Table.Cell>
+								<Table.Cell>
+									<VariantBadges variants={item.variant_label} />
+								</Table.Cell>
+								<Table.Cell>{item.quantity}</Table.Cell>
+								<Table.Cell>
+									<StageSelect
+										stages={itemStages}
+										value={item.workflow_stage_id}
+										onChange={(stageId) =>
+											updateItemStage.mutate({ itemId: item.id, stageId })
+										}
+									/>
+								</Table.Cell>
+							</Table.Row>
 						);
 					})}
 				</Table.Body>
@@ -116,7 +114,7 @@ function getBreadcrumbs(from: string | null, batchId: string | null) {
 		return [{ label: 'Workflow', to: '/workflow' }];
 	}
 
-	return [{ label: 'Orders', to: '/' }];
+	return [{ label: 'Orders', to: '/orders' }];
 }
 
 export default OrderDetailPage;
