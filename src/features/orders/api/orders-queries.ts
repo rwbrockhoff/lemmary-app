@@ -50,7 +50,7 @@ export const useOrder = (orderId: string) => {
 export const useWorkflowStages = () => {
 	return useQuery({
 		queryKey: orderKeys.workflowStages,
-		queryFn: () => api.get<WorkflowStagesResponse>('/orders/workflow-stages'),
+		queryFn: () => api.get<WorkflowStagesResponse>('/workflow-stages'),
 	});
 };
 
