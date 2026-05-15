@@ -4,6 +4,7 @@ export type AuthUser = {
 	firstName: string | null;
 	lastName: string | null;
 	avatarUrl: string | null;
+	isDemo: boolean;
 };
 
 export type AuthStatusResponse = {
