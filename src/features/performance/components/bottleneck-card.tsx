@@ -75,10 +75,13 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 		scales: {
 			x: {
 				beginAtZero: true,
-				title: { display: true, text: 'Days' },
+				ticks: { display: false },
+				grid: { display: false },
+				border: { display: false },
 			},
 			y: {
 				grid: { display: false },
+				border: { display: false },
 			},
 		},
 	};

@@ -86,12 +86,16 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 			},
 		},
 		scales: {
-			x: { grid: { display: false } },
+			x: {
+				grid: { display: false },
+				border: { display: false },
+			},
 			yOrders: {
 				type: 'linear' as const,
 				position: 'left' as const,
 				beginAtZero: true,
 				ticks: { precision: 0 },
+				border: { display: false },
 				title: { display: true, text: 'Orders' },
 			},
 			yAov: {
@@ -99,6 +103,7 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 				position: 'right' as const,
 				beginAtZero: true,
 				grid: { drawOnChartArea: false },
+				border: { display: false },
 				ticks: {
 					callback: (value: number | string) => formatCurrency(Number(value)),
 				},
