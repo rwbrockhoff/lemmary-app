@@ -36,3 +36,4 @@ export { Moon as MoonIcon } from 'lucide-react';
 export { LayoutDashboard as DashboardIcon } from 'lucide-react';
 export { TrendingUp as TrendingUpIcon } from 'lucide-react';
 export { Clock as ClockIcon } from 'lucide-react';
+export { Boxes as TopProductsIcon } from 'lucide-react';

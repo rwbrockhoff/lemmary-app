@@ -12,9 +12,19 @@ export type StageBottleneckStage = {
 	transitionCount: number;
 };
 
+export type TopProduct = {
+	productName: string;
+	totalUnits: number;
+	totalRevenue: number;
+	orderCount: number;
+};
+
 export type PerformanceData = {
 	stageBottleneck: {
 		stages: StageBottleneckStage[];
+	};
+	topProducts: {
+		products: TopProduct[];
 	};
 };
 
