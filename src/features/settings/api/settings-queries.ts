@@ -2,10 +2,18 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { settingsKeys } from './settings-keys';
 
-type StoreSettings = {
+export type StoreSettings = {
 	storeName: string;
 	platform: string;
 	leadTimeDays: number | null;
+	storeUrl: string | null;
+};
+
+type UpdateStorePayload = {
+	storeName?: string;
+	leadTimeDays?: number | null;
+	accessToken?: string;
+	storeUrl?: string | null;
 };
 
 export const useSettings = () => {
@@ -15,12 +23,12 @@ export const useSettings = () => {
 	});
 };
 
-export const useUpdateLeadTime = () => {
+export const useUpdateStore = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (leadTimeDays: number | null) =>
-			api.put('/settings/lead-time', { leadTimeDays }),
+		mutationFn: (payload: UpdateStorePayload) =>
+			api.patch<StoreSettings>('/store', payload),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: settingsKeys.all });
 		},

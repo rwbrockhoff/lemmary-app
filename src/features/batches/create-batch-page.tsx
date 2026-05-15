@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Heading, Text, Button, Flex } from '@artifact-ui/core';
+import { Heading, Text, Button, Flex, TextField } from '@artifact-ui/core';
 import { useOrdersWithItems } from '@/features/orders/api/orders-queries';
 import { useCreateBatch } from './api/batches-queries';
 import { PageSpinner } from '@/components/page-spinner';
@@ -96,16 +96,14 @@ const CreateBatchPage = () => {
 				</Flex>
 			</Flex>
 
-			<div className="mb-6">
+			<div className="mb-6 max-w-sm">
 				<label className="block mb-2">
 					<Text weight="medium">Batch Name</Text>
 				</label>
-				<input
-					type="text"
+				<TextField.Standalone
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					placeholder="e.g. Week of Feb 24"
-					className="w-full max-w-sm px-3 py-2 border rounded-md"
 				/>
 			</div>
 

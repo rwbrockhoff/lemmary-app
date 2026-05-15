@@ -1,0 +1,19 @@
+.swatch {
+	width: 20px;
+	height: 20px;
+	flex-shrink: 0;
+	padding: 0;
+	border: 2px solid transparent;
+	border-radius: 9999px;
+	background-color: var(--swatch-bg);
+	cursor: pointer;
+	transition: transform 0.15s ease;
+}
+
+.swatch:hover {
+	transform: scale(1.1);
+}
+
+.swatchSelected {
+	border-color: var(--color-text-default);
+}

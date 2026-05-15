@@ -1,29 +1,18 @@
-import { useState } from 'react';
-import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
+import { Heading, Stack } from '@artifact-ui/core';
 import { SettingsIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
-import { useSettings, useUpdateLeadTime } from './api/settings-queries';
+import { useWorkflowStages } from '@/features/orders/api/orders-queries';
+import { useSettings } from './api/settings-queries';
+import { StoreConnectionCard } from './components/store-connection-card';
+import { WorkflowStagesCard } from './components/workflow-stages-card';
 
 const SettingsPage = () => {
-	const { data: settings, isLoading } = useSettings();
-	const updateLeadTime = useUpdateLeadTime();
-	const [leadTime, setLeadTime] = useState('');
-	const [prevLeadTime, setPrevLeadTime] = useState<number | null | undefined>(undefined);
+	const { data: settings, isLoading: settingsLoading } = useSettings();
+	const { data: stages, isLoading: stagesLoading } = useWorkflowStages();
 
-	if (settings?.leadTimeDays != null && settings.leadTimeDays !== prevLeadTime) {
-		setPrevLeadTime(settings.leadTimeDays);
-		setLeadTime(String(settings.leadTimeDays));
+	if (settingsLoading || stagesLoading || !settings || !stages) {
+		return <PageSpinner />;
 	}
-
-	if (isLoading) return <PageSpinner />;
-
-	const currentValue = settings?.leadTimeDays;
-	const inputValue = leadTime === '' ? null : Number(leadTime);
-	const hasChanged = inputValue !== currentValue;
-
-	const handleSave = () => {
-		updateLeadTime.mutate(inputValue);
-	};
 
 	return (
 		<div className="p-8 max-w-2xl">
@@ -31,36 +20,8 @@ const SettingsPage = () => {
 				<Heading size="6" iconLeft={<SettingsIcon />}>
 					Settings
 				</Heading>
-
-				<Card.Root>
-					<Card.Header>
-						<Heading size="4">Lead Time</Heading>
-					</Card.Header>
-					<Card.Body>
-						<Stack gap="5">
-							<Text size="2" color="secondary">
-								Default number of days from order date to due date. Applied to new orders
-								during sync.
-							</Text>
-							<Flex gap="3" align="end">
-								<div className="w-32">
-									<TextField.Standalone
-										type="number"
-										placeholder="Days"
-										value={leadTime}
-										onChange={(e) => setLeadTime(e.target.value)}
-										min={0}
-									/>
-								</div>
-								<Button
-									onClick={handleSave}
-									disabled={!hasChanged || updateLeadTime.isPending}>
-									{updateLeadTime.isPending ? 'Saving...' : 'Save'}
-								</Button>
-							</Flex>
-						</Stack>
-					</Card.Body>
-				</Card.Root>
+				<StoreConnectionCard settings={settings} />
+				<WorkflowStagesCard stages={stages.orderStages} />
 			</Stack>
 		</div>
 	);

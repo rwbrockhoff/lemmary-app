@@ -4,6 +4,7 @@ import { ArtifactProvider } from '@artifact-ui/core';
 import { QueryProvider } from './query-provider';
 import { ThemeProvider } from './theme-provider';
 import { useTheme } from './theme-context';
+import { ToastContextProvider } from './toast-provider';
 
 type AppProviderProps = {
 	children: ReactNode;
@@ -23,7 +24,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 		<StrictMode>
 			<ThemeProvider>
 				<ThemedArtifact>
-					<QueryProvider>{children}</QueryProvider>
+					<QueryProvider>
+						<ToastContextProvider>{children}</ToastContextProvider>
+					</QueryProvider>
 				</ThemedArtifact>
 			</ThemeProvider>
 		</StrictMode>

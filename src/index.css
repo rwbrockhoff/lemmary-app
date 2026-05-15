@@ -1,5 +1,16 @@
 @import 'tailwindcss';
 
+:root {
+	--wf-stage-color-slate: #64748b;
+	--wf-stage-color-pine: #1b633b;
+	--wf-stage-color-cobalt: #1971a6;
+	--wf-stage-color-marigold: #ed9c00;
+	--wf-stage-color-coral: #ed503d;
+	--wf-stage-color-lavender: #c98ca7;
+	--wf-stage-color-clay: #c36b2b;
+	--wf-stage-color-sage: #acb48c;
+}
+
 html {
 	background: var(--color-bg-default);
 }

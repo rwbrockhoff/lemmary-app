@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Heading, Text, SegmentControl, Flex, cn } from '@artifact-ui/core';
-import { DashboardIcon } from '@/components/icons';
+import { Heading, Text, SegmentControl, Flex, Button, cn } from '@artifact-ui/core';
+import { DashboardIcon, RefreshIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import shared from '@/styles/shared.module.css';
+import { useSyncOrders } from '@/features/orders/api/orders-queries';
 import { useDashboard, type DashboardRange } from './api/dashboard-queries';
 import { KpiCard } from './components/kpi-card';
 import { DueSoonList } from './components/due-soon-list';
@@ -28,6 +29,7 @@ const formatCurrency = (value: string) => {
 const DashboardPage = () => {
 	const [range, setRange] = useState<DashboardRange>('30');
 	const { data, isLoading, error } = useDashboard(range);
+	const syncMutation = useSyncOrders();
 
 	if (isLoading) return <PageSpinner />;
 	if (error || !data) {
@@ -55,12 +57,21 @@ const DashboardPage = () => {
 						Overview of orders, revenue, and production
 					</Text>
 				</div>
-				<SegmentControl
-					options={RANGE_OPTIONS}
-					value={range}
-					onChange={setRange}
-					size="2"
-				/>
+				<Flex gap="3" align="center">
+					<Button
+						onClick={() => syncMutation.mutate()}
+						disabled={syncMutation.isPending}
+						variant="outline"
+						iconLeft={<RefreshIcon size={16} />}>
+						{syncMutation.isPending ? 'Syncing...' : 'Sync Orders'}
+					</Button>
+					<SegmentControl
+						options={RANGE_OPTIONS}
+						value={range}
+						onChange={setRange}
+						size="2"
+					/>
+				</Flex>
 			</Flex>
 
 			<div className={styles.kpiGrid}>
