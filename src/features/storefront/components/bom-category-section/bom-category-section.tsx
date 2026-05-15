@@ -182,6 +182,7 @@ const BomRow = ({
 					measurement={measurement}
 					onChange={(val) => handleFieldChange('materialTypeName', val)}
 					onSelect={handleTypeSelect}
+					onAutoMatch={(id) => setForm((prev) => ({ ...prev, materialTypeId: id ?? '' }))}
 					autoFocus={isNew}
 				/>
 			</Table.Cell>
@@ -193,9 +194,7 @@ const BomRow = ({
 					compact
 					override
 					value={form.piece}
-					onChange={(e) =>
-						handleFieldChange('piece', e.target.value)
-					}
+					onChange={(e) => handleFieldChange('piece', e.target.value)}
 					placeholder="Piece name"
 				/>
 			</Table.Cell>
@@ -208,9 +207,7 @@ const BomRow = ({
 						compact
 						override
 						value={form.color}
-						onChange={(e) =>
-							handleFieldChange('color', e.target.value)
-						}
+						onChange={(e) => handleFieldChange('color', e.target.value)}
 						placeholder="Color"
 					/>
 				</Table.Cell>
@@ -224,9 +221,7 @@ const BomRow = ({
 						compact
 						override
 						value={form.size}
-						onChange={(e) =>
-							handleFieldChange('size', e.target.value)
-						}
+						onChange={(e) => handleFieldChange('size', e.target.value)}
 						placeholder="Size"
 					/>
 				</Table.Cell>
@@ -240,14 +235,12 @@ const BomRow = ({
 						compact
 						override
 						value={form.length}
-						onChange={(e) =>
-							handleFieldChange('length', e.target.value)
-						}
+						onChange={(e) => handleFieldChange('length', e.target.value)}
 						placeholder="Length"
 					/>
 				</Table.Cell>
 			)}
-			<Table.Cell >
+			<Table.Cell>
 				<TextField.Standalone
 					label="Quantity"
 					variant="minimal"
@@ -256,17 +249,12 @@ const BomRow = ({
 					override
 					type="number"
 					value={form.quantity}
-					onChange={(e) =>
-						handleFieldChange('quantity', e.target.value)
-					}
+					onChange={(e) => handleFieldChange('quantity', e.target.value)}
 					placeholder="1"
 				/>
 			</Table.Cell>
 			<Table.Cell>
-				<LinkPopup
-					url={form.purchaseUrl}
-					onSave={handleLinkSave}
-				/>
+				<LinkPopup url={form.purchaseUrl} onSave={handleLinkSave} />
 			</Table.Cell>
 			<Table.Cell className={styles.actionsColumn}>
 				<div className={cn(styles.rowActions, menuOpen && styles.rowActionsVisible)}>
@@ -281,14 +269,10 @@ const BomRow = ({
 								onClick={(e) => e.stopPropagation()}
 							/>
 						</DropdownMenu.DropdownMenuTrigger>
-						<DropdownMenu.DropdownMenuContent
-							size="1"
-							align="end"
-						>
+						<DropdownMenu.DropdownMenuContent size="1" align="end">
 							<DropdownMenu.DropdownMenuItem
 								className={styles.menuItem}
-								onClick={() => onDuplicate(item)}
-							>
+								onClick={() => onDuplicate(item)}>
 								<Flex align="center" gap="2">
 									<CopyPlusIcon size={14} />
 									Duplicate
@@ -296,10 +280,7 @@ const BomRow = ({
 							</DropdownMenu.DropdownMenuItem>
 							<DropdownMenu.DropdownMenuItem
 								className={styles.menuItem}
-								onClick={() =>
-									deleteMutation.mutate(item.id)
-								}
-							>
+								onClick={() => deleteMutation.mutate(item.id)}>
 								<Flex align="center" gap="2">
 									<TrashIcon size={14} />
 									Delete
@@ -372,8 +353,7 @@ export const BomCategorySection = ({
 				<Heading size="3">{title}</Heading>
 				{items.length > 0 && (
 					<Text size="1" color="secondary">
-						{items.length}{' '}
-						{items.length === 1 ? 'item' : 'items'}
+						{items.length} {items.length === 1 ? 'item' : 'items'}
 					</Text>
 				)}
 			</Flex>
@@ -392,23 +372,21 @@ export const BomCategorySection = ({
 					</colgroup>
 					<Table.Header>
 						<Table.Row>
-							<Table.HeaderCell >
+							<Table.HeaderCell>
 								<Text
 									size="2"
 									weight="medium"
 									color="secondary"
-									className={styles.headerLabel}
-								>
+									className={styles.headerLabel}>
 									Type
 								</Text>
 							</Table.HeaderCell>
-							<Table.HeaderCell >
+							<Table.HeaderCell>
 								<Text
 									size="2"
 									weight="medium"
 									color="secondary"
-									className={styles.headerLabel}
-								>
+									className={styles.headerLabel}>
 									Piece
 								</Text>
 							</Table.HeaderCell>
@@ -418,8 +396,7 @@ export const BomCategorySection = ({
 										size="2"
 										weight="medium"
 										color="secondary"
-										className={styles.headerLabel}
-									>
+										className={styles.headerLabel}>
 										Color
 									</Text>
 								</Table.HeaderCell>
@@ -430,8 +407,7 @@ export const BomCategorySection = ({
 										size="2"
 										weight="medium"
 										color="secondary"
-										className={styles.headerLabel}
-									>
+										className={styles.headerLabel}>
 										Size
 									</Text>
 								</Table.HeaderCell>
@@ -442,19 +418,17 @@ export const BomCategorySection = ({
 										size="2"
 										weight="medium"
 										color="secondary"
-										className={styles.headerLabel}
-									>
+										className={styles.headerLabel}>
 										Length
 									</Text>
 								</Table.HeaderCell>
 							)}
-							<Table.HeaderCell >
+							<Table.HeaderCell>
 								<Text
 									size="2"
 									weight="medium"
 									color="secondary"
-									className={styles.headerLabel}
-								>
+									className={styles.headerLabel}>
 									Qty
 								</Text>
 							</Table.HeaderCell>
@@ -493,8 +467,7 @@ export const BomCategorySection = ({
 					color="neutral"
 					iconLeft={<PlusIcon size={14} />}
 					onClick={handleAddItem}
-					disabled={createMutation.isPending}
-				>
+					disabled={createMutation.isPending}>
 					Add {title}
 				</Button>
 			</div>

@@ -11,6 +11,7 @@ type TypeInputProps = {
 	measurement: string;
 	onChange: (value: string) => void;
 	onSelect: (entry: MaterialCatalogEntry) => void;
+	onAutoMatch?: (materialTypeId: string | null) => void;
 	onKeyDown?: (e: React.KeyboardEvent) => void;
 	autoFocus?: boolean;
 };
@@ -20,6 +21,7 @@ export const TypeInput = ({
 	measurement,
 	onChange,
 	onSelect,
+	onAutoMatch,
 	onKeyDown,
 	autoFocus,
 }: TypeInputProps) => {
@@ -27,23 +29,33 @@ export const TypeInput = ({
 	const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
 	const containerRef = useRef<HTMLDivElement>(null);
 	const debouncedValue = useDebouncedValue(value, 200);
-	const { data: results } = useSearchMaterialCatalog(
-		debouncedValue,
-		measurement,
-	);
+	const { data: results } = useSearchMaterialCatalog(debouncedValue, measurement);
+
+	const onAutoMatchRef = useRef(onAutoMatch);
+	useEffect(() => {
+		onAutoMatchRef.current = onAutoMatch;
+	});
+
+	useEffect(() => {
+		const trimmed = value.trim().toLowerCase();
+		if (!trimmed) {
+			onAutoMatchRef.current?.(null);
+			return;
+		}
+		const match = results?.find(
+			(r) => r.material_type_name.trim().toLowerCase() === trimmed,
+		);
+		onAutoMatchRef.current?.(match?.material_type_id ?? null);
+	}, [value, results]);
 
 	useEffect(() => {
 		const handleClickOutside = (e: MouseEvent) => {
-			if (
-				containerRef.current &&
-				!containerRef.current.contains(e.target as Node)
-			) {
+			if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
 				setIsOpen(false);
 			}
 		};
 		document.addEventListener('mousedown', handleClickOutside);
-		return () =>
-			document.removeEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, []);
 
 	useLayoutEffect(() => {
@@ -68,8 +80,7 @@ export const TypeInput = ({
 		return `${entry.material_type_name} - ${detail}`;
 	};
 
-	const showResults =
-		isOpen && results && results.length > 0 && value.length >= 1;
+	const showResults = isOpen && results && results.length > 0 && value.length >= 1;
 
 	return (
 		<div ref={containerRef}>
@@ -99,8 +110,7 @@ export const TypeInput = ({
 							top: position.top,
 							left: position.left,
 							width: Math.max(position.width, 220),
-						}}
-					>
+						}}>
 						{results.map((entry, i) => (
 							<li key={`${entry.material_type_id}-${entry.color}-${entry.size}-${i}`}>
 								<button
@@ -109,8 +119,7 @@ export const TypeInput = ({
 									onMouseDown={(e) => {
 										e.preventDefault();
 										handleSelect(entry);
-									}}
-								>
+									}}>
 									{getLabel(entry)}
 								</button>
 							</li>
