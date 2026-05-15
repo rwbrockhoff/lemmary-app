@@ -94,6 +94,8 @@ export const useCreateBomItem = (variantId: string) => {
 			queryClient.invalidateQueries({
 				queryKey: bomKeys.forVariant(variantId),
 			});
+			queryClient.invalidateQueries({ queryKey: ['bom-material-types'] });
+			queryClient.invalidateQueries({ queryKey: ['bom-materials'] });
 		},
 	});
 };
@@ -121,6 +123,8 @@ export const useUpdateBomItem = (variantId: string) => {
 			queryClient.invalidateQueries({
 				queryKey: bomKeys.forVariant(variantId),
 			});
+			queryClient.invalidateQueries({ queryKey: ['bom-material-types'] });
+			queryClient.invalidateQueries({ queryKey: ['bom-materials'] });
 		},
 	});
 };
