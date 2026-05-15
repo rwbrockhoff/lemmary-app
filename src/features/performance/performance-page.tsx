@@ -6,6 +6,7 @@ import shared from '@/styles/shared.module.css';
 import { usePerformance, type PerformanceRange } from './api/performance-queries';
 import { BottleneckCard } from './components/bottleneck-card';
 import { TopProductsCard } from './components/top-products-card';
+import { CustomerMixCard } from './components/customer-mix-card';
 import styles from './performance-page.module.css';
 
 const RANGE_OPTIONS: { value: PerformanceRange; label: string }[] = [
@@ -50,6 +51,8 @@ const PerformancePage = () => {
 				<BottleneckCard stages={data.stageBottleneck.stages} />
 				<TopProductsCard products={data.topProducts.products} />
 			</div>
+
+			<CustomerMixCard mix={data.customerMix} />
 		</div>
 	);
 };

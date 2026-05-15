@@ -19,6 +19,15 @@ export type TopProduct = {
 	orderCount: number;
 };
 
+export type CustomerMix = {
+	newCount: number;
+	returningCount: number;
+	totalCount: number;
+	priorNewCount: number;
+	priorReturningCount: number;
+	priorTotalCount: number;
+};
+
 export type PerformanceData = {
 	stageBottleneck: {
 		stages: StageBottleneckStage[];
@@ -26,6 +35,7 @@ export type PerformanceData = {
 	topProducts: {
 		products: TopProduct[];
 	};
+	customerMix: CustomerMix;
 };
 
 export const performanceKey = (range: PerformanceRange) =>
