@@ -8,6 +8,7 @@ import {
 	BatchesIcon,
 	WorkflowIcon,
 	SidebarIcon,
+	TrendingUpIcon,
 } from '@/components/icons';
 import { BrandMark } from '@/components/brand-mark';
 import { SidebarUserMenu } from './sidebar-user-menu';
@@ -23,6 +24,7 @@ const navSections = [
 		label: 'Operations',
 		items: [
 			{ to: '/', label: 'Dashboard', icon: DashboardIcon },
+			{ to: '/performance', label: 'Performance', icon: TrendingUpIcon },
 			{ to: '/orders', label: 'Orders', icon: OrdersIcon },
 			{ to: '/workflow', label: 'Workflow', icon: WorkflowIcon },
 			{ to: '/batches', label: 'Batches', icon: BatchesIcon },

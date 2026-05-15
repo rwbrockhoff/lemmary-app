@@ -44,7 +44,7 @@ export const dashboardKey = (range: DashboardRange) => ['dashboard', range] as c
 export const useDashboard = (range: DashboardRange) => {
 	return useQuery({
 		queryKey: dashboardKey(range),
-		queryFn: () => api.get<DashboardData>('/dashboard', { range }),
+		queryFn: () => api.get<DashboardData>('/analytics/operations', { range }),
 		staleTime: 60 * 1000,
 		placeholderData: keepPreviousData,
 	});

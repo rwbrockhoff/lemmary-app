@@ -11,6 +11,7 @@ const ResetPasswordPage = lazy(() => import('@/features/auth/routes/reset-passwo
 const DemoPage = lazy(() => import('@/features/auth/routes/demo'));
 
 const DashboardPage = lazy(() => import('@/features/dashboard/dashboard-page'));
+const PerformancePage = lazy(() => import('@/features/performance/performance-page'));
 const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
 const OrderDetailPage = lazy(() => import('@/features/orders/order-detail-page'));
 const ProductionPage = lazy(() => import('@/features/production/production-page'));
@@ -85,6 +86,14 @@ const router = createBrowserRouter([
 						element: (
 							<Suspense>
 								<DashboardPage />
+							</Suspense>
+						),
+					},
+					{
+						path: '/performance',
+						element: (
+							<Suspense>
+								<PerformancePage />
 							</Suspense>
 						),
 					},

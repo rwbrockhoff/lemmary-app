@@ -124,6 +124,8 @@ export type MaterialsMismatch = {
 	platform_sku: string | null;
 	product_name: string;
 	variant_label: VariantOption[] | null;
+	product_id: string | null;
+	variant_id: string | null;
 };
 
 export type MaterialsReport = {
