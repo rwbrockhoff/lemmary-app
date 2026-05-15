@@ -58,7 +58,7 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 			tooltip: {
 				callbacks: {
 					label: (ctx: TooltipItem<'bar'>) => {
-						const value = ctx.parsed.x;
+						const value = ctx.parsed.x ?? 0;
 						return `${value.toFixed(1)} days avg`;
 					},
 				},
