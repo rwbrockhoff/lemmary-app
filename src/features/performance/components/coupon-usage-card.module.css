@@ -1,0 +1,70 @@
+.container {
+	padding: var(--space-5);
+}
+
+.heading {
+	margin-bottom: var(--space-5);
+	color: var(--color-text-default);
+}
+
+.body {
+	display: flex;
+	align-items: center;
+	gap: var(--space-6);
+	min-height: 200px;
+}
+
+.bar {
+	display: flex;
+	flex-direction: column;
+	width: 32px;
+	height: 200px;
+	border-radius: var(--radius-2);
+	overflow: hidden;
+	background: var(--color-bg-subtle);
+}
+
+.withPromo {
+	background: rgba(94, 175, 173, 0.85);
+	transition: height 0.4s ease;
+}
+
+.noPromo {
+	background: rgba(178, 192, 200, 0.7);
+	transition: height 0.4s ease;
+}
+
+.stats {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+	flex: 1;
+}
+
+.bigNumber {
+	font-size: var(--font-size-8);
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	color: var(--color-text-default);
+}
+
+.label {
+	font-size: var(--font-size-3);
+	color: var(--color-text-muted);
+}
+
+.subtitle {
+	font-size: var(--font-size-2);
+	font-style: italic;
+	color: var(--color-text-muted);
+}
+
+.deltaSlot {
+	margin-top: var(--space-3);
+}
+
+.empty {
+	padding: var(--space-8) 0;
+	text-align: center;
+	color: var(--color-text-muted);
+}

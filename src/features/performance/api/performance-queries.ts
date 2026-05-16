@@ -28,6 +28,16 @@ export type CustomerMix = {
 	priorTotalCount: number;
 };
 
+export type CouponUsage = {
+	withPromoCount: number;
+	noPromoCount: number;
+	totalCount: number;
+	avgDiscount: number;
+	priorWithPromoCount: number;
+	priorNoPromoCount: number;
+	priorTotalCount: number;
+};
+
 export type PerformanceData = {
 	stageBottleneck: {
 		stages: StageBottleneckStage[];
@@ -36,6 +46,7 @@ export type PerformanceData = {
 		products: TopProduct[];
 	};
 	customerMix: CustomerMix;
+	couponUsage: CouponUsage;
 };
 
 export const performanceKey = (range: PerformanceRange) =>
