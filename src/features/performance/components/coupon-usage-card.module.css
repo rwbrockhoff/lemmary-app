@@ -25,12 +25,12 @@
 }
 
 .withPromo {
-	background: rgba(94, 175, 173, 0.85);
+	background: var(--wf-stage-color-marigold);
 	transition: height 0.4s ease;
 }
 
 .noPromo {
-	background: rgba(178, 192, 200, 0.7);
+	background: rgba(210, 220, 228, 0.5);
 	transition: height 0.4s ease;
 }
 

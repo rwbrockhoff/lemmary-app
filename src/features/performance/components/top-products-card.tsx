@@ -10,6 +10,7 @@ import { Bar } from 'react-chartjs-2';
 import { Card, Heading, Text, Flex } from '@artifact-ui/core';
 import { TopProductsIcon } from '@/components/icons';
 import type { TopProduct } from '../api/performance-queries';
+import { CHART_PALETTE, withAlpha } from '../utils/chart-palette';
 import styles from './top-products-card.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
@@ -18,7 +19,10 @@ type TopProductsCardProps = {
 	products: TopProduct[];
 };
 
-const BAR_COLOR = 'rgba(94, 175, 173, 0.85)';
+const RANK_OPACITIES = [0.95, 0.8, 0.65, 0.5, 0.35];
+
+const getBarColor = (rank: number): string =>
+	withAlpha(CHART_PALETTE.pine, RANK_OPACITIES[rank] ?? 0.35);
 
 const formatCurrency = (value: number) =>
 	new Intl.NumberFormat('en-US', {
@@ -35,7 +39,7 @@ export const TopProductsCard = ({ products }: TopProductsCardProps) => {
 			{
 				label: 'Revenue',
 				data: products.map((p) => p.totalRevenue),
-				backgroundColor: BAR_COLOR,
+				backgroundColor: products.map((_, i) => getBarColor(i)),
 				borderRadius: 4,
 			},
 		],
