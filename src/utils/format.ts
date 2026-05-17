@@ -23,7 +23,22 @@ export function formatRelativeTime(dateString: string) {
 	return `${days}d ago`;
 }
 
-export function formatCurrency(amount: string | null) {
-	if (!amount) return '—';
-	return `$${Number(amount).toFixed(2)}`;
+export function formatCurrency(amount: string | number | null) {
+	if (amount === null || amount === undefined || amount === '') return '—';
+	return Number(amount).toLocaleString('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	});
+}
+
+export function formatCurrencyShort(amount: string | number | null) {
+	if (amount === null || amount === undefined || amount === '') return '—';
+	return Number(amount).toLocaleString('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+	});
 }
