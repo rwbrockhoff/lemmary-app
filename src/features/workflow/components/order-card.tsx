@@ -17,8 +17,7 @@ export const DraggableOrderCard = ({ order }: { order: WorkflowBoardOrder }) => 
 			{...listeners}
 			{...attributes}
 			style={{ opacity: isDragging ? 0.3 : 1 }}
-			onClick={() => navigate(`/orders/${order.id}?from=workflow`)}
-		>
+			onClick={() => navigate(`/orders/${order.id}?from=workflow`)}>
 			<OrderCardContent order={order} />
 		</div>
 	);
@@ -33,8 +32,14 @@ export const OrderCardOverlay = ({ order }: { order: WorkflowBoardOrder }) => {
 };
 
 const OrderCardContent = ({ order }: { order: WorkflowBoardOrder }) => {
+	const stageColor = order.workflow_stage_color
+		? `var(--wf-stage-color-${order.workflow_stage_color})`
+		: undefined;
+
 	return (
-		<Card.Root className="cursor-pointer hover:shadow-md transition-shadow">
+		<Card.Root
+			className="cursor-pointer hover:shadow-sm transition-shadow"
+			style={stageColor ? { borderTop: `3px solid ${stageColor}` } : undefined}>
 			<Card.Body className="p-3">
 				<Flex justify="between" align="center" className="mb-1">
 					<Text size="2" weight="medium">
@@ -46,25 +51,28 @@ const OrderCardContent = ({ order }: { order: WorkflowBoardOrder }) => {
 						</Badge>
 					)}
 				</Flex>
-				<Text size="2" color="secondary" className="mb-2">
-					{order.customer_name}
-				</Text>
-				<Stack gap="1">
-					<Text size="1" color="secondary">
-						Ordered: {formatDate(order.order_date)}
+				<div className="mb-1">
+					<Text size="2" weight="medium" color="secondary">
+						{order.customer_name}
 					</Text>
-					{order.due_date && (
+				</div>
+				<div className="mb-2">
+					<Stack gap="1">
 						<Text size="1" color="secondary">
-							Due: {formatDate(order.due_date)}
+							Ordered: {formatDate(order.order_date)}
 						</Text>
-					)}
-				</Stack>
+						{order.due_date && (
+							<Text size="1" color="secondary">
+								Due: {formatDate(order.due_date)}
+							</Text>
+						)}
+					</Stack>
+				</div>
 				<Badge
 					variant="soft"
 					size="1"
 					color={getProgressColor(order.items_completed, order.item_count)}
-					className="mt-2 self-start"
-				>
+					className="self-start">
 					{order.items_completed}/{order.item_count} Items
 				</Badge>
 			</Card.Body>
