@@ -97,7 +97,7 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 							Store URL
 						</Text>
 						<Text size="2" color="secondary">
-							Used to generate links back to your Squarespace admin.
+							Used to generate links back to your e-commerce admin.
 						</Text>
 						<TextField.Standalone
 							type="url"
@@ -109,14 +109,14 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 
 					<Stack gap="2">
 						<Text size="2" weight="medium">
-							Access Token
+							API Key
 						</Text>
 						<Text size="2" color="secondary">
-							Leave blank to keep current token. Updating triggers a connection test.
+							Leave blank to keep your current store connection.
 						</Text>
 						<TextField.Standalone
 							type="password"
-							placeholder="Paste new token to update"
+							placeholder="Paste new API key to update"
 							value={accessToken}
 							onChange={(e) => setAccessToken(e.target.value)}
 						/>
