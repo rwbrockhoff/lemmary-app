@@ -25,7 +25,7 @@ const formatName = (entry: MaterialConsumptionEntry) => {
 	return entry.materialType;
 };
 
-const computeDelta = (current: number, prior: number) => {
+const getDelta = (current: number, prior: number) => {
 	if (prior === 0) return 0;
 	return Math.round(((current - prior) / (prior + 1)) * 100);
 };
@@ -57,10 +57,7 @@ export const MaterialConsumptionCard = ({
 									{formatQuantity(m.currentQty, m.measurement)}
 								</div>
 								<div className={styles.delta}>
-									<DeltaIndicator
-										delta={computeDelta(m.currentQty, m.priorQty)}
-										suffix=""
-									/>
+									<DeltaIndicator delta={getDelta(m.currentQty, m.priorQty)} suffix="" />
 								</div>
 							</div>
 						))}
