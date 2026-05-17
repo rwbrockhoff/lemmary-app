@@ -3,11 +3,12 @@ import { Heading, Text, SegmentControl, Flex, cn } from '@artifact-ui/core';
 import { TrendingUpIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import shared from '@/styles/shared.module.css';
-import {
-	usePerformance,
-	type PerformanceRange,
-} from './api/performance-queries';
+import { usePerformance, type PerformanceRange } from './api/performance-queries';
 import { BottleneckCard } from './components/bottleneck-card';
+import { TopProductsCard } from './components/top-products-card';
+import { CustomerMixCard } from './components/customer-mix-card';
+import { CouponUsageCard } from './components/coupon-usage-card';
+import { MaterialConsumptionCard } from './components/material-consumption-card';
 import styles from './performance-page.module.css';
 
 const RANGE_OPTIONS: { value: PerformanceRange; label: string }[] = [
@@ -48,7 +49,19 @@ const PerformancePage = () => {
 				/>
 			</Flex>
 
-			<BottleneckCard stages={data.stageBottleneck.stages} />
+			<div className={styles.chartGrid}>
+				<BottleneckCard stages={data.stageBottleneck.stages} />
+				<TopProductsCard products={data.topProducts.products} />
+			</div>
+
+			<div className={styles.kpiGrid}>
+				<CustomerMixCard mix={data.customerMix} />
+				<CouponUsageCard usage={data.couponUsage} />
+				<MaterialConsumptionCard
+					materials={data.materialConsumption.materials}
+					className={styles.span2}
+				/>
+			</div>
 		</div>
 	);
 };

@@ -4,6 +4,7 @@ import { DashboardIcon, RefreshIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import shared from '@/styles/shared.module.css';
 import { useSyncOrders } from '@/features/orders/api/orders-queries';
+import { formatCurrencyShort } from '@/utils/format';
 import { useDashboard, type DashboardRange } from './api/dashboard-queries';
 import { KpiCard } from './components/kpi-card';
 import { DueSoonList } from './components/due-soon-list';
@@ -15,16 +16,6 @@ const RANGE_OPTIONS: { value: DashboardRange; label: string }[] = [
 	{ value: '90', label: '90 days' },
 	{ value: '365', label: '1 year' },
 ];
-
-const formatCurrency = (value: string) => {
-	const num = Number(value);
-	return num.toLocaleString('en-US', {
-		style: 'currency',
-		currency: 'USD',
-		minimumFractionDigits: 0,
-		maximumFractionDigits: 0,
-	});
-};
 
 const DashboardPage = () => {
 	const [range, setRange] = useState<DashboardRange>('30');
@@ -77,7 +68,7 @@ const DashboardPage = () => {
 			<div className={styles.kpiGrid}>
 				<KpiCard
 					label="Revenue"
-					value={formatCurrency(revenue.current)}
+					value={formatCurrencyShort(revenue.current)}
 					delta={revenue.changePercent}
 				/>
 				<KpiCard label="Orders in progress" value={String(ordersInProgress)} />

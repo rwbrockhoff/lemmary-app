@@ -12,9 +12,51 @@ export type StageBottleneckStage = {
 	transitionCount: number;
 };
 
+export type TopProduct = {
+	productName: string;
+	totalUnits: number;
+	totalRevenue: number;
+	orderCount: number;
+};
+
+export type CustomerMix = {
+	newCount: number;
+	returningCount: number;
+	totalCount: number;
+	priorNewCount: number;
+	priorReturningCount: number;
+	priorTotalCount: number;
+};
+
+export type CouponUsage = {
+	withPromoCount: number;
+	noPromoCount: number;
+	totalCount: number;
+	avgDiscount: number;
+	priorWithPromoCount: number;
+	priorNoPromoCount: number;
+	priorTotalCount: number;
+};
+
+export type MaterialConsumptionEntry = {
+	materialType: string;
+	color: string | null;
+	measurement: 'linear' | 'area' | 'count';
+	currentQty: number;
+	priorQty: number;
+};
+
 export type PerformanceData = {
 	stageBottleneck: {
 		stages: StageBottleneckStage[];
+	};
+	topProducts: {
+		products: TopProduct[];
+	};
+	customerMix: CustomerMix;
+	couponUsage: CouponUsage;
+	materialConsumption: {
+		materials: MaterialConsumptionEntry[];
 	};
 };
 

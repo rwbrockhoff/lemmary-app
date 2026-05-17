@@ -24,7 +24,6 @@ const navSections = [
 		label: 'Operations',
 		items: [
 			{ to: '/', label: 'Dashboard', icon: DashboardIcon },
-			{ to: '/performance', label: 'Performance', icon: TrendingUpIcon },
 			{ to: '/orders', label: 'Orders', icon: OrdersIcon },
 			{ to: '/workflow', label: 'Workflow', icon: WorkflowIcon },
 			{ to: '/batches', label: 'Batches', icon: BatchesIcon },
@@ -33,6 +32,7 @@ const navSections = [
 	{
 		label: 'Reports',
 		items: [
+			{ to: '/performance', label: 'Performance', icon: TrendingUpIcon },
 			{ to: '/materials', label: 'Materials', icon: MaterialsIcon },
 			{ to: '/production', label: 'Production', icon: ProductionIcon },
 		],

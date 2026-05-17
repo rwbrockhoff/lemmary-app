@@ -8,18 +8,13 @@ import {
 } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Bar } from 'react-chartjs-2';
-import { Card, Heading, Text, Flex } from '@artifact-ui/core';
+import { Card, Heading, Flex } from '@artifact-ui/core';
 import { ClockIcon } from '@/components/icons';
+import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import type { StageBottleneckStage } from '../api/performance-queries';
 import styles from './bottleneck-card.module.css';
 
-ChartJS.register(
-	CategoryScale,
-	LinearScale,
-	BarElement,
-	Tooltip,
-	ChartDataLabels,
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, ChartDataLabels);
 ChartJS.defaults.set('plugins.datalabels', { display: false });
 
 type BottleneckCardProps = {
@@ -75,10 +70,13 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 		scales: {
 			x: {
 				beginAtZero: true,
-				title: { display: true, text: 'Days' },
+				ticks: { display: false },
+				grid: { display: false },
+				border: { display: false },
 			},
 			y: {
 				grid: { display: false },
+				border: { display: false },
 			},
 		},
 	};
@@ -91,10 +89,10 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 					<Heading size="5">Production Bottlenecks</Heading>
 				</Flex>
 				{stages.length === 0 ? (
-					<Text className={styles.empty} size="2">
-						Not enough transition history yet — bottleneck data appears once orders
-						start moving between stages.
-					</Text>
+					<ChartPlaceholder
+						message="Not enough transition history yet"
+						subtext="Bottleneck data appears once orders start moving between stages."
+					/>
 				) : (
 					<div className={styles.chartWrapper}>
 						<Bar data={chartData} options={options} />

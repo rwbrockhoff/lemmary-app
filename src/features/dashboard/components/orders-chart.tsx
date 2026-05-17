@@ -8,10 +8,13 @@ import {
 	Filler,
 	type TooltipItem,
 } from 'chart.js';
+import { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Card, Heading, Text, Flex } from '@artifact-ui/core';
 import { TrendingUpIcon } from '@/components/icons';
+import { formatCurrencyShort } from '@/utils/format';
 import type { DashboardBucket, DashboardData } from '../api/dashboard-queries';
+import { generatePeriodStats, detectAnomaly } from '../utils/anomaly-detection';
 import styles from './orders-chart.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler);
@@ -29,15 +32,9 @@ const formatChartDate = (iso: string, bucket: DashboardBucket) => {
 	return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
-const formatCurrency = (value: number) =>
-	value.toLocaleString('en-US', {
-		style: 'currency',
-		currency: 'USD',
-		minimumFractionDigits: 0,
-		maximumFractionDigits: 0,
-	});
-
 export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
+	const periodStats = useMemo(() => generatePeriodStats(data), [data]);
+
 	const chartData = {
 		labels: data.map((d) => formatChartDate(d.date, bucket)),
 		datasets: [
@@ -79,19 +76,33 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 						const value = ctx.parsed.y;
 						if (value === null) return '';
 						if (ctx.dataset.label === 'Avg Order Value')
-							return `AOV: ${formatCurrency(value)}`;
+							return `AOV: ${formatCurrencyShort(value)}`;
 						return `Orders: ${value}`;
+					},
+					afterBody: (items: TooltipItem<'line'>[]) => {
+						const idx = items[0]?.dataIndex;
+						if (idx === undefined) return '';
+						const point = data[idx];
+						if (!point) return '';
+						const anomaly = detectAnomaly(point, periodStats);
+						if (anomaly === 'spike') return 'ℹ AOV spike from fewer orders';
+						if (anomaly === 'dip') return 'ℹ AOV dip on high volume';
+						return '';
 					},
 				},
 			},
 		},
 		scales: {
-			x: { grid: { display: false } },
+			x: {
+				grid: { display: false },
+				border: { display: false },
+			},
 			yOrders: {
 				type: 'linear' as const,
 				position: 'left' as const,
 				beginAtZero: true,
 				ticks: { precision: 0 },
+				border: { display: false },
 				title: { display: true, text: 'Orders' },
 			},
 			yAov: {
@@ -99,8 +110,9 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 				position: 'right' as const,
 				beginAtZero: true,
 				grid: { drawOnChartArea: false },
+				border: { display: false },
 				ticks: {
-					callback: (value: number | string) => formatCurrency(Number(value)),
+					callback: (value: number | string) => formatCurrencyShort(Number(value)),
 				},
 				title: { display: true, text: 'Avg Order Value' },
 			},
