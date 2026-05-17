@@ -7,8 +7,9 @@ import {
 	type TooltipItem,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { Card, Heading, Text, Flex } from '@artifact-ui/core';
+import { Card, Heading, Flex } from '@artifact-ui/core';
 import { TopProductsIcon } from '@/components/icons';
+import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import type { TopProduct } from '../api/performance-queries';
 import { CHART_PALETTE, withAlpha } from '../utils/chart-palette';
 import styles from './top-products-card.module.css';
@@ -91,9 +92,10 @@ export const TopProductsCard = ({ products }: TopProductsCardProps) => {
 					<Heading size="5">Top Products</Heading>
 				</Flex>
 				{products.length === 0 ? (
-					<Text className={styles.empty} size="2">
-						No sales data yet for this period.
-					</Text>
+					<ChartPlaceholder
+						message="No sales data for this period"
+						subtext="Top products will appear once orders come through."
+					/>
 				) : (
 					<div className={styles.chartWrapper}>
 						<Bar data={chartData} options={options} />

@@ -1,5 +1,6 @@
 import { Card, Heading, Text, Flex } from '@artifact-ui/core';
 import { ScissorsIcon } from '@/components/icons';
+import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import { DeltaIndicator } from '@/components/delta-indicator/delta-indicator';
 import type { MaterialConsumptionEntry } from '../api/performance-queries';
 import styles from './material-consumption-card.module.css';
@@ -45,9 +46,10 @@ export const MaterialConsumptionCard = ({
 					Top material trends this period
 				</Text>
 				{materials.length === 0 ? (
-					<Text className={styles.empty} size="2">
-						No material data for this period yet.
-					</Text>
+					<ChartPlaceholder
+						message="No material trends yet"
+						subtext="Material trends appear as more orders come in."
+					/>
 				) : (
 					<div className={styles.list}>
 						{materials.map((m, i) => (

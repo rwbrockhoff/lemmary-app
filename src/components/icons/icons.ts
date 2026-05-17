@@ -37,6 +37,7 @@ export { LayoutDashboard as DashboardIcon } from 'lucide-react';
 export { TrendingUp as TrendingUpIcon } from 'lucide-react';
 export { TrendingDown as TrendingDownIcon } from 'lucide-react';
 export { Clock as ClockIcon } from 'lucide-react';
+export { Inbox as InboxIcon } from 'lucide-react';
 export { Boxes as TopProductsIcon } from 'lucide-react';
 export { Users as CustomersIcon } from 'lucide-react';
 export { Ticket as CouponIcon } from 'lucide-react';

@@ -1,5 +1,6 @@
-import { Card, Heading, Text, Flex } from '@artifact-ui/core';
+import { Card, Heading, Flex } from '@artifact-ui/core';
 import { CustomersIcon } from '@/components/icons';
+import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import { DeltaIndicator } from '@/components/delta-indicator/delta-indicator';
 import type { CustomerMix } from '../api/performance-queries';
 import styles from './customer-mix-card.module.css';
@@ -9,12 +10,7 @@ type CustomerMixCardProps = {
 };
 
 export const CustomerMixCard = ({ mix }: CustomerMixCardProps) => {
-	const {
-		returningCount,
-		totalCount,
-		priorReturningCount,
-		priorTotalCount,
-	} = mix;
+	const { returningCount, totalCount, priorReturningCount, priorTotalCount } = mix;
 
 	if (totalCount === 0) {
 		return (
@@ -24,9 +20,10 @@ export const CustomerMixCard = ({ mix }: CustomerMixCardProps) => {
 						<CustomersIcon size={18} />
 						<Heading size="5">Customer Mix</Heading>
 					</Flex>
-					<Text className={styles.empty} size="2">
-						No customers in this period yet.
-					</Text>
+					<ChartPlaceholder
+						message="No customers in this period yet"
+						subtext="Returning vs new mix appears as orders come in."
+					/>
 				</div>
 			</Card.Root>
 		);
@@ -51,10 +48,7 @@ export const CustomerMixCard = ({ mix }: CustomerMixCardProps) => {
 				<div className={styles.body}>
 					<div className={styles.bar}>
 						<div className={styles.new} style={{ height: `${newPct}%` }} />
-						<div
-							className={styles.returning}
-							style={{ height: `${returningPct}%` }}
-						/>
+						<div className={styles.returning} style={{ height: `${returningPct}%` }} />
 					</div>
 					<div className={styles.stats}>
 						<div className={styles.bigNumber}>{returningPct}%</div>

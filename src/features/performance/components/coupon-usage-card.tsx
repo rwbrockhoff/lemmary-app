@@ -1,5 +1,6 @@
-import { Card, Heading, Text, Flex } from '@artifact-ui/core';
+import { Card, Heading, Flex } from '@artifact-ui/core';
 import { CouponIcon } from '@/components/icons';
+import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import { DeltaIndicator } from '@/components/delta-indicator/delta-indicator';
 import type { CouponUsage } from '../api/performance-queries';
 import styles from './coupon-usage-card.module.css';
@@ -25,9 +26,10 @@ export const CouponUsageCard = ({ usage }: CouponUsageCardProps) => {
 						<CouponIcon size={18} />
 						<Heading size="5">Coupon Usage</Heading>
 					</Flex>
-					<Text className={styles.empty} size="2">
-						No orders in this period yet.
-					</Text>
+					<ChartPlaceholder
+						message="No orders in this period yet"
+						subtext="Coupon usage appears as orders come in."
+					/>
 				</div>
 			</Card.Root>
 		);
@@ -52,10 +54,7 @@ export const CouponUsageCard = ({ usage }: CouponUsageCardProps) => {
 				<div className={styles.body}>
 					<div className={styles.bar}>
 						<div className={styles.noPromo} style={{ height: `${noPromoPct}%` }} />
-						<div
-							className={styles.withPromo}
-							style={{ height: `${withPromoPct}%` }}
-						/>
+						<div className={styles.withPromo} style={{ height: `${withPromoPct}%` }} />
 					</div>
 					<div className={styles.stats}>
 						<div className={styles.bigNumber}>{withPromoPct}%</div>
