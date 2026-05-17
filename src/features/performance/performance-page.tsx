@@ -8,6 +8,7 @@ import { BottleneckCard } from './components/bottleneck-card';
 import { TopProductsCard } from './components/top-products-card';
 import { CustomerMixCard } from './components/customer-mix-card';
 import { CouponUsageCard } from './components/coupon-usage-card';
+import { MaterialConsumptionCard } from './components/material-consumption-card';
 import styles from './performance-page.module.css';
 
 const RANGE_OPTIONS: { value: PerformanceRange; label: string }[] = [
@@ -56,6 +57,10 @@ const PerformancePage = () => {
 			<div className={styles.kpiGrid}>
 				<CustomerMixCard mix={data.customerMix} />
 				<CouponUsageCard usage={data.couponUsage} />
+				<MaterialConsumptionCard
+					materials={data.materialConsumption.materials}
+					className={styles.span2}
+				/>
 			</div>
 		</div>
 	);

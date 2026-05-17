@@ -24,7 +24,7 @@ export const DeltaIndicator = ({
 			<Icon size={14} />
 			<span>
 				{isPositive ? '+' : ''}
-				{delta}% {suffix}
+				{delta}%{suffix ? ` ${suffix}` : ''}
 			</span>
 		</Flex>
 	);

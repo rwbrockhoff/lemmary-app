@@ -38,6 +38,14 @@ export type CouponUsage = {
 	priorTotalCount: number;
 };
 
+export type MaterialConsumptionEntry = {
+	materialType: string;
+	color: string | null;
+	measurement: 'linear' | 'area' | 'count';
+	currentQty: number;
+	priorQty: number;
+};
+
 export type PerformanceData = {
 	stageBottleneck: {
 		stages: StageBottleneckStage[];
@@ -47,6 +55,9 @@ export type PerformanceData = {
 	};
 	customerMix: CustomerMix;
 	couponUsage: CouponUsage;
+	materialConsumption: {
+		materials: MaterialConsumptionEntry[];
+	};
 };
 
 export const performanceKey = (range: PerformanceRange) =>
