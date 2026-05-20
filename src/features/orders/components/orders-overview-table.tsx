@@ -1,7 +1,7 @@
 import { useState, Fragment } from 'react';
 import { useNavigate } from 'react-router';
 import { Table, Badge, Text, cn } from '@artifact-ui/core';
-import { getProgressColor } from '@/features/batches/batch-utils';
+import { getProgressColor } from '@/features/batches/utils/batch-utils';
 import { StatusBadge } from './status-badge';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';

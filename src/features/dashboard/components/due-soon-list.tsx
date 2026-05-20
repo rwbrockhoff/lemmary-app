@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router';
 import { Card, Heading, Text, Table, Badge, Button, Flex, cn } from '@artifact-ui/core';
 import { ChevronRightIcon, ClockIcon } from '@/components/icons';
 import { StatusBadge } from '@/features/orders/components/status-badge';
-import { getProgressColor } from '@/features/batches/batch-utils';
+import { getProgressColor } from '@/features/batches/utils/batch-utils';
 import type { DashboardData } from '../api/dashboard-queries';
 import styles from './due-soon-list.module.css';
 

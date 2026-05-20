@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { Heading, Flex } from '@artifact-ui/core';
-import { LogoIcon } from './icons';
+import { LogoIcon } from '../icons';
 import styles from './brand-mark.module.css';
 
 type BrandMarkProps = {

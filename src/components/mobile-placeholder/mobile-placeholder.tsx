@@ -1,5 +1,5 @@
 import { Flex, Heading, Stack, Text } from '@artifact-ui/core';
-import { LogoIcon } from './icons';
+import { LogoIcon } from '../icons';
 import sharedStyles from '@/styles/shared.module.css';
 import styles from './mobile-placeholder.module.css';
 
