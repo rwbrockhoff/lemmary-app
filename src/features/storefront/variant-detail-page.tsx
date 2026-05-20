@@ -3,6 +3,8 @@ import { Heading, Text, Flex, Badge, Stack } from '@artifact-ui/core';
 import { ExternalLinkIcon } from '@/components/icons/icons';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { PageSpinner } from '@/components/page-spinner';
+import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
+import { ErrorState } from '@/components/error-state/error-state';
 import { ProductThumbnail } from '@/components/product-thumbnail/product-thumbnail';
 import { formatCurrency } from '@/utils/format';
 import { useProduct } from './api/storefront-queries';
@@ -16,91 +18,84 @@ const VariantDetailPage = () => {
 	}>();
 	const { data: product, isLoading, error } = useProduct(productId!);
 
-	if (isLoading) return <PageSpinner />;
-	if (error || !product)
-		return (
-			<Text color="danger" className="p-8">
-				Failed to load product.
-			</Text>
-		);
-
-	const variant = product.variants.find((v) => v.id === variantId);
-	if (!variant)
-		return (
-			<Text color="danger" className="p-8">
-				Variant not found.
-			</Text>
-		);
+	const variant = product?.variants.find((v) => v.id === variantId);
 
 	return (
 		<div className={shared.pageContainer}>
-			<Stack gap="8">
-				<div>
-					<Flex align="center" gap="4" className="mb-4">
-						<Breadcrumbs
-							segments={[
-								{ label: 'Storefront', to: '/storefront' },
-								{ label: product.name, to: `/storefront/${productId}` },
-							]}
-						/>
-					</Flex>
-					<Flex align="center" gap="4">
-						<ProductThumbnail
-							src={variant.image_url ?? product.image_url}
-							alt={variant.name}
-							size="lg"
-						/>
-						<Stack gap="3">
-							<Heading size="5">{variant.name}</Heading>
-							<Flex align="center" gap="3">
-								<Text size="2" color="secondary">
-									{variant.platform_sku ?? 'No SKU'}
-								</Text>
-								{!variant.platform_sku && (
-									<Badge size="1" variant="soft" color="danger">
-										Missing SKU
-									</Badge>
-								)}
-								<Text size="2" color="secondary">
-									{variant.on_sale && variant.sale_price
-										? formatCurrency(variant.sale_price)
-										: formatCurrency(variant.price)}
-								</Text>
-								<Badge
-									size="1"
-									variant="soft"
-									color={product.is_visible ? 'success' : 'neutral'}
-								>
-									{product.is_visible ? 'Visible' : 'Hidden'}
-								</Badge>
-								<Text size="2" color="secondary">
-									{variant.stock_unlimited
-										? 'Unlimited'
-										: `${variant.stock_quantity ?? 0} in stock`}
-								</Text>
-								{product.product_url && (
-									<a
-										href={product.product_url}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="ml-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-default)]"
-									>
-										<ExternalLinkIcon size={14} />
-									</a>
-								)}
+			<LoadingWrapper
+				isLoading={isLoading}
+				skeleton={<PageSpinner />}
+				isError={!!error || (!isLoading && !product)}
+				errorState={<ErrorState description="Failed to load product." />}>
+				{product && !variant && <ErrorState description="Variant not found." />}
+				{product && variant && (
+					<Stack gap="8">
+						<div>
+							<Flex align="center" gap="4" className="mb-4">
+								<Breadcrumbs
+									segments={[
+										{ label: 'Storefront', to: '/storefront' },
+										{ label: product.name, to: `/storefront/${productId}` },
+									]}
+								/>
 							</Flex>
-						</Stack>
-					</Flex>
-				</div>
+							<Flex align="center" gap="4">
+								<ProductThumbnail
+									src={variant.image_url ?? product.image_url}
+									alt={variant.name}
+									size="lg"
+								/>
+								<Stack gap="3">
+									<Heading size="5">{variant.name}</Heading>
+									<Flex align="center" gap="3">
+										<Text size="2" color="secondary">
+											{variant.platform_sku ?? 'No SKU'}
+										</Text>
+										{!variant.platform_sku && (
+											<Badge size="1" variant="soft" color="danger">
+												Missing SKU
+											</Badge>
+										)}
+										<Text size="2" color="secondary">
+											{variant.on_sale && variant.sale_price
+												? formatCurrency(variant.sale_price)
+												: formatCurrency(variant.price)}
+										</Text>
+										<Badge
+											size="1"
+											variant="soft"
+											color={product.is_visible ? 'success' : 'neutral'}>
+											{product.is_visible ? 'Visible' : 'Hidden'}
+										</Badge>
+										<Text size="2" color="secondary">
+											{variant.stock_unlimited
+												? 'Unlimited'
+												: `${variant.stock_quantity ?? 0} in stock`}
+										</Text>
+										{product.product_url && (
+											<a
+												href={product.product_url}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="ml-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-default)]">
+												<ExternalLinkIcon size={14} />
+											</a>
+										)}
+									</Flex>
+								</Stack>
+							</Flex>
+						</div>
 
-				<VariantBomSection
-					variantId={variantId!}
-					variantName={variant.name}
-					platformSku={variant.platform_sku}
-					productName={product.name}
-					siblingVariants={product.variants}
-				/>
-			</Stack>
+						<VariantBomSection
+							variantId={variantId!}
+							variantName={variant.name}
+							platformSku={variant.platform_sku}
+							productName={product.name}
+							siblingVariants={product.variants}
+						/>
+					</Stack>
+				)}
+			</LoadingWrapper>
 		</div>
 	);
 };

@@ -4,6 +4,8 @@ import { Heading, Text, Button, Flex, TextField } from '@artifact-ui/core';
 import { useOrdersWithItems } from '@/features/orders/api/orders-queries';
 import { useCreateBatch } from './api/batches-queries';
 import { PageSpinner } from '@/components/page-spinner';
+import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
+import { ErrorState } from '@/components/error-state/error-state';
 import { SelectOrdersTable } from './components/select-orders-table';
 import shared from '@/styles/shared.module.css';
 
@@ -11,27 +13,21 @@ type Tab = 'available' | 'in-batches';
 
 const CreateBatchPage = () => {
 	const navigate = useNavigate();
-	const { data, isLoading } = useOrdersWithItems();
+	const { data, isLoading, error } = useOrdersWithItems();
 	const orders = data?.orders;
 	const createBatch = useCreateBatch();
 
 	const [name, setName] = useState('');
 	const [tab, setTab] = useState<Tab>('available');
-	const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(
-		new Set(),
-	);
-	const [expandedOrderIds, setExpandedOrderIds] = useState<Set<string>>(
-		new Set(),
-	);
+	const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(new Set());
+	const [expandedOrderIds, setExpandedOrderIds] = useState<Set<string>>(new Set());
 
 	const pendingOrders = useMemo(
 		() =>
 			orders
 				?.filter((o) => o.fulfillment_status === 'pending')
 				.sort(
-					(a, b) =>
-						new Date(a.order_date).getTime() -
-						new Date(b.order_date).getTime(),
+					(a, b) => new Date(a.order_date).getTime() - new Date(b.order_date).getTime(),
 				),
 		[orders],
 	);
@@ -86,11 +82,8 @@ const CreateBatchPage = () => {
 					<Button
 						onClick={handleCreate}
 						disabled={
-							!name.trim() ||
-							selectedOrderIds.size === 0 ||
-							createBatch.isPending
-						}
-					>
+							!name.trim() || selectedOrderIds.size === 0 || createBatch.isPending
+						}>
 						{createBatch.isPending ? 'Creating...' : 'Create Batch'}
 					</Button>
 				</Flex>
@@ -112,15 +105,13 @@ const CreateBatchPage = () => {
 					<button
 						type="button"
 						onClick={() => setTab('available')}
-						className={`text-sm font-medium pb-1 cursor-pointer ${tab === 'available' ? 'border-b-2 border-current' : 'opacity-50'}`}
-					>
+						className={`text-sm font-medium pb-1 cursor-pointer ${tab === 'available' ? 'border-b-2 border-current' : 'opacity-50'}`}>
 						Available ({availableOrders.length})
 					</button>
 					<button
 						type="button"
 						onClick={() => setTab('in-batches')}
-						className={`text-sm font-medium pb-1 cursor-pointer ${tab === 'in-batches' ? 'border-b-2 border-current' : 'opacity-50'}`}
-					>
+						className={`text-sm font-medium pb-1 cursor-pointer ${tab === 'in-batches' ? 'border-b-2 border-current' : 'opacity-50'}`}>
 						In Batches ({batchedOrders.length})
 					</button>
 				</Flex>
@@ -131,26 +122,28 @@ const CreateBatchPage = () => {
 				)}
 			</Flex>
 
-			{isLoading && <PageSpinner />}
-
-			{!isLoading && displayedOrders.length === 0 && (
-				<Text color="secondary">
-					{tab === 'available'
-						? 'No available orders.'
-						: 'No orders in batches yet.'}
-				</Text>
-			)}
-
-			{displayedOrders.length > 0 && (
-				<SelectOrdersTable
-					orders={displayedOrders}
-					tab={tab}
-					selectedOrderIds={selectedOrderIds}
-					expandedOrderIds={expandedOrderIds}
-					onToggle={toggleOrder}
-					onExpand={toggleExpand}
-				/>
-			)}
+			<LoadingWrapper
+				isLoading={isLoading}
+				skeleton={<PageSpinner />}
+				isError={!!error}
+				errorState={<ErrorState description="Failed to load orders." />}
+				isEmpty={displayedOrders.length === 0}
+				emptyState={
+					<Text color="secondary">
+						{tab === 'available' ? 'No available orders.' : 'No orders in batches yet.'}
+					</Text>
+				}>
+				{displayedOrders.length > 0 && (
+					<SelectOrdersTable
+						orders={displayedOrders}
+						tab={tab}
+						selectedOrderIds={selectedOrderIds}
+						expandedOrderIds={expandedOrderIds}
+						onToggle={toggleOrder}
+						onExpand={toggleExpand}
+					/>
+				)}
+			</LoadingWrapper>
 		</div>
 	);
 };
