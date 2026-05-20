@@ -1,0 +1,17 @@
+.container {
+	display: none;
+}
+
+.content {
+	max-width: 28rem;
+	text-align: center;
+	padding: 2rem;
+}
+
+@media (max-width: 768px) {
+	.container {
+		display: flex;
+		min-height: 100vh;
+		background: var(--color-bg-subtle);
+	}
+}
