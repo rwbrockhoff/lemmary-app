@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
-import { Button, Heading, Text } from '@artifact-ui/core';
+import { Flex, Heading, Stack, Text } from '@artifact-ui/core';
+import sharedStyles from '@/styles/shared.module.css';
+import styles from './error-boundary.module.css';
 
 type ErrorBoundaryProps = {
 	children: ReactNode;
@@ -10,10 +12,7 @@ type ErrorBoundaryState = {
 	hasError: boolean;
 };
 
-export class ErrorBoundary extends Component<
-	ErrorBoundaryProps,
-	ErrorBoundaryState
-> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 	constructor(props: ErrorBoundaryProps) {
 		super(props);
 		this.state = { hasError: false };
@@ -27,21 +26,18 @@ export class ErrorBoundary extends Component<
 		console.error('Uncaught error:', error, errorInfo);
 	}
 
-	handleReset = () => {
-		this.setState({ hasError: false });
-		window.location.href = '/';
-	};
-
 	render() {
 		if (this.state.hasError) {
 			return (
-				<div className="flex flex-col items-center justify-center min-h-screen gap-4 p-8">
-					<Heading size="5">Something went wrong</Heading>
-					<Text color="secondary">
-						An unexpected error occurred. Please try again.
-					</Text>
-					<Button onClick={this.handleReset}>Back to Home</Button>
-				</div>
+				<Flex align="center" justify="center" className={styles.container}>
+					<Stack align="center" gap="4" className={styles.content}>
+						<Heading size="5">Something went wrong</Heading>
+						<Text color="secondary">An unexpected error occurred. Please try again.</Text>
+						<a href="/" className={sharedStyles.buttonLink}>
+							Back to Home
+						</a>
+					</Stack>
+				</Flex>
 			);
 		}
 
