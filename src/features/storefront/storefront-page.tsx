@@ -50,7 +50,7 @@ const StorefrontPage = () => {
 					<EmptyState
 						icon={<StorefrontIcon size={20} />}
 						title="No products yet"
-						description="Click 'Sync Products' to pull from Squarespace."
+						description="Click 'Sync Products' to pull from your store."
 					/>
 				}>
 				{products && products.length > 0 && <ProductsTable products={products} />}

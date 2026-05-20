@@ -28,15 +28,23 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 					)}
 					{order.order_url && (
 						<Flex gap="4">
-							<Text size="2" color="secondary" className={styles.label}>Order Page</Text>
-							<a href={order.order_url} target="_blank" rel="noopener noreferrer" className={styles.link}>
-								View on Squarespace
+							<Text size="2" color="secondary" className={styles.label}>
+								Order Page
+							</Text>
+							<a
+								href={order.order_url}
+								target="_blank"
+								rel="noopener noreferrer"
+								className={styles.link}>
+								View on Your Store
 							</a>
 						</Flex>
 					)}
 				</Stack>
 				<Stack>
-					<Text size="2" color="secondary" className="mb-1">Notes</Text>
+					<Text size="2" color="secondary" className="mb-1">
+						Notes
+					</Text>
 					<TextArea.Standalone
 						value={notes}
 						onChange={(e) => setNotes(e.target.value)}
@@ -49,8 +57,7 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 							variant="default"
 							size="1"
 							className="mt-2 self-start"
-							onClick={() => updateNotes.mutate(notes)}
-						>
+							onClick={() => updateNotes.mutate(notes)}>
 							Save Notes
 						</Button>
 					)}
@@ -67,7 +74,9 @@ type MetadataRowProps = {
 
 const MetadataRow = ({ label, value }: MetadataRowProps) => (
 	<Flex gap="4">
-		<Text size="2" color="secondary" className={styles.label}>{label}</Text>
+		<Text size="2" color="secondary" className={styles.label}>
+			{label}
+		</Text>
 		<Text size="2">{value}</Text>
 	</Flex>
 );

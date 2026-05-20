@@ -53,7 +53,7 @@ const OrdersPage = () => {
 					<EmptyState
 						icon={<InboxIcon size={20} />}
 						title="No orders yet"
-						description="Click 'Sync Orders' to pull from Squarespace."
+						description="Click 'Sync Orders' to pull orders from your store."
 					/>
 				}>
 				{pendingOrders && pendingOrders.length > 0 && (
