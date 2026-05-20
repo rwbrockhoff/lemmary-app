@@ -1,6 +1,6 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo } from 'react';
 
-type SortDirection = 'asc' | 'desc';
+export type SortDirection = 'asc' | 'desc';
 
 type UseSortableTableOptions<T, K extends string> = {
 	defaultKey: NoInfer<K>;
@@ -26,9 +26,6 @@ export function useSortableTable<
 	const [sortDirection, setSortDirection] = useState<SortDirection>(
 		savedSort?.direction ?? options.defaultDirection ?? 'asc',
 	);
-	const sortVersion = useRef(0);
-	const lastSortVersion = useRef(-1);
-	const sortedOrderRef = useRef<Map<unknown, number>>(new Map());
 
 	const toggleSort = (key: K) => {
 		let nextKey = sortKey;
@@ -42,7 +39,6 @@ export function useSortableTable<
 
 		setSortKey(nextKey);
 		setSortDirection(nextDirection);
-		sortVersion.current += 1;
 
 		if (options.storageKey) {
 			localStorage.setItem(
@@ -53,56 +49,33 @@ export function useSortableTable<
 	};
 
 	const sortedData = useMemo(() => {
-		const needsResort = lastSortVersion.current !== sortVersion.current;
-		lastSortVersion.current = sortVersion.current;
+		const customFn = options.customSortFns?.[sortKey];
 
-		if (needsResort || sortedOrderRef.current.size === 0) {
-			const customFn = options.customSortFns?.[sortKey];
+		return [...data].sort((a, b) => {
+			let comparison = 0;
 
-			const freshSort = [...data].sort((a, b) => {
-				let comparison = 0;
+			if (customFn) {
+				comparison = customFn(a, b);
+			} else {
+				const aVal = a[sortKey as string];
+				const bVal = b[sortKey as string];
 
-				if (customFn) {
-					comparison = customFn(a, b);
-				} else {
-					const aVal = a[sortKey as string];
-					const bVal = b[sortKey as string];
+				if (aVal == null && bVal == null) comparison = 0;
+				else if (aVal == null) comparison = 1;
+				else if (bVal == null) comparison = -1;
+				else {
+					const aNum = typeof aVal === 'number' ? aVal : Number(aVal);
+					const bNum = typeof bVal === 'number' ? bVal : Number(bVal);
 
-					if (aVal == null && bVal == null) comparison = 0;
-					else if (aVal == null) comparison = 1;
-					else if (bVal == null) comparison = -1;
-					else {
-						const aNum = typeof aVal === 'number' ? aVal : Number(aVal);
-						const bNum = typeof bVal === 'number' ? bVal : Number(bVal);
-
-						if (!isNaN(aNum) && !isNaN(bNum)) {
-							comparison = aNum - bNum;
-						} else {
-							comparison = String(aVal).localeCompare(String(bVal));
-						}
+					if (!isNaN(aNum) && !isNaN(bNum)) {
+						comparison = aNum - bNum;
+					} else {
+						comparison = String(aVal).localeCompare(String(bVal));
 					}
 				}
+			}
 
-				return sortDirection === 'asc' ? comparison : -comparison;
-			});
-
-			const orderMap = new Map<unknown, number>();
-			freshSort.forEach((item, i) => {
-				const id = (item as Record<string, unknown>).id;
-				orderMap.set(id, i);
-			});
-			sortedOrderRef.current = orderMap;
-
-			return freshSort;
-		}
-
-		const orderMap = sortedOrderRef.current;
-		return [...data].sort((a, b) => {
-			const aId = (a as Record<string, unknown>).id;
-			const bId = (b as Record<string, unknown>).id;
-			const aOrder = orderMap.get(aId) ?? Infinity;
-			const bOrder = orderMap.get(bId) ?? Infinity;
-			return aOrder - bOrder;
+			return sortDirection === 'asc' ? comparison : -comparison;
 		});
 	}, [data, sortKey, sortDirection, options.customSortFns]);
 
