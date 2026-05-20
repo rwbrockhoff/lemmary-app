@@ -1,5 +1,5 @@
 import { Table, Checkbox, cn } from '@artifact-ui/core';
-import { formatMaterialQuantity } from '../batch-material-utils';
+import { formatMaterialQuantity } from '../utils/batch-material-utils';
 import styles from '@/styles/shared.module.css';
 import type { BatchMaterial } from '@/types/api';
 

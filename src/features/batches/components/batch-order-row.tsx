@@ -1,6 +1,6 @@
 import { Table, Checkbox, Badge, cn } from '@artifact-ui/core';
 import { StageSelect } from '@/features/orders/components/stage-select';
-import { getProgressColor } from '../batch-utils';
+import { getProgressColor } from '../utils/batch-utils';
 import { formatDate } from '@/utils/format';
 import styles from '@/styles/shared.module.css';
 import type { BatchOrder, BatchOrderItem, WorkflowStage } from '@/types/api';

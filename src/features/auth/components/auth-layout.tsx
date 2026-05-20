@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Card, Flex, Stack, Text } from '@artifact-ui/core';
-import { BrandMark } from '@/components/brand-mark';
+import { BrandMark } from '@/components/brand-mark/brand-mark';
 import styles from './auth-layout.module.css';
 
 type AuthLayoutProps = {

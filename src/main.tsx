@@ -1,8 +1,8 @@
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import '@artifact-ui/core/layers.css';
-import { ErrorBoundary } from '@/components/error-boundary';
-import { MobilePlaceholder } from '@/components/mobile-placeholder';
+import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
+import { MobilePlaceholder } from '@/components/mobile-placeholder/mobile-placeholder';
 import { ServiceBanner } from '@/components/service-banner/service-banner';
 import { AppProvider } from '@/providers';
 import { AppRouter } from '@/routes';

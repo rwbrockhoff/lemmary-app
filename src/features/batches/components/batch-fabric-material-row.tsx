@@ -1,7 +1,7 @@
 import { Table, Button, Badge, Flex, cn } from '@artifact-ui/core';
 import { MinusIcon, PlusIcon } from '@/components/icons/icons';
-import { getProgressColor } from '../batch-utils';
-import { formatMaterialQuantity } from '../batch-material-utils';
+import { getProgressColor } from '../utils/batch-utils';
+import { formatMaterialQuantity } from '../utils/batch-material-utils';
 import styles from '@/styles/shared.module.css';
 import type { BatchMaterial } from '@/types/api';
 
