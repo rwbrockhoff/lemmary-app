@@ -9,16 +9,22 @@ type UseSortableTableOptions<T, K extends string> = {
 	customSortFns?: Partial<Record<K, (a: T, b: T) => number>>;
 };
 
+const loadSavedSort = (storageKey: string | undefined) => {
+	if (!storageKey) return null;
+	const stored = localStorage.getItem(`sort:${storageKey}`);
+	if (!stored) return null;
+	try {
+		return JSON.parse(stored);
+	} catch {
+		return null;
+	}
+};
+
 export function useSortableTable<
 	T extends Record<string, unknown>,
 	K extends string = Extract<keyof T, string>,
 >(data: T[], options: UseSortableTableOptions<T, K>) {
-	const savedSort = options.storageKey
-		? (() => {
-				const stored = localStorage.getItem(`sort:${options.storageKey}`);
-				return stored ? JSON.parse(stored) : null;
-			})()
-		: null;
+	const savedSort = loadSavedSort(options.storageKey);
 
 	const [sortKey, setSortKey] = useState<K>(
 		(savedSort?.key as K) ?? (options.defaultKey as K),
