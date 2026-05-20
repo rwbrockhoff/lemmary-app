@@ -1,5 +1,5 @@
 import { Select } from '@artifact-ui/core';
-import { BATCH_STATUSES, getBatchStatusColor } from '../batch-utils';
+import { BATCH_STATUSES, getBatchStatusColor } from '../utils/batch-utils';
 import styles from '@/styles/shared.module.css';
 
 type BatchStatusSelectProps = {

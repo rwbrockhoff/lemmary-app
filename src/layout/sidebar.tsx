@@ -10,7 +10,7 @@ import {
 	SidebarIcon,
 	TrendingUpIcon,
 } from '@/components/icons';
-import { BrandMark } from '@/components/brand-mark';
+import { BrandMark } from '@/components/brand-mark/brand-mark';
 import { SidebarUserMenu } from './sidebar-user-menu';
 import styles from './sidebar.module.css';
 

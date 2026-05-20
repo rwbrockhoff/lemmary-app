@@ -1,6 +1,9 @@
 import { Heading, Text, Button, Tabs, Stack, Flex } from '@artifact-ui/core';
-import { RefreshIcon, OrdersIcon } from '@/components/icons';
+import { RefreshIcon, OrdersIcon, InboxIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
+import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
+import { ErrorState } from '@/components/error-state/error-state';
+import { EmptyState } from '@/components/empty-state/empty-state';
 import { useOrdersWithItems, useSyncOrders } from './api/orders-queries';
 import { OrdersTable } from './components/orders-table';
 import { OrdersOverviewTable } from './components/orders-overview-table';
@@ -16,17 +19,15 @@ const OrdersPage = () => {
 	const orders = data?.orders;
 	const lastSyncedAt = data?.lastSyncedAt;
 
-	const pendingOrders = orders?.filter(
-		(o) => o.fulfillment_status === 'pending',
-	);
-
-	if (isLoading) return <PageSpinner />;
+	const pendingOrders = orders?.filter((o) => o.fulfillment_status === 'pending');
 
 	return (
 		<div className={shared.pageContainer}>
 			<Flex justify="between" align="center" className="mb-6">
 				<Stack gap="1">
-					<Heading size="6" iconLeft={<OrdersIcon size={20} />}>Orders</Heading>
+					<Heading size="6" iconLeft={<OrdersIcon size={20} />}>
+						Orders
+					</Heading>
 					{lastSyncedAt && (
 						<Text size="1" color="secondary">
 							Last synced {formatRelativeTime(lastSyncedAt)}
@@ -37,47 +38,50 @@ const OrdersPage = () => {
 					onClick={() => syncMutation.mutate()}
 					disabled={syncMutation.isPending}
 					variant="default"
-					iconLeft={<RefreshIcon size={16} />}
-				>
+					iconLeft={<RefreshIcon size={16} />}>
 					{syncMutation.isPending ? 'Syncing...' : 'Sync Orders'}
 				</Button>
 			</Flex>
 
-			{error && (
-				<Text color="danger">Failed to load orders. Try again later.</Text>
-			)}
+			<LoadingWrapper
+				isLoading={isLoading}
+				skeleton={<PageSpinner />}
+				isError={!!error}
+				errorState={<ErrorState description="Failed to load orders. Try again later." />}
+				isEmpty={orders?.length === 0}
+				emptyState={
+					<EmptyState
+						icon={<InboxIcon size={20} />}
+						title="No orders yet"
+						description="Click 'Sync Orders' to pull orders from your store."
+					/>
+				}>
+				{pendingOrders && pendingOrders.length > 0 && (
+					<OrdersSummary orders={pendingOrders} />
+				)}
 
-			{orders && orders.length === 0 && (
-				<Text color="secondary">
-					No orders yet. Click "Sync Orders" to pull from Squarespace.
-				</Text>
-			)}
+				{orders && orders.length > 0 && (
+					<Tabs.Root defaultValue="overview">
+						<Tabs.List>
+							<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
+							<Tabs.Trigger value="orders">Order Details</Tabs.Trigger>
+							<Tabs.Trigger value="completed">Completed</Tabs.Trigger>
+						</Tabs.List>
 
-			{pendingOrders && pendingOrders.length > 0 && (
-				<OrdersSummary orders={pendingOrders} />
-			)}
+						<Tabs.Content value="overview">
+							<OrdersOverviewTable orders={pendingOrders ?? []} />
+						</Tabs.Content>
 
-			{orders && orders.length > 0 && (
-				<Tabs.Root defaultValue="overview">
-					<Tabs.List>
-						<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
-						<Tabs.Trigger value="orders">Order Details</Tabs.Trigger>
-						<Tabs.Trigger value="completed">Completed</Tabs.Trigger>
-					</Tabs.List>
+						<Tabs.Content value="orders">
+							<OrdersTable orders={orders ?? []} />
+						</Tabs.Content>
 
-					<Tabs.Content value="overview">
-						<OrdersOverviewTable orders={pendingOrders ?? []} />
-					</Tabs.Content>
-
-					<Tabs.Content value="orders">
-						<OrdersTable orders={orders ?? []} />
-					</Tabs.Content>
-
-					<Tabs.Content value="completed">
-						<CompletedOrdersTable />
-					</Tabs.Content>
-				</Tabs.Root>
-			)}
+						<Tabs.Content value="completed">
+							<CompletedOrdersTable />
+						</Tabs.Content>
+					</Tabs.Root>
+				)}
+			</LoadingWrapper>
 		</div>
 	);
 };

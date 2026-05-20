@@ -1,14 +1,15 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Table, Checkbox, Badge, Text, cn } from '@artifact-ui/core';
-import { StageSelect } from '@/features/orders/components/stage-select';
+import { Table } from '@artifact-ui/core';
 import { CompleteItemsModal } from './complete-items-modal';
-import { getProgressColor } from '../batch-utils';
-import { useWorkflowStages, useUpdateOrderStage, useCompleteAllOrderItems } from '@/features/orders/api/orders-queries';
-import { SortableHeader } from '@/components/sortable-header';
+import { BatchOrderRow } from './batch-order-row';
+import { BatchOrdersTableHeader } from './batch-orders-table-header';
+import {
+	useWorkflowStages,
+	useUpdateOrderStage,
+	useCompleteAllOrderItems,
+} from '@/features/orders/api/orders-queries';
 import { useSortableTable } from '@/hooks/use-sortable-table';
-import styles from '@/styles/shared.module.css';
-import { formatDate } from '@/utils/format';
 import type { BatchOrder, BatchOrderItem } from '@/types/api';
 
 type BatchOrdersTableProps = {
@@ -18,7 +19,7 @@ type BatchOrdersTableProps = {
 	onToggle: (id: string, completed: boolean) => void;
 };
 
-type OrderSortKey = Extract<keyof BatchOrder, string> | 'progress';
+export type OrderSortKey = Extract<keyof BatchOrder, string> | 'progress';
 
 export const BatchOrdersTable = ({
 	batchId,
@@ -66,9 +67,7 @@ export const BatchOrdersTable = ({
 	const progressByOrder = useMemo(() => {
 		const map = new Map<string, number>();
 		for (const order of orders) {
-			const items = orderItems.filter(
-				(i) => i.batch_order_id === order.id,
-			);
+			const items = orderItems.filter((i) => i.batch_order_id === order.id);
 			const completed = items.filter((i) => i.is_complete).length;
 			const total = items.length;
 			map.set(order.id, total > 0 ? completed / total : 0);
@@ -76,144 +75,66 @@ export const BatchOrdersTable = ({
 		return map;
 	}, [orders, orderItems]);
 
-	const { sortedData, sortKey, sortDirection, toggleSort } =
-		useSortableTable<BatchOrder, OrderSortKey>(orders, {
-			defaultKey: 'order_date',
-			defaultDirection: 'asc',
-			storageKey: 'batch-orders',
-			customSortFns: {
-				progress: (a, b) =>
-					(progressByOrder.get(a.id) ?? 0) -
-					(progressByOrder.get(b.id) ?? 0),
-			},
+	const { sortedData, sortKey, sortDirection, toggleSort } = useSortableTable<
+		BatchOrder,
+		OrderSortKey
+	>(orders, {
+		defaultKey: 'order_date',
+		defaultDirection: 'asc',
+		storageKey: 'batch-orders',
+		customSortFns: {
+			progress: (a, b) =>
+				(progressByOrder.get(a.id) ?? 0) - (progressByOrder.get(b.id) ?? 0),
+		},
+	});
+
+	const handleCloseCompleteModal = (open: boolean) => {
+		if (!open) setCompleteModalOrder(null);
+	};
+
+	const handleConfirmComplete = () => {
+		if (!completeModalOrder) return;
+		completeAllItems.mutate(completeModalOrder.orderId, {
+			onSuccess: () => setCompleteModalOrder(null),
 		});
+	};
 
-	return (<>
-		<Table.Root>
-			<Table.Header>
-				<Table.Row>
-					<Table.HeaderCell className="w-10" />
-					<SortableHeader<OrderSortKey>
-						label="Order #"
-						sortKey="order_number"
-						activeSortKey={sortKey}
-						sortDirection={sortDirection}
-						onSort={toggleSort}
-						className="w-20"
-					/>
-					<SortableHeader<OrderSortKey>
-						label="Customer"
-						sortKey="customer_name"
-						activeSortKey={sortKey}
-						sortDirection={sortDirection}
-						onSort={toggleSort}
-						className="w-1/5"
-					/>
-					<SortableHeader<OrderSortKey>
-						label="Date"
-						sortKey="order_date"
-						activeSortKey={sortKey}
-						sortDirection={sortDirection}
-						onSort={toggleSort}
-						className="w-36"
-					/>
-					<SortableHeader<OrderSortKey>
-						label="Due"
-						sortKey="due_date"
-						activeSortKey={sortKey}
-						sortDirection={sortDirection}
-						onSort={toggleSort}
-						className="w-36"
-					/>
-					<SortableHeader<OrderSortKey>
-						label="Progress"
-						sortKey="progress"
-						activeSortKey={sortKey}
-						sortDirection={sortDirection}
-						onSort={toggleSort}
-						className="w-28"
-					/>
-					<Table.HeaderCell><Text size="2" weight="medium" color="secondary">Status</Text></Table.HeaderCell>
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{sortedData.map((order) => {
-					const items = orderItems.filter(
-						(i) => i.batch_order_id === order.id,
-					);
-					const completed = items.filter((i) => i.is_complete).length;
-					const total = items.length;
+	return (
+		<>
+			<Table.Root>
+				<BatchOrdersTableHeader
+					sortKey={sortKey}
+					sortDirection={sortDirection}
+					onSort={toggleSort}
+				/>
+				<Table.Body>
+					{sortedData.map((order) => {
+						const items = orderItems.filter((i) => i.batch_order_id === order.id);
+						return (
+							<BatchOrderRow
+								key={order.id}
+								order={order}
+								items={items}
+								orderStages={orderStages}
+								stagesLoading={stagesLoading}
+								onRowClick={() =>
+									navigate(`/orders/${order.order_id}?from=batch&batchId=${batchId}`)
+								}
+								onCheckboxToggle={() => handleCheckboxToggle(order)}
+								onStageChange={(stageId) => handleStageChange(order, stageId)}
+							/>
+						);
+					})}
+				</Table.Body>
+			</Table.Root>
 
-					const currentStage = orderStages.find((s) => s.id === order.workflow_stage_id);
-					const isStageComplete = currentStage?.is_complete;
-					const isInProgress = !isStageComplete && !currentStage?.is_default;
-					const rowClass = isStageComplete || order.completed
-						? styles.completedRow
-						: isInProgress
-							? styles.inProgressRow
-							: '';
-
-					return (
-						<Table.Row
-							key={order.id}
-							className={cn('cursor-pointer', rowClass)}
-							onClick={() =>
-								navigate(`/orders/${order.order_id}?from=batch&batchId=${batchId}`)
-							}
-						>
-							<Table.Cell onClick={(e) => e.stopPropagation()}>
-								<Checkbox
-									checked={order.completed}
-									onCheckedChange={() => handleCheckboxToggle(order)}
-								/>
-							</Table.Cell>
-							<Table.Cell>{order.order_number}</Table.Cell>
-							<Table.Cell className="truncate max-w-0">{order.customer_name}</Table.Cell>
-							<Table.Cell>
-								{formatDate(order.order_date)}
-							</Table.Cell>
-							<Table.Cell>
-								{order.due_date ? formatDate(order.due_date) : '—'}
-							</Table.Cell>
-							<Table.Cell>
-								<Badge
-									size="1"
-									variant="soft"
-									color={getProgressColor(completed, total)}
-								>
-									{completed}/{total}
-								</Badge>
-							</Table.Cell>
-							<Table.Cell onClick={(e) => e.stopPropagation()}>
-								{!stagesLoading && (
-									<StageSelect
-										stages={orderStages}
-										value={order.workflow_stage_id}
-										onChange={(stageId) => handleStageChange(order, stageId)}
-									/>
-								)}
-							</Table.Cell>
-						</Table.Row>
-					);
-				})}
-			</Table.Body>
-		</Table.Root>
-
-		<CompleteItemsModal
-			open={completeModalOrder !== null}
-			onOpenChange={(open) => {
-				if (!open) setCompleteModalOrder(null);
-			}}
-			items={completeModalOrder?.items ?? []}
-			onConfirm={() => {
-				if (completeModalOrder) {
-					completeAllItems.mutate(completeModalOrder.orderId, {
-						onSuccess: () => setCompleteModalOrder(null),
-					});
-				}
-			}}
-			isPending={completeAllItems.isPending}
-		/>
-	</>
+			<CompleteItemsModal
+				open={completeModalOrder !== null}
+				onOpenChange={handleCloseCompleteModal}
+				items={completeModalOrder?.items ?? []}
+				onConfirm={handleConfirmComplete}
+				isPending={completeAllItems.isPending}
+			/>
+		</>
 	);
 };

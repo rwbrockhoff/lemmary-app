@@ -3,7 +3,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { Text, Badge, Card, Flex, Stack } from '@artifact-ui/core';
 import { formatDate } from '@/utils/format';
 import type { WorkflowBoardOrder } from '@/types/api';
-import { getProgressColor } from '@/features/batches/batch-utils';
+import { getProgressColor } from '@/features/batches/utils/batch-utils';
 
 export const DraggableOrderCard = ({ order }: { order: WorkflowBoardOrder }) => {
 	const navigate = useNavigate();

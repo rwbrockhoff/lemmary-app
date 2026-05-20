@@ -1,5 +1,11 @@
 @import 'tailwindcss';
 
+@media (max-width: 768px) {
+	.app-content {
+		display: none;
+	}
+}
+
 :root {
 	--wf-stage-color-slate: #64748b;
 	--wf-stage-color-pine: #1b633b;

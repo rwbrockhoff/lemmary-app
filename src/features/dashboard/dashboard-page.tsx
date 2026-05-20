@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Heading, Text, SegmentControl, Flex, Button, cn } from '@artifact-ui/core';
 import { DashboardIcon, RefreshIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
+import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
+import { ErrorState } from '@/components/error-state/error-state';
 import shared from '@/styles/shared.module.css';
 import { useSyncOrders } from '@/features/orders/api/orders-queries';
 import { formatCurrencyShort } from '@/utils/format';
@@ -21,21 +23,6 @@ const DashboardPage = () => {
 	const [range, setRange] = useState<DashboardRange>('30');
 	const { data, isLoading, error } = useDashboard(range);
 	const syncMutation = useSyncOrders();
-
-	if (isLoading) return <PageSpinner />;
-	if (error || !data) {
-		return (
-			<div className={cn(shared.pageContainer, styles.page)}>
-				<Text color="danger">Failed to load dashboard. Try again later.</Text>
-			</div>
-		);
-	}
-
-	const { revenue, ordersInProgress, ordersCompletedInPeriod, avgLeadTime } = data;
-
-	const leadTimeValue = avgLeadTime.days !== null ? `${avgLeadTime.days}d` : '—';
-	const leadTimeSubtitle =
-		avgLeadTime.target !== null ? `Target: ${avgLeadTime.target}d` : undefined;
 
 	return (
 		<div className={cn(shared.pageContainer, styles.page)}>
@@ -65,23 +52,39 @@ const DashboardPage = () => {
 				</Flex>
 			</Flex>
 
-			<div className={styles.kpiGrid}>
-				<KpiCard
-					label="Revenue"
-					value={formatCurrencyShort(revenue.current)}
-					delta={revenue.changePercent}
-				/>
-				<KpiCard label="Orders in progress" value={String(ordersInProgress)} />
-				<KpiCard label="Completed" value={String(ordersCompletedInPeriod)} />
-				<KpiCard
-					label="Avg lead time"
-					value={leadTimeValue}
-					subtitle={leadTimeSubtitle}
-				/>
-			</div>
+			<LoadingWrapper
+				isLoading={isLoading}
+				skeleton={<PageSpinner />}
+				isError={!!error}
+				errorState={
+					<ErrorState description="Failed to load dashboard. Try again later." />
+				}>
+				{data && (
+					<>
+						<div className={styles.kpiGrid}>
+							<KpiCard
+								label="Revenue"
+								value={formatCurrencyShort(data.revenue.current)}
+								delta={data.revenue.changePercent}
+							/>
+							<KpiCard label="Orders in progress" value={String(data.ordersInProgress)} />
+							<KpiCard label="Completed" value={String(data.ordersCompletedInPeriod)} />
+							<KpiCard
+								label="Avg lead time"
+								value={data.avgLeadTime.days !== null ? `${data.avgLeadTime.days}d` : '—'}
+								subtitle={
+									data.avgLeadTime.target !== null
+										? `Target: ${data.avgLeadTime.target}d`
+										: undefined
+								}
+							/>
+						</div>
 
-			<OrdersChart data={data.ordersTrend} bucket={data.bucket} />
-			<DueSoonList orders={data.dueSoon} />
+						<OrdersChart data={data.ordersTrend} bucket={data.bucket} />
+						<DueSoonList orders={data.dueSoon} />
+					</>
+				)}
+			</LoadingWrapper>
 		</div>
 	);
 };

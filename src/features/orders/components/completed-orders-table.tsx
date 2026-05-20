@@ -7,32 +7,27 @@ import { useCompletedOrders } from '../api/orders-queries';
 import { formatDate, formatCurrency } from '@/utils/format';
 import { ExternalLinkIcon } from '@/components/icons/icons';
 import { PageSpinner } from '@/components/page-spinner';
+import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 
 export const CompletedOrdersTable = () => {
 	const navigate = useNavigate();
 	const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
 		useCompletedOrders();
 
-	const orders = useMemo(
-		() => data?.pages.flatMap((page) => page.orders) ?? [],
-		[data],
-	);
+	const orders = useMemo(() => data?.pages.flatMap((page) => page.orders) ?? [], [data]);
 
-	const { sortedData, sortKey, sortDirection, toggleSort } =
-		useSortableTable(orders, {
-			defaultKey: 'fulfilled_on',
-			defaultDirection: 'desc',
-			storageKey: 'orders-completed',
-		});
-
-	if (isLoading) return <PageSpinner />;
-
-	if (orders.length === 0) {
-		return <Text color="secondary">No completed orders.</Text>;
-	}
+	const { sortedData, sortKey, sortDirection, toggleSort } = useSortableTable(orders, {
+		defaultKey: 'fulfilled_on',
+		defaultDirection: 'desc',
+		storageKey: 'orders-completed',
+	});
 
 	return (
-		<>
+		<LoadingWrapper
+			isLoading={isLoading}
+			skeleton={<PageSpinner />}
+			isEmpty={orders.length === 0}
+			emptyState={<Text color="secondary">No completed orders.</Text>}>
 			<Table.Root variant="surface" size="2">
 				<Table.Header>
 					<Table.Row>
@@ -83,7 +78,9 @@ export const CompletedOrdersTable = () => {
 							align="end"
 						/>
 						<Table.HeaderCell className="text-end">
-							<Text size="2" weight="medium" color="secondary">Tracking</Text>
+							<Text size="2" weight="medium" color="secondary">
+								Tracking
+							</Text>
 						</Table.HeaderCell>
 					</Table.Row>
 				</Table.Header>
@@ -92,14 +89,17 @@ export const CompletedOrdersTable = () => {
 						<Table.Row
 							key={order.id}
 							className="cursor-pointer"
-							onClick={() => navigate(`/orders/${order.id}`)}
-						>
+							onClick={() => navigate(`/orders/${order.id}`)}>
 							<Table.Cell>
-								<Text size="2" weight="medium">{order.order_number}</Text>
+								<Text size="2" weight="medium">
+									{order.order_number}
+								</Text>
 							</Table.Cell>
 							<Table.Cell>{order.customer_name}</Table.Cell>
 							<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
-							<Table.Cell>{order.fulfilled_on ? formatDate(order.fulfilled_on) : '—'}</Table.Cell>
+							<Table.Cell>
+								{order.fulfilled_on ? formatDate(order.fulfilled_on) : '—'}
+							</Table.Cell>
 							<Table.Cell>{order.item_count}</Table.Cell>
 							<Table.Cell className="text-end">
 								{order.grand_total ? formatCurrency(order.grand_total) : '—'}
@@ -112,8 +112,7 @@ export const CompletedOrdersTable = () => {
 										rel="noopener noreferrer"
 										onClick={(e) => e.stopPropagation()}
 										className="inline-flex items-center gap-1 justify-end"
-										style={{ color: 'var(--color-primary)' }}
-									>
+										style={{ color: 'var(--color-primary)' }}>
 										{order.carrier_name ?? 'Track'}
 										<ExternalLinkIcon size={14} />
 									</a>
@@ -130,12 +129,11 @@ export const CompletedOrdersTable = () => {
 					<Button
 						variant="outline"
 						onClick={() => fetchNextPage()}
-						disabled={isFetchingNextPage}
-					>
+						disabled={isFetchingNextPage}>
 						{isFetchingNextPage ? 'Loading...' : 'Load More'}
 					</Button>
 				</Flex>
 			)}
-		</>
+		</LoadingWrapper>
 	);
 };
