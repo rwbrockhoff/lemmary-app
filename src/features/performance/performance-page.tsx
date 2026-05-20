@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Heading, Text, SegmentControl, Flex, cn } from '@artifact-ui/core';
 import { TrendingUpIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
+import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
+import { ErrorState } from '@/components/error-state/error-state';
 import shared from '@/styles/shared.module.css';
 import { usePerformance, type PerformanceRange } from './api/performance-queries';
 import { BottleneckCard } from './components/bottleneck-card';
@@ -20,15 +22,6 @@ const RANGE_OPTIONS: { value: PerformanceRange; label: string }[] = [
 const PerformancePage = () => {
 	const [range, setRange] = useState<PerformanceRange>('30');
 	const { data, isLoading, error } = usePerformance(range);
-
-	if (isLoading) return <PageSpinner />;
-	if (error || !data) {
-		return (
-			<div className={cn(shared.pageContainer, styles.page)}>
-				<Text color="danger">Failed to load performance data. Try again later.</Text>
-			</div>
-		);
-	}
 
 	return (
 		<div className={cn(shared.pageContainer, styles.page)}>
@@ -49,19 +42,31 @@ const PerformancePage = () => {
 				/>
 			</Flex>
 
-			<div className={styles.chartGrid}>
-				<BottleneckCard stages={data.stageBottleneck.stages} />
-				<TopProductsCard products={data.topProducts.products} />
-			</div>
+			<LoadingWrapper
+				isLoading={isLoading}
+				skeleton={<PageSpinner />}
+				isError={!!error}
+				errorState={
+					<ErrorState description="Failed to load performance data. Try again later." />
+				}>
+				{data && (
+					<>
+						<div className={styles.chartGrid}>
+							<BottleneckCard stages={data.stageBottleneck.stages} />
+							<TopProductsCard products={data.topProducts.products} />
+						</div>
 
-			<div className={styles.kpiGrid}>
-				<CustomerMixCard mix={data.customerMix} />
-				<CouponUsageCard usage={data.couponUsage} />
-				<MaterialConsumptionCard
-					materials={data.materialConsumption.materials}
-					className={styles.span2}
-				/>
-			</div>
+						<div className={styles.kpiGrid}>
+							<CustomerMixCard mix={data.customerMix} />
+							<CouponUsageCard usage={data.couponUsage} />
+							<MaterialConsumptionCard
+								materials={data.materialConsumption.materials}
+								className={styles.span2}
+							/>
+						</div>
+					</>
+				)}
+			</LoadingWrapper>
 		</div>
 	);
 };
