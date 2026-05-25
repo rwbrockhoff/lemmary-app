@@ -43,4 +43,4 @@ Feature modules live in `src/features/<feature>/` — components, hooks, queries
 
 ---
 
-Built by [Artifact Studios](https://artifactstudios.dev).
+Built by [Artifact Studio](https://artifactstudio.dev).
