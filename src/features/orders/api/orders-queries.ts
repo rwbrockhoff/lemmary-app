@@ -15,8 +15,7 @@ import {
 } from './orders-cache';
 import type {
 	OrderDetail,
-	OrdersWithItemsResponse,
-	CompletedOrdersResponse,
+	GetOrdersResponse,
 	WorkflowStage,
 	WorkflowStagesResponse,
 	WorkflowBoardResponse,
@@ -25,7 +24,7 @@ import type {
 export const useOrdersWithItems = () => {
 	return useQuery({
 		queryKey: orderKeys.withItems,
-		queryFn: () => api.get<OrdersWithItemsResponse>('/orders/with-items'),
+		queryFn: () => api.get<GetOrdersResponse>('/orders', { status: 'pending' }),
 	});
 };
 
@@ -35,7 +34,8 @@ export const useCompletedOrders = () => {
 	return useInfiniteQuery({
 		queryKey: orderKeys.completed,
 		queryFn: ({ pageParam = 0 }) =>
-			api.get<CompletedOrdersResponse>('/orders/completed', {
+			api.get<GetOrdersResponse>('/orders', {
+				status: 'completed',
 				limit: String(COMPLETED_PAGE_SIZE),
 				offset: String(pageParam),
 			}),

@@ -66,13 +66,9 @@ export type OrderWithItems = Order & {
 	items: OrderItem[];
 };
 
-export type CompletedOrdersResponse = {
-	orders: Order[];
-	hasMore: boolean;
-};
-
-export type OrdersWithItemsResponse = {
+export type GetOrdersResponse = {
 	orders: OrderWithItems[];
+	hasMore: boolean;
 	lastSyncedAt: string | null;
 };
 
