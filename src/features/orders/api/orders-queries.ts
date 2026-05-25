@@ -55,7 +55,7 @@ export const useOrder = (orderId: string) => {
 export const useWorkflowStages = () => {
 	return useQuery({
 		queryKey: orderKeys.workflowStages,
-		queryFn: () => api.get<WorkflowStagesResponse>('/workflow-stages'),
+		queryFn: () => api.get<WorkflowStagesResponse>('/workflow/stages'),
 	});
 };
 
@@ -70,7 +70,7 @@ export const useUpdateWorkflowStage = () => {
 
 	return useMutation({
 		mutationFn: ({ stageId, name, color }: UpdateWorkflowStagePayload) =>
-			api.put<WorkflowStage>(`/workflow-stages/${stageId}`, { name, color }),
+			api.put<WorkflowStage>(`/workflow/stages/${stageId}`, { name, color }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
 		},
@@ -82,7 +82,7 @@ export const useCreateWorkflowStage = () => {
 
 	return useMutation({
 		mutationFn: (params: { name: string; color?: string }) =>
-			api.post<WorkflowStage>('/workflow-stages', params),
+			api.post<WorkflowStage>('/workflow/stages', params),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
 		},
@@ -94,7 +94,7 @@ export const useDeleteWorkflowStage = () => {
 
 	return useMutation({
 		mutationFn: (stageId: string) =>
-			api.del<{ id: string }>(`/workflow-stages/${stageId}`),
+			api.del<{ id: string }>(`/workflow/stages/${stageId}`),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
 		},
@@ -106,7 +106,7 @@ export const useReorderWorkflowStages = () => {
 
 	return useMutation({
 		mutationFn: (orderedIds: string[]) =>
-			api.put('/workflow-stages/reorder', { orderedIds }),
+			api.put('/workflow/stages/order', { orderedIds }),
 		onMutate: async (orderedIds) => {
 			await queryClient.cancelQueries({ queryKey: orderKeys.workflowStages });
 
