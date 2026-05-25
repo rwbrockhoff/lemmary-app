@@ -230,6 +230,8 @@ export const useSyncOrders = () => {
 		mutationFn: () => api.post<{ synced: number }>('/orders/sync'),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			// Dashboard reads /analytics/operations under its own key, so refresh it after a sync
+			queryClient.invalidateQueries({ queryKey: ['dashboard'] });
 		},
 	});
 };
