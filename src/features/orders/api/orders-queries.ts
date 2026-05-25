@@ -198,7 +198,7 @@ export const useCompleteAllOrderItems = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (orderId: string) => api.put(`/orders/${orderId}/items/complete-all`),
+		mutationFn: (orderId: string) => api.put(`/orders/${orderId}/items/completion`),
 		onSuccess: (_data, orderId) => {
 			queryClient.invalidateQueries({
 				queryKey: orderKeys.detail(orderId),
