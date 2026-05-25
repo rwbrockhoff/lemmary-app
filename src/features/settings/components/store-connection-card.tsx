@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
+import {
+	Heading,
+	Text,
+	TextField,
+	Button,
+	Card,
+	Stack,
+	Flex,
+	Checkbox,
+} from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
 import { useUpdateStore, type StoreSettings } from '../api/settings-queries';
 
@@ -12,6 +21,7 @@ type UpdateStorePayload = {
 	leadTimeDays?: number | null;
 	accessToken?: string;
 	storeUrl?: string | null;
+	applyLeadTimeToOpenOrders?: boolean;
 };
 
 export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
@@ -25,6 +35,7 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 		settings.leadTimeDays != null ? String(settings.leadTimeDays) : '',
 	);
 	const [accessToken, setAccessToken] = useState('');
+	const [applyToOpenOrders, setApplyToOpenOrders] = useState(false);
 
 	if (settings !== prevSettings) {
 		setPrevSettings(settings);
@@ -56,6 +67,10 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 			payload.accessToken = accessToken.trim();
 		}
 
+		if (applyToOpenOrders && payload.leadTimeDays !== undefined) {
+			payload.applyLeadTimeToOpenOrders = true;
+		}
+
 		return payload;
 	};
 
@@ -67,6 +82,7 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 		updateStore.mutate(payload, {
 			onSuccess: () => {
 				setAccessToken('');
+				setApplyToOpenOrders(false);
 				toast.success('Store settings updated');
 			},
 			onError: (error) => {
@@ -139,6 +155,13 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 								min={0}
 							/>
 						</div>
+						<label className="flex items-center gap-2 cursor-pointer">
+							<Checkbox
+								checked={applyToOpenOrders}
+								onCheckedChange={(checked) => setApplyToOpenOrders(checked === true)}
+							/>
+							<Text size="2">Apply to existing open orders</Text>
+						</label>
 					</Stack>
 
 					<Flex>
