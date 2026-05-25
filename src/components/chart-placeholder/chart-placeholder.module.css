@@ -10,19 +10,6 @@
 }
 
 .icon {
-	color: var(--color-text-tertiary);
+	color: var(--color-text-muted);
 	opacity: 0.6;
-}
-
-.message {
-	font-size: var(--font-size-3);
-	font-weight: var(--font-weight-medium);
-	color: var(--color-text-secondary);
-	margin: 0;
-}
-
-.subtext {
-	font-size: var(--font-size-2);
-	color: var(--color-text-tertiary);
-	margin: 0;
 }
