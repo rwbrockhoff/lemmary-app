@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router';
+import { cn } from '@artifact-ui/core';
+import styles from './breadcrumbs.module.css';
 
 export type BreadcrumbSegment = {
 	label: string;
@@ -18,7 +20,7 @@ export const Breadcrumbs = ({ segments }: BreadcrumbsProps) => {
 				<button
 					key={segment.to}
 					onClick={() => navigate(segment.to)}
-					className="text-sm text-[var(--color-text-subtle)] hover:text-[var(--color-text-default)] cursor-pointer">
+					className={cn(styles.crumb, 'text-sm')}>
 					{segment.label} /
 				</button>
 			))}

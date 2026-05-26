@@ -1,0 +1,9 @@
+.crumb {
+	color: var(--color-text-subtle);
+	transition: color 150ms;
+	cursor: pointer;
+}
+
+.crumb:hover {
+	color: var(--color-text-default);
+}

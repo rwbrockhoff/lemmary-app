@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Text, Flex, TextField } from '@artifact-ui/core';
+import { Text, Flex, TextField, Tabs } from '@artifact-ui/core';
 import { useOrdersWithItems } from '@/features/orders/api/orders-queries';
 import { useCreateBatch } from './api/batches-queries';
 import { PageSpinner } from '@/components/page-spinner';
@@ -70,50 +70,46 @@ const CreateBatchPage = () => {
 				/>
 			</div>
 
-			<Flex justify="between" align="center" className="mb-4">
-				<Flex gap="4" align="center">
-					<button
-						type="button"
-						onClick={() => setTab('available')}
-						className={`text-sm font-medium pb-1 cursor-pointer ${tab === 'available' ? 'border-b-2 border-current' : 'opacity-50'}`}>
-						Available ({availableOrders.length})
-					</button>
-					<button
-						type="button"
-						onClick={() => setTab('in-batches')}
-						className={`text-sm font-medium pb-1 cursor-pointer ${tab === 'in-batches' ? 'border-b-2 border-current' : 'opacity-50'}`}>
-						In Batches ({batchedOrders.length})
-					</button>
+			<Tabs.Root value={tab} onValueChange={(value) => setTab(value as Tab)}>
+				<Flex justify="between" align="center" className="mb-4">
+					<Tabs.List>
+						<Tabs.Trigger value="available">
+							Available ({availableOrders.length})
+						</Tabs.Trigger>
+						<Tabs.Trigger value="in-batches">
+							In Batches ({batchedOrders.length})
+						</Tabs.Trigger>
+					</Tabs.List>
+					{tab === 'available' && selectedOrderIds.size > 0 && (
+						<Text size="2" color="secondary">
+							{selectedOrderIds.size} selected
+						</Text>
+					)}
 				</Flex>
-				{tab === 'available' && selectedOrderIds.size > 0 && (
-					<Text size="2" color="secondary">
-						{selectedOrderIds.size} selected
-					</Text>
-				)}
-			</Flex>
 
-			<LoadingWrapper
-				isLoading={isLoading}
-				skeleton={<PageSpinner />}
-				isError={!!error}
-				errorState={<ErrorState description="Failed to load orders." />}
-				isEmpty={displayedOrders.length === 0}
-				emptyState={
-					<Text color="secondary">
-						{tab === 'available' ? 'No available orders.' : 'No orders in batches yet.'}
-					</Text>
-				}>
-				{displayedOrders.length > 0 && (
-					<SelectOrdersTable
-						orders={displayedOrders}
-						tab={tab}
-						selectedOrderIds={selectedOrderIds}
-						expandedOrderIds={expandedOrderIds}
-						onToggle={toggleOrder}
-						onExpand={toggleExpand}
-					/>
-				)}
-			</LoadingWrapper>
+				<LoadingWrapper
+					isLoading={isLoading}
+					skeleton={<PageSpinner />}
+					isError={!!error}
+					errorState={<ErrorState description="Failed to load orders." />}
+					isEmpty={displayedOrders.length === 0}
+					emptyState={
+						<Text color="secondary">
+							{tab === 'available' ? 'No available orders.' : 'No orders in batches yet.'}
+						</Text>
+					}>
+					{displayedOrders.length > 0 && (
+						<SelectOrdersTable
+							orders={displayedOrders}
+							tab={tab}
+							selectedOrderIds={selectedOrderIds}
+							expandedOrderIds={expandedOrderIds}
+							onToggle={toggleOrder}
+							onExpand={toggleExpand}
+						/>
+					)}
+				</LoadingWrapper>
+			</Tabs.Root>
 		</div>
 	);
 };

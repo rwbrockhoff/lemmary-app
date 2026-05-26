@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Table, Checkbox, Badge, cn } from '@artifact-ui/core';
+import { Table, Checkbox, Badge, IconButton, cn } from '@artifact-ui/core';
 import { ChevronDownIcon } from '@/components/icons/icons';
 import { OrderItemsExpanded } from '@/features/orders/components/order-items-expanded/order-items-expanded';
 import { formatDate, formatCurrency } from '@/utils/format';
@@ -50,8 +50,7 @@ export const SelectOrdersTable = ({
 						<Fragment key={order.id}>
 							<Table.Row
 								className={tab === 'available' ? 'cursor-pointer' : undefined}
-								onClick={tab === 'available' ? () => onToggle(order.id) : undefined}
-							>
+								onClick={tab === 'available' ? () => onToggle(order.id) : undefined}>
 								{tab === 'available' && (
 									<Table.Cell onClick={(e) => e.stopPropagation()}>
 										<Checkbox
@@ -63,32 +62,40 @@ export const SelectOrdersTable = ({
 								<Table.Cell>{order.order_number}</Table.Cell>
 								<Table.Cell>{order.customer_name}</Table.Cell>
 								<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
-								<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
-								<Table.Cell className="text-center">
-									{order.item_count}
+								<Table.Cell>
+									{order.due_date ? formatDate(order.due_date) : '—'}
 								</Table.Cell>
+								<Table.Cell className="text-center">{order.item_count}</Table.Cell>
 								{tab === 'in-batches' && (
 									<Table.Cell>
-										<Badge size="1" variant="soft">{order.batch_name}</Badge>
+										<Badge size="1" variant="soft">
+											{order.batch_name}
+										</Badge>
 									</Table.Cell>
 								)}
 								<Table.Cell className="text-end">
 									{formatCurrency(order.grand_total)}
 								</Table.Cell>
 								<Table.Cell>
-									<button
-										type="button"
-										className="cursor-pointer p-1 rounded hover:bg-[var(--color-bg-muted)]"
+									<IconButton
+										icon={
+											<ChevronDownIcon
+												size={16}
+												className={cn(
+													shared.expandIcon,
+													isExpanded && shared.expandIconOpen,
+												)}
+											/>
+										}
+										label="Toggle order items"
+										size="1"
+										variant="ghost"
+										color="neutral"
 										onClick={(e) => {
 											e.stopPropagation();
 											onExpand(order.id);
 										}}
-									>
-										<ChevronDownIcon
-											size={16}
-											className={cn(shared.expandIcon, isExpanded && shared.expandIconOpen)}
-										/>
-									</button>
+									/>
 								</Table.Cell>
 							</Table.Row>
 							{isExpanded && (
