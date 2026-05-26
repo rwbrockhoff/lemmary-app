@@ -65,6 +65,45 @@
 	transform: rotate(0deg);
 }
 
+.mutedIcon {
+	color: var(--color-text-muted);
+	transition: color 150ms;
+}
+
+.mutedIcon:hover {
+	color: var(--color-text-default);
+}
+
+.brandLink {
+	color: var(--color-primary);
+}
+
+.subtleScrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: color-mix(in srgb, var(--color-text-muted) 20%, transparent)
+		transparent;
+}
+
+.subtleScrollbar::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+.subtleScrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.subtleScrollbar::-webkit-scrollbar-thumb {
+	background-color: color-mix(in srgb, var(--color-text-muted) 20%, transparent);
+	border-radius: var(--radius-full);
+	border: 3px solid transparent;
+	background-clip: padding-box;
+}
+
+.subtleScrollbar::-webkit-scrollbar-thumb:hover {
+	background-color: color-mix(in srgb, var(--color-text-muted) 50%, transparent);
+}
+
 .buttonLink {
 	display: inline-flex;
 	align-items: center;

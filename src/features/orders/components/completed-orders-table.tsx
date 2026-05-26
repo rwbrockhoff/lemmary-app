@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Table, Text, Button, Flex } from '@artifact-ui/core';
+import { Table, Text, Button, Flex, cn } from '@artifact-ui/core';
+import shared from '@/styles/shared.module.css';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import { useCompletedOrders } from '../api/orders-queries';
@@ -111,8 +112,10 @@ export const CompletedOrdersTable = () => {
 										target="_blank"
 										rel="noopener noreferrer"
 										onClick={(e) => e.stopPropagation()}
-										className="inline-flex items-center gap-1 justify-end"
-										style={{ color: 'var(--color-primary)' }}>
+										className={cn(
+											shared.brandLink,
+											'inline-flex items-center gap-1 justify-end',
+										)}>
 										{order.carrier_name ?? 'Track'}
 										<ExternalLinkIcon size={14} />
 									</a>

@@ -15,8 +15,7 @@ import {
 } from './orders-cache';
 import type {
 	OrderDetail,
-	OrdersWithItemsResponse,
-	CompletedOrdersResponse,
+	GetOrdersResponse,
 	WorkflowStage,
 	WorkflowStagesResponse,
 	WorkflowBoardResponse,
@@ -25,7 +24,7 @@ import type {
 export const useOrdersWithItems = () => {
 	return useQuery({
 		queryKey: orderKeys.withItems,
-		queryFn: () => api.get<OrdersWithItemsResponse>('/orders/with-items'),
+		queryFn: () => api.get<GetOrdersResponse>('/orders', { status: 'pending' }),
 	});
 };
 
@@ -35,7 +34,8 @@ export const useCompletedOrders = () => {
 	return useInfiniteQuery({
 		queryKey: orderKeys.completed,
 		queryFn: ({ pageParam = 0 }) =>
-			api.get<CompletedOrdersResponse>('/orders/completed', {
+			api.get<GetOrdersResponse>('/orders', {
+				status: 'completed',
 				limit: String(COMPLETED_PAGE_SIZE),
 				offset: String(pageParam),
 			}),
@@ -55,7 +55,7 @@ export const useOrder = (orderId: string) => {
 export const useWorkflowStages = () => {
 	return useQuery({
 		queryKey: orderKeys.workflowStages,
-		queryFn: () => api.get<WorkflowStagesResponse>('/workflow-stages'),
+		queryFn: () => api.get<WorkflowStagesResponse>('/workflow/stages'),
 	});
 };
 
@@ -70,7 +70,7 @@ export const useUpdateWorkflowStage = () => {
 
 	return useMutation({
 		mutationFn: ({ stageId, name, color }: UpdateWorkflowStagePayload) =>
-			api.put<WorkflowStage>(`/workflow-stages/${stageId}`, { name, color }),
+			api.put<WorkflowStage>(`/workflow/stages/${stageId}`, { name, color }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
 		},
@@ -82,7 +82,7 @@ export const useCreateWorkflowStage = () => {
 
 	return useMutation({
 		mutationFn: (params: { name: string; color?: string }) =>
-			api.post<WorkflowStage>('/workflow-stages', params),
+			api.post<WorkflowStage>('/workflow/stages', params),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
 		},
@@ -94,7 +94,7 @@ export const useDeleteWorkflowStage = () => {
 
 	return useMutation({
 		mutationFn: (stageId: string) =>
-			api.del<{ id: string }>(`/workflow-stages/${stageId}`),
+			api.del<{ id: string }>(`/workflow/stages/${stageId}`),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
 		},
@@ -106,7 +106,7 @@ export const useReorderWorkflowStages = () => {
 
 	return useMutation({
 		mutationFn: (orderedIds: string[]) =>
-			api.put('/workflow-stages/reorder', { orderedIds }),
+			api.put('/workflow/stages/order', { orderedIds }),
 		onMutate: async (orderedIds) => {
 			await queryClient.cancelQueries({ queryKey: orderKeys.workflowStages });
 
@@ -198,7 +198,7 @@ export const useCompleteAllOrderItems = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (orderId: string) => api.put(`/orders/${orderId}/items/complete-all`),
+		mutationFn: (orderId: string) => api.put(`/orders/${orderId}/items/completion`),
 		onSuccess: (_data, orderId) => {
 			queryClient.invalidateQueries({
 				queryKey: orderKeys.detail(orderId),
@@ -230,6 +230,8 @@ export const useSyncOrders = () => {
 		mutationFn: () => api.post<{ synced: number }>('/orders/sync'),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			// Dashboard reads /analytics/operations under its own key, so refresh it after a sync
+			queryClient.invalidateQueries({ queryKey: ['dashboard'] });
 		},
 	});
 };

@@ -17,7 +17,7 @@ export const ProductThumbnail = ({ src, alt, size = 'sm' }: ProductThumbnailProp
 
 	return (
 		<div className={cn(styles.placeholder, styles[size])}>
-			<ImageIcon size={iconSizes[size]} className="text-[var(--color-text-muted)]" />
+			<ImageIcon size={iconSizes[size]} />
 		</div>
 	);
 };

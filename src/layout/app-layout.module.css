@@ -5,9 +5,18 @@
 
 .content {
 	margin-left: 240px;
+	height: 100dvh;
+	display: flex;
+	flex-direction: column;
 	transition: margin-left 0.2s ease;
 }
 
 .contentCollapsed {
 	margin-left: 56px;
+}
+
+.scrollRegion {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
 }

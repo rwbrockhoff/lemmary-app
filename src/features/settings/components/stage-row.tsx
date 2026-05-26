@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button, Flex, TextField, IconButton } from '@artifact-ui/core';
+import { Button, Flex, TextField, IconButton, cn } from '@artifact-ui/core';
+import shared from '@/styles/shared.module.css';
 import { GripIcon, TrashIcon } from '@/components/icons';
 import { useToast } from '@/providers/toast-context';
 import {
@@ -81,14 +82,14 @@ export const StageRow = ({ id, name, color, isDefault }: StageRowProps) => {
 					{...listeners}
 					type="button"
 					aria-label="Drag to reorder"
-					className="flex items-center justify-center text-gray-500 hover:text-gray-700 cursor-grab active:cursor-grabbing">
+					className={cn(
+						shared.mutedIcon,
+						'flex items-center justify-center cursor-grab active:cursor-grabbing',
+					)}>
 					<GripIcon size={16} />
 				</button>
 				<StageColorPicker value={currentColor} onChange={handleColorChange} />
-				<TextField.Standalone
-					value={value}
-					onChange={(e) => setValue(e.target.value)}
-				/>
+				<TextField.Standalone value={value} onChange={(e) => setValue(e.target.value)} />
 				<Button
 					size="2"
 					onClick={handleSaveName}

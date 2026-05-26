@@ -1,5 +1,5 @@
 import { useParams } from 'react-router';
-import { Heading, Text, Flex, Badge, Stack } from '@artifact-ui/core';
+import { Heading, Text, Flex, Badge, Stack, cn } from '@artifact-ui/core';
 import { ExternalLinkIcon } from '@/components/icons/icons';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { PageSpinner } from '@/components/page-spinner';
@@ -77,7 +77,7 @@ const VariantDetailPage = () => {
 												href={product.product_url}
 												target="_blank"
 												rel="noopener noreferrer"
-												className="ml-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-default)]">
+												className={cn(shared.mutedIcon, 'ml-2')}>
 												<ExternalLinkIcon size={14} />
 											</a>
 										)}

@@ -1,0 +1,12 @@
+.dropZone {
+	border-radius: var(--radius-3);
+	background-color: var(--color-bg-subtle);
+	transition:
+		background-color 150ms,
+		box-shadow 150ms;
+}
+
+.dropZoneActive {
+	background-color: var(--color-info-bg);
+	box-shadow: 0 0 0 2px var(--color-info);
+}

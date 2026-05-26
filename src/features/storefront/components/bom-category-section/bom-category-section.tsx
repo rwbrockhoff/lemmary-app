@@ -3,6 +3,7 @@ import { Table, Text, Button, Flex, Heading, Stack } from '@artifact-ui/core';
 import { PlusIcon } from '@/components/icons/icons';
 import { useCreateBomItem } from '../../api/bom-queries';
 import { BomRow } from './bom-row';
+import { TableHeaderLabel } from '../table-header-label';
 import type { BomItem } from '@/types/api';
 import styles from './bom-category-section.module.css';
 
@@ -98,66 +99,12 @@ export const BomCategorySection = ({
 					</colgroup>
 					<Table.Header>
 						<Table.Row>
-							<Table.HeaderCell>
-								<Text
-									size="2"
-									weight="medium"
-									color="secondary"
-									className={styles.headerLabel}>
-									Type
-								</Text>
-							</Table.HeaderCell>
-							<Table.HeaderCell>
-								<Text
-									size="2"
-									weight="medium"
-									color="secondary"
-									className={styles.headerLabel}>
-									Piece
-								</Text>
-							</Table.HeaderCell>
-							{tracksColor && (
-								<Table.HeaderCell>
-									<Text
-										size="2"
-										weight="medium"
-										color="secondary"
-										className={styles.headerLabel}>
-										Color
-									</Text>
-								</Table.HeaderCell>
-							)}
-							{tracksSize && (
-								<Table.HeaderCell>
-									<Text
-										size="2"
-										weight="medium"
-										color="secondary"
-										className={styles.headerLabel}>
-										Size
-									</Text>
-								</Table.HeaderCell>
-							)}
-							{tracksLength && (
-								<Table.HeaderCell>
-									<Text
-										size="2"
-										weight="medium"
-										color="secondary"
-										className={styles.headerLabel}>
-										Length
-									</Text>
-								</Table.HeaderCell>
-							)}
-							<Table.HeaderCell>
-								<Text
-									size="2"
-									weight="medium"
-									color="secondary"
-									className={styles.headerLabel}>
-									Qty
-								</Text>
-							</Table.HeaderCell>
+							<TableHeaderLabel>Type</TableHeaderLabel>
+							<TableHeaderLabel>Piece</TableHeaderLabel>
+							{tracksColor && <TableHeaderLabel>Color</TableHeaderLabel>}
+							{tracksSize && <TableHeaderLabel>Size</TableHeaderLabel>}
+							{tracksLength && <TableHeaderLabel>Length</TableHeaderLabel>}
+							<TableHeaderLabel>Qty</TableHeaderLabel>
 							<Table.HeaderCell className="w-10" />
 							<Table.HeaderCell className={styles.actionsColumn} />
 						</Table.Row>

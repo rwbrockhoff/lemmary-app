@@ -14,6 +14,7 @@ type UpdateStorePayload = {
 	leadTimeDays?: number | null;
 	accessToken?: string;
 	storeUrl?: string | null;
+	applyLeadTimeToOpenOrders?: boolean;
 };
 
 export const useSettings = () => {

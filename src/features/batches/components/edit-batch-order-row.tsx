@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Table, Checkbox, cn } from '@artifact-ui/core';
+import { Table, Checkbox, IconButton, cn } from '@artifact-ui/core';
 import { ChevronDownIcon } from '@/components/icons/icons';
 import { OrderItemsExpanded } from '@/features/orders/components/order-items-expanded/order-items-expanded';
 import { formatDate, formatCurrency } from '@/utils/format';
@@ -33,18 +33,22 @@ export const EditBatchOrderRow = ({
 			<Table.Cell className="text-center">{order.item_count}</Table.Cell>
 			<Table.Cell className="text-end">{formatCurrency(order.grand_total)}</Table.Cell>
 			<Table.Cell>
-				<button
-					type="button"
-					className="cursor-pointer p-1 rounded hover:bg-[var(--color-bg-muted)]"
+				<IconButton
+					icon={
+						<ChevronDownIcon
+							size={16}
+							className={cn(shared.expandIcon, isExpanded && shared.expandIconOpen)}
+						/>
+					}
+					label="Toggle order items"
+					size="1"
+					variant="ghost"
+					color="neutral"
 					onClick={(e) => {
 						e.stopPropagation();
 						onExpand(order.id);
-					}}>
-					<ChevronDownIcon
-						size={16}
-						className={cn(shared.expandIcon, isExpanded && shared.expandIconOpen)}
-					/>
-				</button>
+					}}
+				/>
 			</Table.Cell>
 		</Table.Row>
 		{isExpanded && <OrderItemsExpanded items={order.items} colSpan={8} />}

@@ -1,12 +1,16 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Heading, Text, Button, Flex, TextField } from '@artifact-ui/core';
+import { Text, Flex, TextField, Tabs } from '@artifact-ui/core';
 import { useOrdersWithItems } from '@/features/orders/api/orders-queries';
 import { useCreateBatch } from './api/batches-queries';
 import { PageSpinner } from '@/components/page-spinner';
+import { PageHeader } from '@/components/page-header';
+import { FormActions } from '@/components/form-actions';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
 import { SelectOrdersTable } from './components/select-orders-table';
+import { useOrderSelection } from './hooks/use-order-selection';
+import { getPendingOrders } from './utils/batch-utils';
 import shared from '@/styles/shared.module.css';
 
 type Tab = 'available' | 'in-batches';
@@ -19,46 +23,14 @@ const CreateBatchPage = () => {
 
 	const [name, setName] = useState('');
 	const [tab, setTab] = useState<Tab>('available');
-	const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(new Set());
-	const [expandedOrderIds, setExpandedOrderIds] = useState<Set<string>>(new Set());
+	const { selectedOrderIds, expandedOrderIds, toggleOrder, toggleExpand } =
+		useOrderSelection();
 
-	const pendingOrders = useMemo(
-		() =>
-			orders
-				?.filter((o) => o.fulfillment_status === 'pending')
-				.sort(
-					(a, b) => new Date(a.order_date).getTime() - new Date(b.order_date).getTime(),
-				),
-		[orders],
-	);
+	const pendingOrders = useMemo(() => getPendingOrders(orders), [orders]);
 
-	const availableOrders = pendingOrders?.filter((o) => !o.batch_name) ?? [];
-	const batchedOrders = pendingOrders?.filter((o) => o.batch_name) ?? [];
+	const availableOrders = pendingOrders.filter((o) => !o.batch_name);
+	const batchedOrders = pendingOrders.filter((o) => o.batch_name);
 	const displayedOrders = tab === 'available' ? availableOrders : batchedOrders;
-
-	const toggleOrder = (orderId: string) => {
-		setSelectedOrderIds((prev) => {
-			const next = new Set(prev);
-			if (next.has(orderId)) {
-				next.delete(orderId);
-			} else {
-				next.add(orderId);
-			}
-			return next;
-		});
-	};
-
-	const toggleExpand = (orderId: string) => {
-		setExpandedOrderIds((prev) => {
-			const next = new Set(prev);
-			if (next.has(orderId)) {
-				next.delete(orderId);
-			} else {
-				next.add(orderId);
-			}
-			return next;
-		});
-	};
 
 	const handleCreate = async () => {
 		if (!name.trim() || selectedOrderIds.size === 0) return;
@@ -73,21 +45,19 @@ const CreateBatchPage = () => {
 
 	return (
 		<div className={shared.pageContainer}>
-			<Flex justify="between" align="center" className="mb-6">
-				<Heading size="6">New Batch</Heading>
-				<Flex gap="3" align="center">
-					<Button variant="outline" onClick={() => navigate('/batches')}>
-						Cancel
-					</Button>
-					<Button
-						onClick={handleCreate}
-						disabled={
-							!name.trim() || selectedOrderIds.size === 0 || createBatch.isPending
-						}>
-						{createBatch.isPending ? 'Creating...' : 'Create Batch'}
-					</Button>
-				</Flex>
-			</Flex>
+			<PageHeader
+				title="New Batch"
+				rightActions={
+					<FormActions
+						onCancel={() => navigate('/batches')}
+						onConfirm={handleCreate}
+						confirmLabel="Create Batch"
+						pendingLabel="Creating..."
+						isPending={createBatch.isPending}
+						disabled={!name.trim() || selectedOrderIds.size === 0}
+					/>
+				}
+			/>
 
 			<div className="mb-6 max-w-sm">
 				<label className="block mb-2">
@@ -100,50 +70,46 @@ const CreateBatchPage = () => {
 				/>
 			</div>
 
-			<Flex justify="between" align="center" className="mb-4">
-				<Flex gap="4" align="center">
-					<button
-						type="button"
-						onClick={() => setTab('available')}
-						className={`text-sm font-medium pb-1 cursor-pointer ${tab === 'available' ? 'border-b-2 border-current' : 'opacity-50'}`}>
-						Available ({availableOrders.length})
-					</button>
-					<button
-						type="button"
-						onClick={() => setTab('in-batches')}
-						className={`text-sm font-medium pb-1 cursor-pointer ${tab === 'in-batches' ? 'border-b-2 border-current' : 'opacity-50'}`}>
-						In Batches ({batchedOrders.length})
-					</button>
+			<Tabs.Root value={tab} onValueChange={(value) => setTab(value as Tab)}>
+				<Flex justify="between" align="center" className="mb-4">
+					<Tabs.List>
+						<Tabs.Trigger value="available">
+							Available ({availableOrders.length})
+						</Tabs.Trigger>
+						<Tabs.Trigger value="in-batches">
+							In Batches ({batchedOrders.length})
+						</Tabs.Trigger>
+					</Tabs.List>
+					{tab === 'available' && selectedOrderIds.size > 0 && (
+						<Text size="2" color="secondary">
+							{selectedOrderIds.size} selected
+						</Text>
+					)}
 				</Flex>
-				{tab === 'available' && selectedOrderIds.size > 0 && (
-					<Text size="2" color="secondary">
-						{selectedOrderIds.size} selected
-					</Text>
-				)}
-			</Flex>
 
-			<LoadingWrapper
-				isLoading={isLoading}
-				skeleton={<PageSpinner />}
-				isError={!!error}
-				errorState={<ErrorState description="Failed to load orders." />}
-				isEmpty={displayedOrders.length === 0}
-				emptyState={
-					<Text color="secondary">
-						{tab === 'available' ? 'No available orders.' : 'No orders in batches yet.'}
-					</Text>
-				}>
-				{displayedOrders.length > 0 && (
-					<SelectOrdersTable
-						orders={displayedOrders}
-						tab={tab}
-						selectedOrderIds={selectedOrderIds}
-						expandedOrderIds={expandedOrderIds}
-						onToggle={toggleOrder}
-						onExpand={toggleExpand}
-					/>
-				)}
-			</LoadingWrapper>
+				<LoadingWrapper
+					isLoading={isLoading}
+					skeleton={<PageSpinner />}
+					isError={!!error}
+					errorState={<ErrorState description="Failed to load orders." />}
+					isEmpty={displayedOrders.length === 0}
+					emptyState={
+						<Text color="secondary">
+							{tab === 'available' ? 'No available orders.' : 'No orders in batches yet.'}
+						</Text>
+					}>
+					{displayedOrders.length > 0 && (
+						<SelectOrdersTable
+							orders={displayedOrders}
+							tab={tab}
+							selectedOrderIds={selectedOrderIds}
+							expandedOrderIds={expandedOrderIds}
+							onToggle={toggleOrder}
+							onExpand={toggleExpand}
+						/>
+					)}
+				</LoadingWrapper>
+			</Tabs.Root>
 		</div>
 	);
 };

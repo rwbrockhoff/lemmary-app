@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Table, Text, Flex, cn } from '@artifact-ui/core';
+import { Table, Text, Flex, IconButton, cn } from '@artifact-ui/core';
 import { ExternalLinkIcon, ChevronDownIcon } from '@/components/icons/icons';
 import { formatDate, formatCurrency } from '@/utils/format';
 import { OrderItemsExpanded } from './order-items-expanded/order-items-expanded';
@@ -51,22 +51,26 @@ export const OrderRow = ({
 								target="_blank"
 								rel="noopener noreferrer"
 								onClick={handleExternalLinkClick}
-								className="text-[var(--color-text-muted)] hover:text-[var(--color-text-default)]">
+								className={shared.mutedIcon}>
 								<ExternalLinkIcon size={14} />
 							</a>
 						)}
 					</Flex>
 				</Table.Cell>
 				<Table.Cell>
-					<button
-						type="button"
-						className="cursor-pointer p-1 rounded hover:bg-[var(--color-bg-muted)]"
-						onClick={handleExpandClick}>
-						<ChevronDownIcon
-							size={16}
-							className={cn(shared.expandIcon, isExpanded && shared.expandIconOpen)}
-						/>
-					</button>
+					<IconButton
+						icon={
+							<ChevronDownIcon
+								size={16}
+								className={cn(shared.expandIcon, isExpanded && shared.expandIconOpen)}
+							/>
+						}
+						label="Toggle order items"
+						size="1"
+						variant="ghost"
+						color="neutral"
+						onClick={handleExpandClick}
+					/>
 				</Table.Cell>
 			</Table.Row>
 			{isExpanded && <OrderItemsExpanded items={order.items} colSpan={8} />}

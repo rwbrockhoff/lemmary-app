@@ -1,0 +1,12 @@
+.card {
+	transition: box-shadow 150ms;
+}
+
+.card:hover {
+	box-shadow: var(--shadow-classic);
+}
+
+.overlay {
+	transform: rotate(2deg);
+	box-shadow: var(--shadow-spread);
+}

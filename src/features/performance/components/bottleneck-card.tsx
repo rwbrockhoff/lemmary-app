@@ -12,6 +12,7 @@ import { Card, Heading, Flex } from '@artifact-ui/core';
 import { ClockIcon } from '@/components/icons';
 import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import type { StageBottleneckStage } from '../api/performance-queries';
+import { BAR_DATASET_STYLE } from '../utils/chart-config';
 import styles from './bottleneck-card.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, ChartDataLabels);
@@ -32,14 +33,16 @@ const resolveStageColor = (slug: string | null): string => {
 };
 
 export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
+	const visibleStages = stages.filter((s) => Number(s.avgDays.toFixed(1)) > 0);
+
 	const chartData = {
-		labels: stages.map((s) => s.stageName),
+		labels: visibleStages.map((s) => s.stageName),
 		datasets: [
 			{
 				label: 'Avg days',
-				data: stages.map((s) => Number(s.avgDays.toFixed(2))),
-				backgroundColor: stages.map((s) => resolveStageColor(s.stageColor)),
-				borderRadius: 4,
+				data: visibleStages.map((s) => Number(s.avgDays.toFixed(2))),
+				backgroundColor: visibleStages.map((s) => resolveStageColor(s.stageColor)),
+				...BAR_DATASET_STYLE,
 			},
 		],
 	};
@@ -88,10 +91,10 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 					<ClockIcon size={18} />
 					<Heading size="5">Production Bottlenecks</Heading>
 				</Flex>
-				{stages.length === 0 ? (
+				{visibleStages.length === 0 ? (
 					<ChartPlaceholder
-						message="Not enough transition history yet"
-						subtext="Bottleneck data appears once orders start moving between stages."
+						message="Not enough workflow activity yet"
+						subtext="Bottlenecks will appear once more orders move through your different workflow stages."
 					/>
 				) : (
 					<div className={styles.chartWrapper}>

@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router';
 import { useDraggable } from '@dnd-kit/core';
-import { Text, Badge, Card, Flex, Stack } from '@artifact-ui/core';
+import { Text, Badge, Card, Flex, Stack, cn } from '@artifact-ui/core';
 import { formatDate } from '@/utils/format';
 import type { WorkflowBoardOrder } from '@/types/api';
 import { getProgressColor } from '@/features/batches/utils/batch-utils';
+import styles from './order-card.module.css';
 
 export const DraggableOrderCard = ({ order }: { order: WorkflowBoardOrder }) => {
 	const navigate = useNavigate();
@@ -25,7 +26,7 @@ export const DraggableOrderCard = ({ order }: { order: WorkflowBoardOrder }) => 
 
 export const OrderCardOverlay = ({ order }: { order: WorkflowBoardOrder }) => {
 	return (
-		<div className="w-[280px] rotate-2 shadow-lg">
+		<div className={cn(styles.overlay, 'w-[280px]')}>
 			<OrderCardContent order={order} />
 		</div>
 	);
@@ -38,7 +39,7 @@ const OrderCardContent = ({ order }: { order: WorkflowBoardOrder }) => {
 
 	return (
 		<Card.Root
-			className="cursor-pointer hover:shadow-sm transition-shadow"
+			className={cn(styles.card, 'cursor-pointer')}
 			style={stageColor ? { borderTop: `3px solid ${stageColor}` } : undefined}>
 			<Card.Body className="p-3">
 				<Flex justify="between" align="center" className="mb-1">

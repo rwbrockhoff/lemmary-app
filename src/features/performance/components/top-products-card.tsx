@@ -12,6 +12,7 @@ import { TopProductsIcon } from '@/components/icons';
 import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import type { TopProduct } from '../api/performance-queries';
 import { CHART_PALETTE, withAlpha } from '../utils/chart-palette';
+import { BAR_DATASET_STYLE } from '../utils/chart-config';
 import styles from './top-products-card.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
@@ -41,7 +42,7 @@ export const TopProductsCard = ({ products }: TopProductsCardProps) => {
 				label: 'Revenue',
 				data: products.map((p) => p.totalRevenue),
 				backgroundColor: products.map((_, i) => getBarColor(i)),
-				borderRadius: 4,
+				...BAR_DATASET_STYLE,
 			},
 		],
 	};

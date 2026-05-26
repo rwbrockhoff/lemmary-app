@@ -1,8 +1,10 @@
 import { useDroppable } from '@dnd-kit/core';
-import { Text, Flex, DropdownMenu } from '@artifact-ui/core';
+import { Text, Flex, IconButton, DropdownMenu, cn } from '@artifact-ui/core';
 import { EllipsisHorizontalIcon } from '@/components/icons/icons';
 import { StatusBadge } from '@/features/orders/components/status-badge';
 import { DraggableOrderCard } from './order-card';
+import styles from './kanban-column.module.css';
+import shared from '@/styles/shared.module.css';
 import type { WorkflowBoardOrder, WorkflowStage } from '@/types/api';
 
 type KanbanColumnProps = {
@@ -21,7 +23,7 @@ export const KanbanColumn = ({
 	const { setNodeRef, isOver } = useDroppable({ id: stage.id });
 
 	return (
-		<div className="flex flex-col min-w-[280px] max-w-[320px] shrink-0">
+		<div className="flex flex-col h-full min-w-[280px] max-w-[320px] shrink-0">
 			<Flex align="center" gap="2" className="mb-3 px-1">
 				<StatusBadge name={stage.name} color={stage.color} />
 				<Text size="1" color="secondary">
@@ -31,12 +33,13 @@ export const KanbanColumn = ({
 					<div className="ml-auto">
 						<DropdownMenu.DropdownMenu>
 							<DropdownMenu.DropdownMenuTrigger asChild>
-								<button
-									className="p-1 rounded hover:bg-[var(--color-bg-muted)] focus:outline-none focus-visible:outline-none"
-									style={{ outline: 'none' }}
-									aria-label="Column options">
-									<EllipsisHorizontalIcon size={14} />
-								</button>
+								<IconButton
+									icon={<EllipsisHorizontalIcon size={14} />}
+									label="Column options"
+									size="1"
+									variant="ghost"
+									color="neutral"
+								/>
 							</DropdownMenu.DropdownMenuTrigger>
 							<DropdownMenu.DropdownMenuContent align="end" size="1">
 								<DropdownMenu.DropdownMenuItem onSelect={onToggleCollapse}>
@@ -49,11 +52,12 @@ export const KanbanColumn = ({
 			</Flex>
 			<div
 				ref={setNodeRef}
-				className={`flex flex-col gap-2 min-h-[200px] rounded-lg p-2 transition-colors ${
-					isOver
-						? 'bg-[var(--color-info-bg)] ring-2 ring-[var(--color-info)]'
-						: 'bg-[var(--color-bg-subtle)]'
-				}`}>
+				className={cn(
+					styles.dropZone,
+					isOver && styles.dropZoneActive,
+					shared.subtleScrollbar,
+					'flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto p-2',
+				)}>
 				{!collapsed &&
 					orders.map((order) => <DraggableOrderCard key={order.id} order={order} />)}
 				{!collapsed && orders.length === 0 && (

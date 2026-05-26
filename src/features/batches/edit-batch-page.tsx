@@ -1,13 +1,16 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { Heading, Text, Button, Table, Flex } from '@artifact-ui/core';
+import { Text, Table, Flex } from '@artifact-ui/core';
 import { useOrdersWithItems } from '@/features/orders/api/orders-queries';
 import { useBatch, useUpdateBatchOrders } from './api/batches-queries';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
-import { Breadcrumbs } from '@/components/breadcrumbs';
+import { PageHeader } from '@/components/page-header';
+import { FormActions } from '@/components/form-actions';
 import { EditBatchOrderRow } from './components/edit-batch-order-row';
+import { useOrderSelection } from './hooks/use-order-selection';
+import { getPendingOrders } from './utils/batch-utils';
 import shared from '@/styles/shared.module.css';
 
 const EditBatchPage = () => {
@@ -18,8 +21,13 @@ const EditBatchPage = () => {
 	const orders = data?.orders;
 	const updateBatchOrders = useUpdateBatchOrders();
 
-	const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(new Set());
-	const [expandedOrderIds, setExpandedOrderIds] = useState<Set<string>>(new Set());
+	const {
+		selectedOrderIds,
+		setSelectedOrderIds,
+		expandedOrderIds,
+		toggleOrder,
+		toggleExpand,
+	} = useOrderSelection();
 	const [prevBatchId, setPrevBatchId] = useState<string | null>(null);
 
 	if (batch && batch.id !== prevBatchId) {
@@ -29,47 +37,16 @@ const EditBatchPage = () => {
 
 	const isLoading = batchLoading || ordersLoading;
 
-	const pendingOrders = useMemo(
-		() =>
-			orders
-				?.filter((o) => o.fulfillment_status === 'pending')
-				.sort(
-					(a, b) => new Date(a.order_date).getTime() - new Date(b.order_date).getTime(),
-				),
-		[orders],
-	);
+	const pendingOrders = useMemo(() => getPendingOrders(orders), [orders]);
 
 	const currentBatchOrderIds = useMemo(
 		() => new Set(batch?.orders.map((o) => o.order_id) ?? []),
 		[batch],
 	);
 
-	const availableOrders =
-		pendingOrders?.filter((o) => !o.batch_name || currentBatchOrderIds.has(o.id)) ?? [];
-
-	const toggleOrder = (orderId: string) => {
-		setSelectedOrderIds((prev) => {
-			const next = new Set(prev);
-			if (next.has(orderId)) {
-				next.delete(orderId);
-			} else {
-				next.add(orderId);
-			}
-			return next;
-		});
-	};
-
-	const toggleExpand = (orderId: string) => {
-		setExpandedOrderIds((prev) => {
-			const next = new Set(prev);
-			if (next.has(orderId)) {
-				next.delete(orderId);
-			} else {
-				next.add(orderId);
-			}
-			return next;
-		});
-	};
+	const availableOrders = pendingOrders.filter(
+		(o) => !o.batch_name || currentBatchOrderIds.has(o.id),
+	);
 
 	const handleSave = async () => {
 		if (selectedOrderIds.size === 0) return;
@@ -91,27 +68,23 @@ const EditBatchPage = () => {
 				errorState={<ErrorState description="Batch not found." />}>
 				{batch && (
 					<>
-						<Flex justify="between" align="center" className="mb-6">
-							<Flex gap="3" align="center">
-								<Breadcrumbs
-									segments={[
-										{ label: 'Batches', to: '/batches' },
-										{ label: batch.name, to: `/batches/${batchId}` },
-									]}
+						<PageHeader
+							segments={[
+								{ label: 'Batches', to: '/batches' },
+								{ label: batch.name, to: `/batches/${batchId}` },
+							]}
+							title="Edit Orders"
+							rightActions={
+								<FormActions
+									onCancel={() => navigate(`/batches/${batchId}`)}
+									onConfirm={handleSave}
+									confirmLabel="Save"
+									pendingLabel="Saving..."
+									isPending={updateBatchOrders.isPending}
+									disabled={selectedOrderIds.size === 0}
 								/>
-								<Heading size="6">Edit Orders</Heading>
-							</Flex>
-							<Flex gap="3" align="center">
-								<Button variant="outline" onClick={() => navigate(`/batches/${batchId}`)}>
-									Cancel
-								</Button>
-								<Button
-									onClick={handleSave}
-									disabled={selectedOrderIds.size === 0 || updateBatchOrders.isPending}>
-									{updateBatchOrders.isPending ? 'Saving...' : 'Save'}
-								</Button>
-							</Flex>
-						</Flex>
+							}
+						/>
 
 						<Flex justify="between" align="center" className="mb-4">
 							<Text size="2" color="secondary">
