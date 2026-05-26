@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
-import { Heading, Flex } from '@artifact-ui/core';
+import { Heading, Flex, cn } from '@artifact-ui/core';
 import { WorkflowIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
@@ -11,6 +11,7 @@ import { KanbanColumn } from './components/kanban-column';
 import { OrderCardOverlay } from './components/order-card';
 import { useWorkflowDnd } from './hooks/use-workflow-dnd';
 import { useWorkflowFilters } from './hooks/use-workflow-filters';
+import shared from '@/styles/shared.module.css';
 
 const WorkflowPage = () => {
 	const { data, isLoading, error } = useWorkflowBoard();
@@ -41,7 +42,7 @@ const WorkflowPage = () => {
 	const stages = data?.stages ?? [];
 
 	return (
-		<div className="p-8">
+		<div className="h-full flex flex-col p-8 pb-2 overflow-hidden">
 			<Flex justify="between" align="center" className="mb-6">
 				<Heading size="6" iconLeft={<WorkflowIcon />}>
 					Workflow
@@ -65,7 +66,12 @@ const WorkflowPage = () => {
 					sensors={sensors}
 					onDragStart={handleDragStart}
 					onDragEnd={handleDragEnd}>
-					<Flex gap="4" className="overflow-x-auto pb-4 pl-1">
+					<Flex
+						gap="4"
+						className={cn(
+							shared.subtleScrollbar,
+							'flex-1 min-h-0 overflow-x-auto overflow-y-hidden pb-6 pl-1',
+						)}>
 						{stages.map((stage) => (
 							<KanbanColumn
 								key={stage.id}

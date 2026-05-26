@@ -18,9 +18,11 @@ export const AppLayout = () => {
 			/>
 			<div className={`${styles.content} ${isCollapsed ? styles.contentCollapsed : ''}`}>
 				{isDemo && <DemoBanner />}
-				<Suspense fallback={<PageSpinner />}>
-					<Outlet />
-				</Suspense>
+				<div className={styles.scrollRegion}>
+					<Suspense fallback={<PageSpinner />}>
+						<Outlet />
+					</Suspense>
+				</div>
 			</div>
 		</div>
 	);
