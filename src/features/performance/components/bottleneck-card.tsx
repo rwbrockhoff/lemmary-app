@@ -12,6 +12,7 @@ import { Card, Heading, Flex } from '@artifact-ui/core';
 import { ClockIcon } from '@/components/icons';
 import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import type { StageBottleneckStage } from '../api/performance-queries';
+import { BAR_DATASET_STYLE } from '../utils/chart-config';
 import styles from './bottleneck-card.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, ChartDataLabels);
@@ -41,8 +42,7 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 				label: 'Avg days',
 				data: visibleStages.map((s) => Number(s.avgDays.toFixed(2))),
 				backgroundColor: visibleStages.map((s) => resolveStageColor(s.stageColor)),
-				borderRadius: 4,
-				minBarLength: 60,
+				...BAR_DATASET_STYLE,
 			},
 		],
 	};
