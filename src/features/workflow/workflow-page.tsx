@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { Heading, Flex } from '@artifact-ui/core';
 import { WorkflowIcon } from '@/components/icons';
@@ -10,40 +10,24 @@ import { BatchFilter } from './components/batch-filter';
 import { KanbanColumn } from './components/kanban-column';
 import { OrderCardOverlay } from './components/order-card';
 import { useWorkflowDnd } from './hooks/use-workflow-dnd';
-
-const STORAGE_KEY = 'workflow-completed-collapsed';
-const BATCH_FILTER_KEY = 'workflow-batch-filter';
-const SHOW_ALL_KEY = 'workflow-show-all';
-
-const loadSavedBatchIds = (): Set<string> | null => {
-	const stored = localStorage.getItem(BATCH_FILTER_KEY);
-	if (!stored) return null;
-	try {
-		return new Set(JSON.parse(stored) as string[]);
-	} catch {
-		return null;
-	}
-};
+import { useWorkflowFilters } from './hooks/use-workflow-filters';
 
 const WorkflowPage = () => {
 	const { data, isLoading, error } = useWorkflowBoard();
-	const [selectedBatchIds, setSelectedBatchIds] = useState<Set<string> | null>(
-		loadSavedBatchIds,
-	);
-	const [showAll, setShowAll] = useState(
-		() => localStorage.getItem(SHOW_ALL_KEY) === 'true',
-	);
-	const [completedCollapsed, setCompletedCollapsed] = useState(
-		() => localStorage.getItem(STORAGE_KEY) === 'true',
-	);
-
-	const activeBatches = data?.activeBatches ?? [];
+	const activeBatches = useMemo(() => data?.activeBatches ?? [], [data]);
 	const activeIds = useMemo(
 		() => new Set(activeBatches.map((b) => b.id)),
 		[activeBatches],
 	);
 
-	const checkedIds = selectedBatchIds ?? activeIds;
+	const {
+		checkedIds,
+		showAll,
+		completedCollapsed,
+		toggleBatch,
+		toggleShowAll,
+		toggleCompletedCollapsed,
+	} = useWorkflowFilters(activeIds);
 
 	const filteredOrders = useMemo(() => {
 		if (!data) return [];
@@ -53,33 +37,6 @@ const WorkflowPage = () => {
 
 	const { sensors, activeOrder, displayOrders, handleDragStart, handleDragEnd } =
 		useWorkflowDnd(filteredOrders);
-
-	const toggleBatch = (batchId: string) => {
-		let next: Set<string>;
-		if (showAll) {
-			next = new Set([batchId]);
-		} else {
-			const current = selectedBatchIds ?? new Set(activeIds);
-			next = new Set(current);
-			if (next.has(batchId)) {
-				next.delete(batchId);
-			} else {
-				next.add(batchId);
-			}
-		}
-		setSelectedBatchIds(next);
-		setShowAll(false);
-		localStorage.setItem(BATCH_FILTER_KEY, JSON.stringify([...next]));
-		localStorage.setItem(SHOW_ALL_KEY, 'false');
-	};
-
-	const toggleCompletedCollapsed = () => {
-		setCompletedCollapsed((prev) => {
-			const next = !prev;
-			localStorage.setItem(STORAGE_KEY, String(next));
-			return next;
-		});
-	};
 
 	const stages = data?.stages ?? [];
 
@@ -101,13 +58,7 @@ const WorkflowPage = () => {
 					selectedIds={checkedIds}
 					showAll={showAll}
 					onToggleBatch={toggleBatch}
-					onToggleShowAll={() => {
-						setShowAll((prev) => {
-							const next = !prev;
-							localStorage.setItem(SHOW_ALL_KEY, String(next));
-							return next;
-						});
-					}}
+					onToggleShowAll={toggleShowAll}
 				/>
 
 				<DndContext

@@ -15,6 +15,7 @@ import {
 	useUpdateOrderStage,
 	useUpdateOrderItemStage,
 } from './api/orders-queries';
+import { getOrderBreadcrumbs } from './utils/order-breadcrumbs';
 
 const OrderDetailPage = () => {
 	const { orderId } = useParams<{ orderId: string }>();
@@ -28,7 +29,7 @@ const OrderDetailPage = () => {
 
 	const orderStages = stages?.orderStages ?? [];
 	const itemStages = stages?.itemStages ?? [];
-	const breadcrumbs = getBreadcrumbs(from, batchId);
+	const breadcrumbs = getOrderBreadcrumbs(from, batchId);
 
 	return (
 		<div className={shared.pageContainer}>
@@ -110,20 +111,5 @@ const OrderDetailPage = () => {
 		</div>
 	);
 };
-
-function getBreadcrumbs(from: string | null, batchId: string | null) {
-	if (from === 'batch' && batchId) {
-		return [
-			{ label: 'Batches', to: '/batches' },
-			{ label: 'Batch', to: `/batches/${batchId}` },
-		];
-	}
-
-	if (from === 'workflow') {
-		return [{ label: 'Workflow', to: '/workflow' }];
-	}
-
-	return [{ label: 'Orders', to: '/orders' }];
-}
 
 export default OrderDetailPage;

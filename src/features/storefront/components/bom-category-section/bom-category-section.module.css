@@ -2,10 +2,6 @@
 	border-top: 3px solid var(--color-primary);
 }
 
-.headerLabel {
-	padding-left: var(--space-2);
-}
-
 .actionsColumn {
 	width: 60px;
 	text-align: center;

@@ -1,12 +1,16 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Heading, Text, Button, Flex, TextField } from '@artifact-ui/core';
+import { Text, Flex, TextField } from '@artifact-ui/core';
 import { useOrdersWithItems } from '@/features/orders/api/orders-queries';
 import { useCreateBatch } from './api/batches-queries';
 import { PageSpinner } from '@/components/page-spinner';
+import { PageHeader } from '@/components/page-header';
+import { FormActions } from '@/components/form-actions';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
 import { SelectOrdersTable } from './components/select-orders-table';
+import { useOrderSelection } from './hooks/use-order-selection';
+import { getPendingOrders } from './utils/batch-utils';
 import shared from '@/styles/shared.module.css';
 
 type Tab = 'available' | 'in-batches';
@@ -19,46 +23,14 @@ const CreateBatchPage = () => {
 
 	const [name, setName] = useState('');
 	const [tab, setTab] = useState<Tab>('available');
-	const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(new Set());
-	const [expandedOrderIds, setExpandedOrderIds] = useState<Set<string>>(new Set());
+	const { selectedOrderIds, expandedOrderIds, toggleOrder, toggleExpand } =
+		useOrderSelection();
 
-	const pendingOrders = useMemo(
-		() =>
-			orders
-				?.filter((o) => o.fulfillment_status === 'pending')
-				.sort(
-					(a, b) => new Date(a.order_date).getTime() - new Date(b.order_date).getTime(),
-				),
-		[orders],
-	);
+	const pendingOrders = useMemo(() => getPendingOrders(orders), [orders]);
 
-	const availableOrders = pendingOrders?.filter((o) => !o.batch_name) ?? [];
-	const batchedOrders = pendingOrders?.filter((o) => o.batch_name) ?? [];
+	const availableOrders = pendingOrders.filter((o) => !o.batch_name);
+	const batchedOrders = pendingOrders.filter((o) => o.batch_name);
 	const displayedOrders = tab === 'available' ? availableOrders : batchedOrders;
-
-	const toggleOrder = (orderId: string) => {
-		setSelectedOrderIds((prev) => {
-			const next = new Set(prev);
-			if (next.has(orderId)) {
-				next.delete(orderId);
-			} else {
-				next.add(orderId);
-			}
-			return next;
-		});
-	};
-
-	const toggleExpand = (orderId: string) => {
-		setExpandedOrderIds((prev) => {
-			const next = new Set(prev);
-			if (next.has(orderId)) {
-				next.delete(orderId);
-			} else {
-				next.add(orderId);
-			}
-			return next;
-		});
-	};
 
 	const handleCreate = async () => {
 		if (!name.trim() || selectedOrderIds.size === 0) return;
@@ -73,21 +45,19 @@ const CreateBatchPage = () => {
 
 	return (
 		<div className={shared.pageContainer}>
-			<Flex justify="between" align="center" className="mb-6">
-				<Heading size="6">New Batch</Heading>
-				<Flex gap="3" align="center">
-					<Button variant="outline" onClick={() => navigate('/batches')}>
-						Cancel
-					</Button>
-					<Button
-						onClick={handleCreate}
-						disabled={
-							!name.trim() || selectedOrderIds.size === 0 || createBatch.isPending
-						}>
-						{createBatch.isPending ? 'Creating...' : 'Create Batch'}
-					</Button>
-				</Flex>
-			</Flex>
+			<PageHeader
+				title="New Batch"
+				rightActions={
+					<FormActions
+						onCancel={() => navigate('/batches')}
+						onConfirm={handleCreate}
+						confirmLabel="Create Batch"
+						pendingLabel="Creating..."
+						isPending={createBatch.isPending}
+						disabled={!name.trim() || selectedOrderIds.size === 0}
+					/>
+				}
+			/>
 
 			<div className="mb-6 max-w-sm">
 				<label className="block mb-2">
