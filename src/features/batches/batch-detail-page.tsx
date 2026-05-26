@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { Heading, Tabs, DropdownMenu, IconButton, Flex } from '@artifact-ui/core';
-import { Breadcrumbs } from '@/components/breadcrumbs';
+import { Tabs, DropdownMenu, IconButton } from '@artifact-ui/core';
+import { PageHeader } from '@/components/page-header';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
@@ -72,16 +72,12 @@ const BatchDetailPage = () => {
 
 	return (
 		<div className={shared.pageContainer}>
-			<Breadcrumbs segments={[{ label: 'Batches', to: '/batches' }]} />
-			<LoadingWrapper
-				isLoading={isLoading}
-				skeleton={<PageSpinner />}
-				isError={!!error || (!isLoading && !batch)}
-				errorState={<ErrorState description="Failed to load batch." />}>
-				{batch && (
-					<>
-						<Flex align="center" gap="3" className="mb-6">
-							<Heading size="6">{batch.name}</Heading>
+			<PageHeader
+				segments={[{ label: 'Batches', to: '/batches' }]}
+				title={batch && batch.name}
+				actions={
+					batch && (
+						<>
 							<BatchStatusSelect
 								value={batch.status}
 								onChange={(status) =>
@@ -115,8 +111,17 @@ const BatchDetailPage = () => {
 									</DropdownMenu.DropdownMenuItem>
 								</DropdownMenu.DropdownMenuContent>
 							</DropdownMenu.DropdownMenu>
-						</Flex>
-
+						</>
+					)
+				}
+			/>
+			<LoadingWrapper
+				isLoading={isLoading}
+				skeleton={<PageSpinner />}
+				isError={!!error || (!isLoading && !batch)}
+				errorState={<ErrorState description="Failed to load batch." />}>
+				{batch && (
+					<>
 						<Tabs.Root defaultValue="orders">
 							<Tabs.List>
 								<Tabs.Trigger value="orders">Orders ({batch.orders.length})</Tabs.Trigger>

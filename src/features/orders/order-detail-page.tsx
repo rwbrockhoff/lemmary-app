@@ -1,6 +1,6 @@
 import { useParams, useSearchParams } from 'react-router';
-import { Heading, Table, Flex } from '@artifact-ui/core';
-import { Breadcrumbs } from '@/components/breadcrumbs';
+import { Table } from '@artifact-ui/core';
+import { PageHeader } from '@/components/page-header';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
@@ -32,7 +32,21 @@ const OrderDetailPage = () => {
 
 	return (
 		<div className={shared.pageContainer}>
-			<Breadcrumbs segments={breadcrumbs} />
+			<PageHeader
+				segments={breadcrumbs}
+				title={order && `${order.order_number} — ${order.customer_name}`}
+				actions={
+					order && (
+						<StageSelect
+							stages={orderStages}
+							value={order.workflow_stage_id}
+							onChange={(stageId) =>
+								updateOrderStage.mutate({ orderId: orderId!, stageId })
+							}
+						/>
+					)
+				}
+			/>
 			<LoadingWrapper
 				isLoading={isLoading}
 				skeleton={<PageSpinner />}
@@ -40,19 +54,6 @@ const OrderDetailPage = () => {
 				errorState={<ErrorState description="Failed to load order." />}>
 				{order && (
 					<>
-						<Flex align="center" gap="4" className="mb-6">
-							<Heading size="6">
-								{order.order_number} — {order.customer_name}
-							</Heading>
-							<StageSelect
-								stages={orderStages}
-								value={order.workflow_stage_id}
-								onChange={(stageId) =>
-									updateOrderStage.mutate({ orderId: orderId!, stageId })
-								}
-							/>
-						</Flex>
-
 						<OrderMetadataCard order={order} />
 
 						<Table.Root>

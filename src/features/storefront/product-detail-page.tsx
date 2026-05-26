@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router';
-import { Heading, Text, Flex, Table, Badge } from '@artifact-ui/core';
-import { Breadcrumbs } from '@/components/breadcrumbs';
+import { Text, Flex, Table, Badge } from '@artifact-ui/core';
+import { PageHeader } from '@/components/page-header';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
@@ -16,7 +16,20 @@ const ProductDetailPage = () => {
 
 	return (
 		<div className={shared.pageContainer}>
-			<Breadcrumbs segments={[{ label: 'Storefront', to: '/storefront' }]} />
+			<PageHeader
+				segments={[{ label: 'Storefront', to: '/storefront' }]}
+				title={product && product.name}
+				actions={
+					product && (
+						<Badge
+							size="1"
+							variant="soft"
+							color={product.is_visible ? 'success' : 'neutral'}>
+							{product.is_visible ? 'Visible' : 'Hidden'}
+						</Badge>
+					)
+				}
+			/>
 			<LoadingWrapper
 				isLoading={isLoading}
 				skeleton={<PageSpinner />}
@@ -24,16 +37,6 @@ const ProductDetailPage = () => {
 				errorState={<ErrorState description="Failed to load product." />}>
 				{product && (
 					<>
-						<Flex align="center" gap="4" className="mb-6">
-							<Heading size="6">{product.name}</Heading>
-							<Badge
-								size="1"
-								variant="soft"
-								color={product.is_visible ? 'success' : 'neutral'}>
-								{product.is_visible ? 'Visible' : 'Hidden'}
-							</Badge>
-						</Flex>
-
 						<Table.Root variant="surface" size="2">
 							<colgroup>
 								<col />

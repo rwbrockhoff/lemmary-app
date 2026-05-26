@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 
-type BreadcrumbSegment = {
+export type BreadcrumbSegment = {
 	label: string;
 	to: string;
 };
