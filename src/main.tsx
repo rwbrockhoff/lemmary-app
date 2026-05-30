@@ -1,11 +1,14 @@
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import '@artifact-ui/core/layers.css';
+import { initSentry } from '@/utils/sentry';
 import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
 import { MobilePlaceholder } from '@/components/mobile-placeholder/mobile-placeholder';
 import { ServiceBanner } from '@/components/service-banner/service-banner';
 import { AppProvider } from '@/providers';
 import { AppRouter } from '@/routes';
+
+initSentry();
 
 createRoot(document.getElementById('root')!).render(
 	<>
