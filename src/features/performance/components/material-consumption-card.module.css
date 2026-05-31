@@ -35,6 +35,10 @@
 .name {
 	font-size: var(--font-size-3);
 	color: var(--color-text-default);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	min-width: 0;
 }
 
 .quantity {
