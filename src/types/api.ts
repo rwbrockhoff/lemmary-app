@@ -328,3 +328,27 @@ export type BatchDetail = {
 	orderItems: BatchOrderItem[];
 	materials: BatchMaterial[];
 };
+
+export type CustomerTier = 'new' | 'loyal' | 'super_fan';
+
+export type CustomerOrder = {
+	id: string;
+	order_number: string;
+	order_date: string;
+	fulfillment_status: string;
+	due_date: string | null;
+	subtotal: string | null;
+	grand_total: string | null;
+	item_count: number;
+	order_notes: string | null;
+};
+
+export type CustomerDetail = {
+	email: string;
+	name: string;
+	tier: CustomerTier;
+	orderCount: number;
+	lifetimeSpend: string;
+	firstOrderDate: string;
+	orders: CustomerOrder[];
+};
