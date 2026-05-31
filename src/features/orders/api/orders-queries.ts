@@ -216,9 +216,11 @@ export const useUpdateOrderNotes = (orderId: string) => {
 	return useMutation({
 		mutationFn: (notes: string) => api.put(`/orders/${orderId}/notes`, { notes }),
 		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: orderKeys.detail(orderId),
-			});
+			// Invalidate queries that showcase a note icon for orders w/ custom notes
+			queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
 	});
 };

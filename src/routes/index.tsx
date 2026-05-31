@@ -15,6 +15,9 @@ const DashboardPage = lazy(() => import('@/features/dashboard/dashboard-page'));
 const PerformancePage = lazy(() => import('@/features/performance/performance-page'));
 const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
 const OrderDetailPage = lazy(() => import('@/features/orders/order-detail-page'));
+const CustomerDetailPage = lazy(
+	() => import('@/features/customers/customer-detail-page'),
+);
 const ProductionPage = lazy(() => import('@/features/production/production-page'));
 const MaterialsPage = lazy(() => import('@/features/materials/materials-page'));
 const WorkflowPage = lazy(() => import('@/features/workflow/workflow-page'));
@@ -114,6 +117,14 @@ const router = createBrowserRouter([
 								element: (
 									<Suspense>
 										<OrderDetailPage />
+									</Suspense>
+								),
+							},
+							{
+								path: '/customers/:email',
+								element: (
+									<Suspense>
+										<CustomerDetailPage />
 									</Suspense>
 								),
 							},

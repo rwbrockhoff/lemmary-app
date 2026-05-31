@@ -36,6 +36,7 @@ export type Order = {
 	currency: string;
 	batch_name: string | null;
 	batch_id: string | null;
+	customer_tier: CustomerTier | null;
 	item_count: number;
 	items_completed: number;
 	created_at: string;
@@ -161,6 +162,7 @@ export type BatchOrder = {
 	completed: boolean;
 	order_number: string;
 	customer_name: string;
+	order_notes: string | null;
 	order_date: string;
 	due_date: string | null;
 	grand_total: string | null;
@@ -327,4 +329,28 @@ export type BatchDetail = {
 	items: BatchItem[];
 	orderItems: BatchOrderItem[];
 	materials: BatchMaterial[];
+};
+
+export type CustomerTier = 'new' | 'loyal' | 'super_fan';
+
+export type CustomerOrder = {
+	id: string;
+	order_number: string;
+	order_date: string;
+	fulfillment_status: string;
+	due_date: string | null;
+	subtotal: string | null;
+	grand_total: string | null;
+	item_count: number;
+	order_notes: string | null;
+};
+
+export type CustomerDetail = {
+	email: string;
+	name: string;
+	tier: CustomerTier;
+	orderCount: number;
+	lifetimeSpend: string;
+	firstOrderDate: string;
+	orders: CustomerOrder[];
 };

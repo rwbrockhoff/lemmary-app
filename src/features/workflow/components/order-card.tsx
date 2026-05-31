@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router';
 import { useDraggable } from '@dnd-kit/core';
 import { Text, Badge, Card, Flex, Stack, cn } from '@artifact-ui/core';
 import { formatDate } from '@/utils/format';
+import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
 import type { WorkflowBoardOrder } from '@/types/api';
 import { getProgressColor } from '@/features/batches/utils/batch-utils';
 import styles from './order-card.module.css';
@@ -54,7 +55,10 @@ const OrderCardContent = ({ order }: { order: WorkflowBoardOrder }) => {
 				</Flex>
 				<div className="mb-1">
 					<Text size="2" weight="medium" color="secondary">
-						{order.customer_name}
+						<CustomerNameWithNotes
+							name={order.customer_name}
+							hasNotes={Boolean(order.order_notes)}
+						/>
 					</Text>
 				</div>
 				<div className="mb-2">

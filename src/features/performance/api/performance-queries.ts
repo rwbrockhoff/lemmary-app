@@ -38,6 +38,13 @@ export type CouponUsage = {
 	priorTotalCount: number;
 };
 
+export type OnTimeDelivery = {
+	onTimeCount: number;
+	totalCount: number;
+	priorOnTimeCount: number;
+	priorTotalCount: number;
+};
+
 export type MaterialConsumptionEntry = {
 	materialType: string;
 	color: string | null;
@@ -55,6 +62,7 @@ export type PerformanceData = {
 	};
 	customerMix: CustomerMix;
 	couponUsage: CouponUsage;
+	onTimeDelivery: OnTimeDelivery;
 	materialConsumption: {
 		materials: MaterialConsumptionEntry[];
 	};

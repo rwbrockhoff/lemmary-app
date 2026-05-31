@@ -1,5 +1,6 @@
 import { Table, Checkbox, Badge, cn } from '@artifact-ui/core';
 import { StageSelect } from '@/features/orders/components/stage-select';
+import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
 import { getProgressColor } from '../utils/batch-utils';
 import { formatDate } from '@/utils/format';
 import styles from '@/styles/shared.module.css';
@@ -43,7 +44,12 @@ export const BatchOrderRow = ({
 				<Checkbox checked={order.completed} onCheckedChange={onCheckboxToggle} />
 			</Table.Cell>
 			<Table.Cell>{order.order_number}</Table.Cell>
-			<Table.Cell className="truncate max-w-0">{order.customer_name}</Table.Cell>
+			<Table.Cell className="truncate max-w-0">
+				<CustomerNameWithNotes
+					name={order.customer_name}
+					hasNotes={Boolean(order.order_notes)}
+				/>
+			</Table.Cell>
 			<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 			<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
 			<Table.Cell>

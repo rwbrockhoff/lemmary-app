@@ -12,6 +12,11 @@ export type DashboardData = {
 		previous: string;
 		changePercent: number;
 	};
+	avgOrderValue: {
+		current: string;
+		previous: string;
+		changePercent: number;
+	};
 	ordersInProgress: number;
 	ordersCompletedInPeriod: number;
 	avgLeadTime: {

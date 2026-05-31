@@ -7,6 +7,7 @@ import { useSortableTable } from '@/hooks/use-sortable-table';
 import { useCompletedOrders } from '../api/orders-queries';
 import { formatDate, formatCurrency } from '@/utils/format';
 import { ExternalLinkIcon } from '@/components/icons/icons';
+import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 
@@ -96,7 +97,12 @@ export const CompletedOrdersTable = () => {
 									{order.order_number}
 								</Text>
 							</Table.Cell>
-							<Table.Cell>{order.customer_name}</Table.Cell>
+							<Table.Cell>
+								<CustomerNameWithNotes
+									name={order.customer_name}
+									hasNotes={Boolean(order.order_notes)}
+								/>
+							</Table.Cell>
 							<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 							<Table.Cell>
 								{order.fulfilled_on ? formatDate(order.fulfilled_on) : '—'}

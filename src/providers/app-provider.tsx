@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import type { ReactNode } from 'react';
-import { ArtifactProvider } from '@artifact-ui/core';
+import { ArtifactProvider, Tooltip } from '@artifact-ui/core';
 import { QueryProvider } from './query-provider';
 import { ThemeProvider } from './theme-provider';
 import { useTheme } from './theme-context';
@@ -14,7 +14,7 @@ const ThemedArtifact = ({ children }: { children: ReactNode }) => {
 	const { theme } = useTheme();
 	return (
 		<ArtifactProvider theme={theme} accent="patina" radius="medium">
-			{children}
+			<Tooltip.Provider delayDuration={300}>{children}</Tooltip.Provider>
 		</ArtifactProvider>
 	);
 };

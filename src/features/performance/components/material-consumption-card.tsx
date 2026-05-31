@@ -1,7 +1,7 @@
 import { Card, Heading, Text, Flex } from '@artifact-ui/core';
 import { ScissorsIcon } from '@/components/icons';
 import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
-import { DeltaIndicator } from '@/components/delta-indicator/delta-indicator';
+import { MagnitudeIndicator } from '@/components/magnitude-indicator/magnitude-indicator';
 import type { MaterialConsumptionEntry } from '../api/performance-queries';
 import styles from './material-consumption-card.module.css';
 
@@ -59,7 +59,7 @@ export const MaterialConsumptionCard = ({
 									{formatQuantity(m.currentQty, m.measurement)}
 								</div>
 								<div className={styles.delta}>
-									<DeltaIndicator delta={getDelta(m.currentQty, m.priorQty)} suffix="" />
+									<MagnitudeIndicator delta={getDelta(m.currentQty, m.priorQty)} />
 								</div>
 							</div>
 						))}
