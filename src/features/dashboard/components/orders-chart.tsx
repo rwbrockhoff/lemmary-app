@@ -13,6 +13,7 @@ import { Line } from 'react-chartjs-2';
 import { Card, Heading, Text, Flex } from '@artifact-ui/core';
 import { TrendingUpIcon } from '@/components/icons';
 import { formatCurrencyShort } from '@/utils/format';
+import { formatBucketDate } from '@/utils/format-bucket-date';
 import type { DashboardBucket, DashboardData } from '../api/dashboard-queries';
 import { generatePeriodStats, detectAnomaly } from '../utils/anomaly-detection';
 import styles from './orders-chart.module.css';
@@ -24,19 +25,11 @@ type OrdersChartProps = {
 	bucket: DashboardBucket;
 };
 
-const formatChartDate = (iso: string, bucket: DashboardBucket) => {
-	const d = new Date(iso);
-	if (bucket === 'month') {
-		return d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-	}
-	return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-};
-
 export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 	const periodStats = useMemo(() => generatePeriodStats(data), [data]);
 
 	const chartData = {
-		labels: data.map((d) => formatChartDate(d.date, bucket)),
+		labels: data.map((d) => formatBucketDate(d.date, bucket)),
 		datasets: [
 			{
 				label: 'Orders',
@@ -72,6 +65,12 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 			legend: { display: true, position: 'top' as const, align: 'end' as const },
 			tooltip: {
 				callbacks: {
+					title: (items: TooltipItem<'line'>[]) => {
+						const idx = items[0]?.dataIndex;
+						if (idx === undefined) return '';
+						const point = data[idx];
+						return point ? formatBucketDate(point.date, bucket, true) : '';
+					},
 					label: (ctx: TooltipItem<'line'>) => {
 						const value = ctx.parsed.y;
 						if (value === null) return '';
