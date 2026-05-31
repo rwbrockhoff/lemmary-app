@@ -7,12 +7,11 @@ import {
 import { api } from '@/api/client';
 import { orderKeys } from './orders-keys';
 import { batchKeys } from '@/features/batches/api/batches-keys';
+import { optimisticallyUpdateItemStage, rollbackOrderDetail } from './orders-cache';
 import {
 	optimisticallyUpdateOrderStage,
-	optimisticallyUpdateItemStage,
 	rollbackOrderStage,
-	rollbackOrderDetail,
-} from './orders-cache';
+} from '@/features/workflow/api/workflow-cache';
 import type {
 	OrderDetail,
 	GetOrdersResponse,
@@ -160,11 +159,11 @@ export const useUpdateOrderStage = () => {
 			rollbackOrderStage(queryClient, context?.previous);
 		},
 		onSettled: (_data, _error, variables) => {
+			// skip workflowBoard refetch - optimistic update already updates position & stage_id
 			queryClient.invalidateQueries({
 				queryKey: orderKeys.detail(variables.orderId),
 			});
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
-			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
 			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
 	});
