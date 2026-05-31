@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Text, Card, TextArea, Button, Stack, Flex } from '@artifact-ui/core';
 import { useUpdateOrderNotes } from '../../api/orders-queries';
+import { CustomerMetadataRow } from '@/features/customers/components/customer-metadata-row';
 import { formatDate, formatCurrency } from '@/utils/format';
 import type { OrderDetail } from '@/types/api';
 import styles from './order-metadata-card.module.css';
@@ -18,6 +19,12 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 		<Card.Root className="mb-6">
 			<Card.Body className={styles.metadataGrid}>
 				<Stack gap="3">
+					<CustomerMetadataRow
+						name={order.customer_name}
+						email={order.customer_email}
+						tier={order.customer_tier}
+						fromOrderId={order.id}
+					/>
 					<MetadataRow label="Date" value={formatDate(order.order_date)} />
 					{order.due_date && (
 						<MetadataRow label="Due" value={formatDate(order.due_date)} />

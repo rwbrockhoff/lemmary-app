@@ -59,6 +59,7 @@ export type OrderItem = {
 
 export type OrderDetail = Order & {
 	workflow_stage_name: string | null;
+	customer_tier: CustomerTier | null;
 	items: OrderItem[];
 };
 
