@@ -10,6 +10,7 @@ import { BottleneckCard } from './components/bottleneck-card';
 import { TopProductsCard } from './components/top-products-card';
 import { CustomerMixCard } from './components/customer-mix-card';
 import { CouponUsageCard } from './components/coupon-usage-card';
+import { OnTimeDeliveryCard } from './components/on-time-delivery-card';
 import { MaterialConsumptionCard } from './components/material-consumption-card';
 import styles from './performance-page.module.css';
 
@@ -51,18 +52,18 @@ const PerformancePage = () => {
 				}>
 				{data && (
 					<>
-						<div className={styles.chartGrid}>
-							<BottleneckCard stages={data.stageBottleneck.stages} />
-							<TopProductsCard products={data.topProducts.products} />
-						</div>
-
 						<div className={styles.kpiGrid}>
+							<OnTimeDeliveryCard delivery={data.onTimeDelivery} />
 							<CustomerMixCard mix={data.customerMix} />
 							<CouponUsageCard usage={data.couponUsage} />
 							<MaterialConsumptionCard
 								materials={data.materialConsumption.materials}
-								className={styles.span2}
 							/>
+						</div>
+
+						<div className={styles.chartGrid}>
+							<BottleneckCard stages={data.stageBottleneck.stages} />
+							<TopProductsCard products={data.topProducts.products} />
 						</div>
 					</>
 				)}
