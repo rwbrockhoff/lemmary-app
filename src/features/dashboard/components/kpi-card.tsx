@@ -9,6 +9,7 @@ type KpiCardProps = {
 };
 
 const formatDelta = (delta: number) => {
+	if (delta >= 1000) return '+999%+';
 	const sign = delta > 0 ? '+' : '';
 	return `${sign}${delta.toFixed(1)}%`;
 };
@@ -30,7 +31,7 @@ export const KpiCard = ({ label, value, delta, subtitle }: KpiCardProps) => {
 				</Text>
 				{delta !== undefined && (
 					<Text size="2" style={{ color: deltaColorVar(delta) }}>
-						{formatDelta(delta)} vs previous period
+						{formatDelta(delta)}
 					</Text>
 				)}
 				{subtitle && (

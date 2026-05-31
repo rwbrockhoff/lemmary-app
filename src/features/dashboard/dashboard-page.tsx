@@ -62,11 +62,6 @@ const DashboardPage = () => {
 				{data && (
 					<>
 						<div className={styles.kpiGrid}>
-							<KpiCard
-								label="Revenue"
-								value={formatCurrencyShort(data.revenue.current)}
-								delta={data.revenue.changePercent}
-							/>
 							<KpiCard label="Orders in progress" value={String(data.ordersInProgress)} />
 							<KpiCard label="Completed" value={String(data.ordersCompletedInPeriod)} />
 							<KpiCard
@@ -77,6 +72,16 @@ const DashboardPage = () => {
 										? `Target: ${data.avgLeadTime.target}d`
 										: undefined
 								}
+							/>
+							<KpiCard
+								label="Revenue"
+								value={formatCurrencyShort(data.revenue.current)}
+								delta={data.revenue.changePercent}
+							/>
+							<KpiCard
+								label="Avg order"
+								value={formatCurrencyShort(data.avgOrderValue.current)}
+								delta={data.avgOrderValue.changePercent}
 							/>
 						</div>
 
