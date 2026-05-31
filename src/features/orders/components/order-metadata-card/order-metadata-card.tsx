@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Text, Card, TextArea, Button, Stack, Flex } from '@artifact-ui/core';
 import { useUpdateOrderNotes } from '../../api/orders-queries';
 import { CustomerMetadataRow } from '@/features/customers/components/customer-metadata-row';
+import { useToast } from '@/providers/toast-context';
 import { formatDate, formatCurrency } from '@/utils/format';
 import type { OrderDetail } from '@/types/api';
 import styles from './order-metadata-card.module.css';
@@ -13,7 +14,15 @@ type OrderMetadataCardProps = {
 export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 	const [notes, setNotes] = useState(order.order_notes ?? '');
 	const updateNotes = useUpdateOrderNotes(order.id);
+	const toast = useToast();
 	const hasNotesChanged = notes !== (order.order_notes ?? '');
+
+	const handleSaveNotes = () => {
+		updateNotes.mutate(notes, {
+			onSuccess: () => toast.success('Notes saved'),
+			onError: (error) => toast.error(error.message, 'Could not save notes'),
+		});
+	};
 
 	return (
 		<Card.Root className="mb-6">
@@ -64,7 +73,7 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 							variant="default"
 							size="1"
 							className="mt-2 self-start"
-							onClick={() => updateNotes.mutate(notes)}>
+							onClick={handleSaveNotes}>
 							Save Notes
 						</Button>
 					)}
