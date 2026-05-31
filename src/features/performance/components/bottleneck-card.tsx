@@ -13,6 +13,8 @@ import { ClockIcon } from '@/components/icons';
 import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import type { StageBottleneckStage } from '../api/performance-queries';
 import { BAR_DATASET_STYLE } from '../utils/chart-config';
+import { formatAvgTime } from '../utils/format-avg-time';
+import { resolveStageColor } from '../utils/resolve-stage-color';
 import styles from './bottleneck-card.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, ChartDataLabels);
@@ -22,26 +24,15 @@ type BottleneckCardProps = {
 	stages: StageBottleneckStage[];
 };
 
-const FALLBACK_COLOR = '#94a3b8';
-
-const resolveStageColor = (slug: string | null): string => {
-	if (!slug || typeof window === 'undefined') return FALLBACK_COLOR;
-	const value = getComputedStyle(document.documentElement)
-		.getPropertyValue(`--wf-stage-color-${slug}`)
-		.trim();
-	return value || FALLBACK_COLOR;
-};
-
 export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
-	const visibleStages = stages.filter((s) => Number(s.avgDays.toFixed(1)) > 0);
-
 	const chartData = {
-		labels: visibleStages.map((s) => s.stageName),
+		labels: stages.map((s) => s.stageName),
 		datasets: [
 			{
-				label: 'Avg days',
-				data: visibleStages.map((s) => Number(s.avgDays.toFixed(2))),
-				backgroundColor: visibleStages.map((s) => resolveStageColor(s.stageColor)),
+				label: 'Avg time',
+				data: stages.map((s) => Number(s.avgDays.toFixed(2))),
+				backgroundColor: stages.map((s) => resolveStageColor(s.stageColor)),
+				minBarLength: 75,
 				...BAR_DATASET_STYLE,
 			},
 		],
@@ -57,7 +48,7 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 				callbacks: {
 					label: (ctx: TooltipItem<'bar'>) => {
 						const value = ctx.parsed.x ?? 0;
-						return `${value.toFixed(1)} days avg`;
+						return `${formatAvgTime(value)} avg`;
 					},
 				},
 			},
@@ -67,7 +58,7 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 				align: 'start' as const,
 				color: '#ffffff',
 				font: { weight: 500 as const, size: 12 },
-				formatter: (value: number) => `${value.toFixed(1)} days`,
+				formatter: (value: number) => formatAvgTime(value),
 			},
 		},
 		scales: {
@@ -91,7 +82,7 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 					<ClockIcon size={18} />
 					<Heading size="5">Production Bottlenecks</Heading>
 				</Flex>
-				{visibleStages.length === 0 ? (
+				{stages.length === 0 ? (
 					<ChartPlaceholder
 						message="Not enough workflow activity yet"
 						subtext="Bottlenecks will appear once more orders move through your different workflow stages."
