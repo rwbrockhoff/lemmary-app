@@ -42,7 +42,7 @@ export const TopProductsCard = ({ products }: TopProductsCardProps) => {
 				label: 'Revenue',
 				data: products.map((p) => p.totalRevenue),
 				backgroundColor: products.map((_, i) => getBarColor(i)),
-				minBarLength: 40,
+				minBarLength: 55,
 				...BAR_DATASET_STYLE,
 			},
 		],
