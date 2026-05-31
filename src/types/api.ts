@@ -36,6 +36,7 @@ export type Order = {
 	currency: string;
 	batch_name: string | null;
 	batch_id: string | null;
+	customer_tier: CustomerTier | null;
 	item_count: number;
 	items_completed: number;
 	created_at: string;
@@ -59,7 +60,6 @@ export type OrderItem = {
 
 export type OrderDetail = Order & {
 	workflow_stage_name: string | null;
-	customer_tier: CustomerTier | null;
 	items: OrderItem[];
 };
 
