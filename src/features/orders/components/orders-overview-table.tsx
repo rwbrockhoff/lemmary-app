@@ -8,6 +8,7 @@ import { useSortableTable } from '@/hooks/use-sortable-table';
 import { formatDate } from '@/utils/format';
 import { ChevronDownIcon } from '@/components/icons/icons';
 import { OrderItemsExpanded } from './order-items-expanded/order-items-expanded';
+import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
 import shared from '@/styles/shared.module.css';
 import type { OrderWithItems } from '@/types/api';
 
@@ -95,7 +96,12 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 								className="cursor-pointer"
 								onClick={() => navigate(`/orders/${order.id}`)}>
 								<Table.Cell>{order.order_number}</Table.Cell>
-								<Table.Cell>{order.customer_name}</Table.Cell>
+								<Table.Cell>
+									<CustomerNameWithNotes
+										name={order.customer_name}
+										hasNotes={Boolean(order.order_notes)}
+									/>
+								</Table.Cell>
 								<Table.Cell>
 									{order.due_date ? formatDate(order.due_date) : '—'}
 								</Table.Cell>

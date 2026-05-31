@@ -162,6 +162,7 @@ export type BatchOrder = {
 	completed: boolean;
 	order_number: string;
 	customer_name: string;
+	order_notes: string | null;
 	order_date: string;
 	due_date: string | null;
 	grand_total: string | null;
