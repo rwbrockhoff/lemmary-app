@@ -7,8 +7,9 @@ describe('formatAvgTime', () => {
 		expect(formatAvgTime(1)).toBe('1.0 days');
 	});
 
-	it('renders sub-day values in hours', () => {
-		expect(formatAvgTime(0.5)).toBe('12.0 hours');
+	it('renders sub-day values in whole hours', () => {
+		expect(formatAvgTime(0.5)).toBe('12 hours');
+		expect(formatAvgTime(0.63)).toBe('15 hours');
 	});
 
 	it('renders sub-hour values in minutes, rounded to whole numbers', () => {

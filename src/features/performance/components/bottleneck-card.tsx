@@ -9,7 +9,7 @@ import {
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Bar } from 'react-chartjs-2';
 import { Card, Heading, Flex } from '@artifact-ui/core';
-import { ClockIcon } from '@/components/icons';
+import { WorkflowIcon } from '@/components/icons';
 import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import type { StageBottleneckStage } from '../api/performance-queries';
 import { BAR_DATASET_STYLE } from '../utils/chart-config';
@@ -79,8 +79,8 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 		<Card.Root>
 			<div className={styles.container}>
 				<Flex align="center" gap="2" className={styles.heading}>
-					<ClockIcon size={18} />
-					<Heading size="5">Production Bottlenecks</Heading>
+					<WorkflowIcon size={18} />
+					<Heading size="5">Workflow Performance</Heading>
 				</Flex>
 				{stages.length === 0 ? (
 					<ChartPlaceholder
