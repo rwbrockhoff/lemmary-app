@@ -10,3 +10,7 @@
 	transform: rotate(2deg);
 	box-shadow: var(--shadow-spread);
 }
+
+.lockIcon {
+	color: var(--color-text-muted);
+}

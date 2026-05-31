@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { useDraggable } from '@dnd-kit/core';
 import { Text, Badge, Card, Flex, Stack, cn } from '@artifact-ui/core';
+import { LockIcon } from '@/components/icons';
 import { formatDate } from '@/utils/format';
 import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
 import type { WorkflowBoardOrder } from '@/types/api';
@@ -9,8 +10,11 @@ import styles from './order-card.module.css';
 
 export const DraggableOrderCard = ({ order }: { order: WorkflowBoardOrder }) => {
 	const navigate = useNavigate();
+
+	const isLocked = order.fulfillment_status === 'fulfilled';
 	const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
 		id: order.id,
+		disabled: isLocked,
 	});
 
 	return (
@@ -20,7 +24,7 @@ export const DraggableOrderCard = ({ order }: { order: WorkflowBoardOrder }) => 
 			{...attributes}
 			style={{ opacity: isDragging ? 0.3 : 1 }}
 			onClick={() => navigate(`/orders/${order.id}?from=workflow`)}>
-			<OrderCardContent order={order} />
+			<OrderCardContent order={order} isLocked={isLocked} />
 		</div>
 	);
 };
@@ -33,7 +37,12 @@ export const OrderCardOverlay = ({ order }: { order: WorkflowBoardOrder }) => {
 	);
 };
 
-const OrderCardContent = ({ order }: { order: WorkflowBoardOrder }) => {
+type OrderCardContentProps = {
+	order: WorkflowBoardOrder;
+	isLocked?: boolean;
+};
+
+const OrderCardContent = ({ order, isLocked }: OrderCardContentProps) => {
 	const stageColor = order.workflow_stage_color
 		? `var(--wf-stage-color-${order.workflow_stage_color})`
 		: undefined;
@@ -44,9 +53,12 @@ const OrderCardContent = ({ order }: { order: WorkflowBoardOrder }) => {
 			style={stageColor ? { borderTop: `3px solid ${stageColor}` } : undefined}>
 			<Card.Body className="p-3">
 				<Flex justify="between" align="center" className="mb-1">
-					<Text size="2" weight="medium">
-						{order.order_number}
-					</Text>
+					<Flex align="center" gap="1">
+						<Text size="2" weight="medium">
+							{order.order_number}
+						</Text>
+						{isLocked && <LockIcon size={11} className={styles.lockIcon} />}
+					</Flex>
 					{order.batch_name && (
 						<Badge variant="outline" size="1" color="neutral">
 							{order.batch_name}
