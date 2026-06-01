@@ -16,12 +16,8 @@ function sortStageOrders(stage: WorkflowStageWithOrders): WorkflowBoardOrder[] {
 			const aLocked = a.fulfillment_status === 'fulfilled';
 			const bLocked = b.fulfillment_status === 'fulfilled';
 			if (aLocked !== bLocked) return aLocked ? 1 : -1;
-			const aTime = a.fulfilled_on
-				? new Date(a.fulfilled_on).getTime()
-				: new Date(a.order_date).getTime();
-			const bTime = b.fulfilled_on
-				? new Date(b.fulfilled_on).getTime()
-				: new Date(b.order_date).getTime();
+			const aTime = new Date(a.fulfilled_on ?? a.order_date).getTime();
+			const bTime = new Date(b.fulfilled_on ?? b.order_date).getTime();
 			return bTime - aTime;
 		}
 		return new Date(a.order_date).getTime() - new Date(b.order_date).getTime();
