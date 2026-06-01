@@ -30,11 +30,12 @@ const WorkflowPage = () => {
 		toggleCompletedCollapsed,
 	} = useWorkflowFilters(activeIds);
 
+	const allOrders = useMemo(() => data?.stages.flatMap((s) => s.orders) ?? [], [data]);
+
 	const filteredOrders = useMemo(() => {
-		if (!data) return [];
-		if (showAll) return data.orders;
-		return data.orders.filter((o) => o.batch_id && checkedIds.has(o.batch_id));
-	}, [data, showAll, checkedIds]);
+		if (showAll) return allOrders;
+		return allOrders.filter((o) => o.batch_id && checkedIds.has(o.batch_id));
+	}, [allOrders, showAll, checkedIds]);
 
 	const { sensors, activeOrder, displayOrders, handleDragStart, handleDragEnd } =
 		useWorkflowDnd(filteredOrders);
@@ -77,6 +78,7 @@ const WorkflowPage = () => {
 								key={stage.id}
 								stage={stage}
 								orders={displayOrders.filter((o) => o.workflow_stage_id === stage.id)}
+								hasMore={stage.hasMore}
 								collapsed={stage.is_complete ? completedCollapsed : undefined}
 								onToggleCollapse={
 									stage.is_complete ? toggleCompletedCollapsed : undefined

@@ -137,10 +137,19 @@ export type WorkflowBoardOrder = Order & {
 	batch_id: string | null;
 };
 
-export type WorkflowBoardResponse = {
+export type WorkflowStageWithOrders = WorkflowStage & {
 	orders: WorkflowBoardOrder[];
-	stages: WorkflowStage[];
+	hasMore: boolean;
+};
+
+export type WorkflowBoardResponse = {
+	stages: WorkflowStageWithOrders[];
 	activeBatches: { id: string; name: string }[];
+};
+
+export type StageOrdersResponse = {
+	orders: WorkflowBoardOrder[];
+	hasMore: boolean;
 };
 
 export type Batch = {
