@@ -103,20 +103,3 @@
 .subtleScrollbar::-webkit-scrollbar-thumb:hover {
 	background-color: color-mix(in srgb, var(--color-text-muted) 50%, transparent);
 }
-
-.buttonLink {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	padding: var(--space-2) var(--space-4);
-	background-color: var(--color-primary-surface);
-	color: var(--color-constant-white);
-	border-radius: var(--radius-default);
-	text-decoration: none;
-	font-weight: 500;
-	transition: background-color 150ms;
-}
-
-.buttonLink:hover {
-	background-color: var(--color-primary-surface-hover);
-}

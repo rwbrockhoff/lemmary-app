@@ -1,7 +1,7 @@
 {
-	"name": "assemblr-app",
+	"name": "lemmary-app",
 	"version": "0.1.0",
-	"description": "Assemblr — Production management dashboard for makers",
+	"description": "Lemmary — Production management dashboard for makers",
 	"author": "Ryan Brockhoff",
 	"private": true,
 	"type": "module",
@@ -23,7 +23,7 @@
 		"prepare": "husky"
 	},
 	"dependencies": {
-		"@artifact-ui/core": "^1.3.1",
+		"@artifact-ui/core": "^1.4.0",
 		"@dnd-kit/core": "^6.3.1",
 		"@dnd-kit/sortable": "^10.0.0",
 		"@hookform/resolvers": "^5.2.2",

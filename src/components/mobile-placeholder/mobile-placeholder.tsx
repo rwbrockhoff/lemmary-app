@@ -1,6 +1,5 @@
-import { Flex, Heading, Stack, Text } from '@artifact-ui/core';
+import { Button, Flex, Heading, Stack, Text } from '@artifact-ui/core';
 import { LogoIcon } from '../icons';
-import sharedStyles from '@/styles/shared.module.css';
 import styles from './mobile-placeholder.module.css';
 
 export const MobilePlaceholder = () => {
@@ -14,9 +13,9 @@ export const MobilePlaceholder = () => {
 				<Text size="5" color="secondary">
 					This dashboard is optimized for desktop. Please visit on a larger screen.
 				</Text>
-				<a href="https://lemmary.com" className={sharedStyles.buttonLink}>
-					Back to Home Page
-				</a>
+				<Button asChild>
+					<a href="https://lemmary.com">Back to Home Page</a>
+				</Button>
 			</Stack>
 		</Flex>
 	);
