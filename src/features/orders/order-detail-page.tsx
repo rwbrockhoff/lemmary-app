@@ -1,5 +1,5 @@
 import { useParams, useSearchParams } from 'react-router';
-import { Table } from '@artifact-ui/core';
+import { Table, Flex } from '@artifact-ui/core';
 import { PageHeader } from '@/components/page-header';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
@@ -9,6 +9,7 @@ import { VariantBadges } from '@/components/variant-badges';
 import shared from '@/styles/shared.module.css';
 import { OrderMetadataCard } from './components/order-metadata-card/order-metadata-card';
 import { StageSelect } from './components/stage-select';
+import { OrderTypeBadge } from './components/order-type-badge';
 import {
 	useOrder,
 	useWorkflowStages,
@@ -38,13 +39,16 @@ const OrderDetailPage = () => {
 				title={order && `${order.order_number} — ${order.customer_name}`}
 				actions={
 					order && (
-						<StageSelect
-							stages={orderStages}
-							value={order.workflow_stage_id}
-							onChange={(stageId) =>
-								updateOrderStage.mutate({ orderId: orderId!, stageId })
-							}
-						/>
+						<Flex align="center" gap="2">
+							<OrderTypeBadge orderType={order.order_type} />
+							<StageSelect
+								stages={orderStages}
+								value={order.workflow_stage_id}
+								onChange={(stageId) =>
+									updateOrderStage.mutate({ orderId: orderId!, stageId })
+								}
+							/>
+						</Flex>
 					)
 				}
 			/>
