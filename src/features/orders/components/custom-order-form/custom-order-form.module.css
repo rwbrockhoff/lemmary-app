@@ -1,0 +1,17 @@
+.detailsGrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--space-6);
+}
+
+.variantTrigger {
+	width: 100%;
+}
+
+.actionCell {
+	text-align: right;
+}
+
+.numericCell {
+	text-align: right;
+}

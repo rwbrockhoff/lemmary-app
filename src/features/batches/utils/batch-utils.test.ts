@@ -5,8 +5,11 @@ import { getPendingOrders, getProgressColor, getBatchStatusColor } from './batch
 const buildOrder = (overrides: Partial<OrderWithItems> = {}): OrderWithItems => ({
 	id: 'o1',
 	store_id: 's1',
+	order_type: 'platform',
 	platform_order_id: 'p1',
 	order_number: 'O-1',
+	order_title: null,
+	order_description: null,
 	customer_name: 'Pam Beesly',
 	customer_email: null,
 	order_date: '2026-05-15T00:00:00Z',

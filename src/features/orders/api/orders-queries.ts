@@ -19,6 +19,7 @@ import type {
 	WorkflowStagesResponse,
 	WorkflowBoardResponse,
 } from '@/types/api';
+import type { CreateCustomOrderRequest } from '../types/custom-order-types';
 
 export const useOrdersWithItems = () => {
 	return useQuery({
@@ -233,6 +234,18 @@ export const useSyncOrders = () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 			// Dashboard reads /analytics/operations under its own key, so refresh it after a sync
 			queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+		},
+	});
+};
+
+export const useCreateCustomOrder = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payload: CreateCustomOrderRequest) =>
+			api.post<OrderDetail>('/orders/custom', payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 		},
 	});
 };

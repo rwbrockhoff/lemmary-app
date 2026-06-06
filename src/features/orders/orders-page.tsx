@@ -1,5 +1,6 @@
 import { Heading, Text, Button, Tabs, Stack, Flex } from '@artifact-ui/core';
-import { RefreshIcon, OrdersIcon, InboxIcon } from '@/components/icons';
+import { Link } from 'react-router';
+import { RefreshIcon, OrdersIcon, InboxIcon, PlusIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
@@ -34,13 +35,18 @@ const OrdersPage = () => {
 						</Text>
 					)}
 				</Stack>
-				<Button
-					onClick={() => syncMutation.mutate()}
-					disabled={syncMutation.isPending}
-					variant="default"
-					iconLeft={<RefreshIcon size={16} />}>
-					{syncMutation.isPending ? 'Syncing...' : 'Sync Orders'}
-				</Button>
+				<Flex gap="2">
+					<Button asChild variant="secondary" iconLeft={<PlusIcon size={16} />}>
+						<Link to="/orders/custom/new">New Order</Link>
+					</Button>
+					<Button
+						onClick={() => syncMutation.mutate()}
+						disabled={syncMutation.isPending}
+						variant="default"
+						iconLeft={<RefreshIcon size={16} />}>
+						{syncMutation.isPending ? 'Syncing...' : 'Sync Orders'}
+					</Button>
+				</Flex>
 			</Flex>
 
 			<LoadingWrapper

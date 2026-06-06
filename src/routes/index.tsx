@@ -15,6 +15,9 @@ const DashboardPage = lazy(() => import('@/features/dashboard/dashboard-page'));
 const PerformancePage = lazy(() => import('@/features/performance/performance-page'));
 const OrdersPage = lazy(() => import('@/features/orders/orders-page'));
 const OrderDetailPage = lazy(() => import('@/features/orders/order-detail-page'));
+const CustomOrderCreatePage = lazy(
+	() => import('@/features/orders/custom-order-create-page'),
+);
 const CustomerDetailPage = lazy(
 	() => import('@/features/customers/customer-detail-page'),
 );
@@ -109,6 +112,14 @@ const router = createBrowserRouter([
 								element: (
 									<Suspense>
 										<OrdersPage />
+									</Suspense>
+								),
+							},
+							{
+								path: '/orders/custom/new',
+								element: (
+									<Suspense>
+										<CustomOrderCreatePage />
 									</Suspense>
 								),
 							},

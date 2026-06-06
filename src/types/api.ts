@@ -10,11 +10,16 @@ export type OrdersResponse = {
 	lastSyncedAt: string | null;
 };
 
+export type OrderType = 'platform' | 'custom' | 'work';
+
 export type Order = {
 	id: string;
 	store_id: string;
-	platform_order_id: string;
+	order_type: OrderType;
+	platform_order_id: string | null;
 	order_number: string;
+	order_title: string | null;
+	order_description: string | null;
 	customer_name: string;
 	customer_email: string | null;
 	order_date: string;
