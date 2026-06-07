@@ -8,6 +8,7 @@ import { useCompletedOrders } from '../api/orders-queries';
 import { formatDate, formatCurrency } from '@/utils/format';
 import { ExternalLinkIcon } from '@/components/icons/icons';
 import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
+import { OrderNumberLabel } from '@/components/orders/order-number-label';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 
@@ -93,9 +94,10 @@ export const CompletedOrdersTable = () => {
 							className="cursor-pointer"
 							onClick={() => navigate(`/orders/${order.id}`)}>
 							<Table.Cell>
-								<Text size="2" weight="medium">
-									{order.order_number}
-								</Text>
+								<OrderNumberLabel
+									orderNumber={order.order_number}
+									orderType={order.order_type}
+								/>
 							</Table.Cell>
 							<Table.Cell>
 								<CustomerNameWithNotes

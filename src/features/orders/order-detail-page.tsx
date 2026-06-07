@@ -10,7 +10,7 @@ import { ProductThumbnail } from '@/components/product-thumbnail/product-thumbna
 import { VariantBadges } from '@/components/variant-badges';
 import shared from '@/styles/shared.module.css';
 import { OrderMetadataCard } from './components/order-metadata-card/order-metadata-card';
-import { StageSelect } from './components/stage-select';
+import { StageSelect } from '@/components/orders/stage-select';
 import { OrderTypeBadge } from './components/order-type-badge';
 import { OrderOptionsMenu } from './components/order-options-menu';
 import { DeleteOrderModal } from './components/delete-order-modal';

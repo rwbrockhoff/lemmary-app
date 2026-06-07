@@ -24,10 +24,14 @@ import type {
 	UpdateCustomOrderRequest,
 } from '../types/custom-order-types';
 
-export const useOrdersWithItems = () => {
+export const useOrdersWithItems = (batchId?: string) => {
 	return useQuery({
-		queryKey: orderKeys.withItems,
-		queryFn: () => api.get<GetOrdersResponse>('/orders', { status: 'pending' }),
+		queryKey: batchId ? [...orderKeys.withItems, batchId] : orderKeys.withItems,
+		queryFn: () => {
+			const params: Record<string, string> = { status: 'pending' };
+			if (batchId) params.includeBatchId = batchId;
+			return api.get<GetOrdersResponse>('/orders', params);
+		},
 	});
 };
 

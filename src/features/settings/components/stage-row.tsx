@@ -13,7 +13,7 @@ import { StageColorPicker } from '@/features/orders/components/stage-color-picke
 import {
 	isWorkflowStageColor,
 	type WorkflowStageColor,
-} from '@/features/orders/constants/stage-colors';
+} from '@/components/orders/stage-colors';
 
 type StageRowProps = {
 	id: string;

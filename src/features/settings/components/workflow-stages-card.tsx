@@ -15,7 +15,7 @@ import {
 } from '@dnd-kit/sortable';
 import { Heading, Text, Card, Stack, Separator } from '@artifact-ui/core';
 import { useReorderWorkflowStages } from '@/features/orders/api/orders-queries';
-import { WORKFLOW_STAGE_COLORS } from '@/features/orders/constants/stage-colors';
+import { WORKFLOW_STAGE_COLORS } from '@/components/orders/stage-colors';
 import type { WorkflowStage } from '@/types/api';
 import { StageRow } from './stage-row';
 import { AddStage } from './add-stage';

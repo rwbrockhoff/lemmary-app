@@ -10,14 +10,14 @@ import { PageHeader } from '@/components/page-header';
 import { FormActions } from '@/components/form-actions';
 import { EditBatchOrderRow } from './components/edit-batch-order-row';
 import { useOrderSelection } from './hooks/use-order-selection';
-import { getPendingOrders } from './utils/batch-utils';
+import { isOrderLocked } from '@/components/orders/order-status';
 import shared from '@/styles/shared.module.css';
 
 const EditBatchPage = () => {
 	const { batchId } = useParams<{ batchId: string }>();
 	const navigate = useNavigate();
 	const { data: batch, isLoading: batchLoading } = useBatch(batchId!);
-	const { data, isLoading: ordersLoading } = useOrdersWithItems();
+	const { data, isLoading: ordersLoading } = useOrdersWithItems(batchId!);
 	const orders = data?.orders;
 	const updateBatchOrders = useUpdateBatchOrders();
 
@@ -37,16 +37,16 @@ const EditBatchPage = () => {
 
 	const isLoading = batchLoading || ordersLoading;
 
-	const pendingOrders = useMemo(() => getPendingOrders(orders), [orders]);
-
 	const currentBatchOrderIds = useMemo(
 		() => new Set(batch?.orders.map((o) => o.order_id) ?? []),
 		[batch],
 	);
 
-	const availableOrders = pendingOrders.filter(
+	// The API returns pending orders plus this batch's orders (incl. completed ones)
+	const visibleOrders = (orders ?? []).filter(
 		(o) => !o.batch_name || currentBatchOrderIds.has(o.id),
 	);
+	const hasRows = visibleOrders.length > 0;
 
 	const handleSave = async () => {
 		if (selectedOrderIds.size === 0) return;
@@ -97,16 +97,14 @@ const EditBatchPage = () => {
 							)}
 						</Flex>
 
-						{availableOrders.length === 0 && (
-							<Text color="secondary">No available orders.</Text>
-						)}
+						{!hasRows && <Text color="secondary">No available orders.</Text>}
 
-						{availableOrders.length > 0 && (
+						{hasRows && (
 							<Table.Root>
 								<Table.Header>
 									<Table.Row>
 										<Table.HeaderCell className="w-10" />
-										<Table.HeaderCell className="w-24">Order #</Table.HeaderCell>
+										<Table.HeaderCell className="w-32">Order #</Table.HeaderCell>
 										<Table.HeaderCell>Customer</Table.HeaderCell>
 										<Table.HeaderCell>Date</Table.HeaderCell>
 										<Table.HeaderCell>Due</Table.HeaderCell>
@@ -116,12 +114,13 @@ const EditBatchPage = () => {
 									</Table.Row>
 								</Table.Header>
 								<Table.Body>
-									{availableOrders.map((order) => (
+									{visibleOrders.map((order) => (
 										<EditBatchOrderRow
 											key={order.id}
 											order={order}
 											isSelected={selectedOrderIds.has(order.id)}
 											isExpanded={expandedOrderIds.has(order.id)}
+											locked={currentBatchOrderIds.has(order.id) && isOrderLocked(order)}
 											onToggle={toggleOrder}
 											onExpand={toggleExpand}
 										/>

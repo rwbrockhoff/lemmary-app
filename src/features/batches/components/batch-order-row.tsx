@@ -1,9 +1,12 @@
-import { Table, Checkbox, Badge, cn } from '@artifact-ui/core';
-import { StageSelect } from '@/features/orders/components/stage-select';
+import { Table, Checkbox, Badge, Flex } from '@artifact-ui/core';
+import { StageSelect } from '@/components/orders/stage-select';
+import { StageBadge } from '@/components/orders/stage-badge';
+import { LockIcon } from '@/components/icons';
 import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
+import { OrderNumberLabel } from '@/components/orders/order-number-label';
+import { isOrderLocked } from '@/components/orders/order-status';
 import { getProgressColor } from '../utils/batch-utils';
 import { formatDate } from '@/utils/format';
-import styles from '@/styles/shared.module.css';
 import type { BatchOrder, BatchOrderItem, WorkflowStage } from '@/types/api';
 
 type BatchOrderRowProps = {
@@ -29,21 +32,26 @@ export const BatchOrderRow = ({
 	const total = items.length;
 
 	const currentStage = orderStages.find((s) => s.id === order.workflow_stage_id);
-	const isStageComplete = currentStage?.is_complete;
-	const isInProgress = !isStageComplete && !currentStage?.is_default;
-	const rowClass =
-		isStageComplete || order.completed
-			? styles.completedRow
-			: isInProgress
-				? styles.inProgressRow
-				: '';
+	const isLocked = isOrderLocked(order);
 
 	return (
-		<Table.Row className={cn('cursor-pointer', rowClass)} onClick={onRowClick}>
+		<Table.Row className="cursor-pointer" onClick={onRowClick}>
 			<Table.Cell onClick={(e) => e.stopPropagation()}>
-				<Checkbox checked={order.completed} onCheckedChange={onCheckboxToggle} />
+				<Checkbox
+					checked={order.completed}
+					disabled={isLocked}
+					onCheckedChange={onCheckboxToggle}
+				/>
 			</Table.Cell>
-			<Table.Cell>{order.order_number}</Table.Cell>
+			<Table.Cell>
+				<Flex align="center" gap="1">
+					<OrderNumberLabel
+						orderNumber={order.order_number}
+						orderType={order.order_type}
+					/>
+					{isLocked && <LockIcon size={12} />}
+				</Flex>
+			</Table.Cell>
 			<Table.Cell className="truncate max-w-0">
 				<CustomerNameWithNotes
 					name={order.customer_name}
@@ -58,13 +66,19 @@ export const BatchOrderRow = ({
 				</Badge>
 			</Table.Cell>
 			<Table.Cell onClick={(e) => e.stopPropagation()}>
-				{!stagesLoading && (
-					<StageSelect
-						stages={orderStages}
-						value={order.workflow_stage_id}
-						onChange={onStageChange}
-					/>
-				)}
+				{!stagesLoading &&
+					(isLocked ? (
+						<StageBadge
+							name={currentStage?.name ?? null}
+							color={currentStage?.color ?? null}
+						/>
+					) : (
+						<StageSelect
+							stages={orderStages}
+							value={order.workflow_stage_id}
+							onChange={onStageChange}
+						/>
+					))}
 			</Table.Cell>
 		</Table.Row>
 	);
