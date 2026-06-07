@@ -1,12 +1,10 @@
-import { useNavigate } from 'react-router';
 import { InboxIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { EmptyState } from '@/components/empty-state/empty-state';
 import { ErrorState } from '@/components/error-state/error-state';
-import { useToast } from '@/providers/toast-context';
 import { useProducts } from '@/features/storefront/api/storefront-queries';
-import { useCreateCustomOrder, useUpdateCustomOrder } from '../../api/orders-queries';
 import type { CustomOrderFormData } from '../../schemas/custom-order-schemas';
+import type { UpdateCustomOrderRequest } from '../../types/custom-order-types';
 import type { OrderDetail } from '@/types/api';
 import { CustomOrderFormFields } from './custom-order-form-fields';
 import {
@@ -18,14 +16,17 @@ import {
 type CustomOrderFormProps = {
 	mode: 'create' | 'edit';
 	order?: OrderDetail;
+	isSubmitting: boolean;
+	onSubmit: (payload: UpdateCustomOrderRequest) => void;
 };
 
-export const CustomOrderForm = ({ mode, order }: CustomOrderFormProps) => {
-	const navigate = useNavigate();
-	const toast = useToast();
+export const CustomOrderForm = ({
+	mode,
+	order,
+	isSubmitting,
+	onSubmit,
+}: CustomOrderFormProps) => {
 	const { data, isLoading, error } = useProducts();
-	const createOrder = useCreateCustomOrder();
-	const updateOrder = useUpdateCustomOrder(order?.id ?? '');
 
 	if (isLoading) return <PageSpinner />;
 	if (error)
@@ -48,23 +49,7 @@ export const CustomOrderForm = ({ mode, order }: CustomOrderFormProps) => {
 		order && isEdit ? orderToFormValues(order, products) : emptyCustomOrderValues();
 
 	const handleSubmit = (formData: CustomOrderFormData) => {
-		const payload = toCustomOrderPayload(formData, products);
-		const onSuccess = (saved: OrderDetail) => {
-			toast.success(isEdit ? 'Custom order updated' : 'Custom order created');
-			navigate(`/orders/${saved.id}`);
-		};
-
-		if (isEdit) {
-			updateOrder.mutate(payload, {
-				onSuccess,
-				onError: (err) => toast.error(err.message, 'Could not update order'),
-			});
-		} else {
-			createOrder.mutate(payload, {
-				onSuccess,
-				onError: (err) => toast.error(err.message, 'Could not create order'),
-			});
-		}
+		onSubmit(toCustomOrderPayload(formData, products));
 	};
 
 	return (
@@ -72,7 +57,7 @@ export const CustomOrderForm = ({ mode, order }: CustomOrderFormProps) => {
 			products={products}
 			defaultValues={defaultValues}
 			submitLabel={isEdit ? 'Save' : 'Create order'}
-			isSubmitting={isEdit ? updateOrder.isPending : createOrder.isPending}
+			isSubmitting={isSubmitting}
 			cancelTo={isEdit && order ? `/orders/${order.id}` : '/orders'}
 			onSubmit={handleSubmit}
 		/>
