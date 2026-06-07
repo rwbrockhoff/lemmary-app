@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const customOrderItemSchema = z.object({
+	id: z.string().optional(),
 	variantId: z.string().min(1, 'Select a product'),
 	quantity: z.number().int().min(1, 'Quantity must be at least 1'),
 	unitPrice: z.string().optional(),

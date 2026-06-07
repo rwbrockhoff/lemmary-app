@@ -1,67 +1,31 @@
-import { useForm, FormProvider } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router';
-import { Button, Stack, Flex } from '@artifact-ui/core';
 import { InboxIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { EmptyState } from '@/components/empty-state/empty-state';
 import { ErrorState } from '@/components/error-state/error-state';
 import { useToast } from '@/providers/toast-context';
 import { useProducts } from '@/features/storefront/api/storefront-queries';
-import { useCreateCustomOrder } from '../../api/orders-queries';
+import { useCreateCustomOrder, useUpdateCustomOrder } from '../../api/orders-queries';
+import type { CustomOrderFormData } from '../../schemas/custom-order-schemas';
+import type { OrderDetail } from '@/types/api';
+import { CustomOrderFormFields } from './custom-order-form-fields';
 import {
-	customOrderSchema,
-	type CustomOrderFormData,
-} from '../../schemas/custom-order-schemas';
-import type { CreateCustomOrderRequest } from '../../types/custom-order-types';
-import type { Product } from '@/types/api';
-import { findProductVariant } from './variant-utils';
-import { OrderDetailsFields } from './order-details-fields';
-import { LineItemsField } from './line-items-field';
+	emptyCustomOrderValues,
+	orderToFormValues,
+	toCustomOrderPayload,
+} from './form-values';
 
-const toPayload = (
-	data: CustomOrderFormData,
-	products: Product[],
-): CreateCustomOrderRequest => ({
-	customer_name: data.customerName,
-	customer_email: data.customerEmail || null,
-	order_date: data.orderDate || undefined,
-	due_date: data.dueDate || null,
-	order_notes: data.orderNotes || null,
-	items: data.items.map((item) => {
-		const match = findProductVariant(products, item.variantId);
-		const variantName = match?.variant.name;
-		return {
-			product_name: match?.product.name ?? '',
-			platform_sku: match?.variant.platform_sku ?? null,
-			variant_label:
-				variantName && variantName.toLowerCase() !== 'default'
-					? [{ name: 'Variant', value: variantName }]
-					: null,
-			quantity: item.quantity,
-			unit_price: item.unitPrice || null,
-		};
-	}),
-});
+type CustomOrderFormProps = {
+	mode: 'create' | 'edit';
+	order?: OrderDetail;
+};
 
-export const CustomOrderForm = () => {
+export const CustomOrderForm = ({ mode, order }: CustomOrderFormProps) => {
 	const navigate = useNavigate();
 	const toast = useToast();
 	const { data, isLoading, error } = useProducts();
 	const createOrder = useCreateCustomOrder();
-	const today = new Date().toISOString().slice(0, 10);
-
-	const methods = useForm<CustomOrderFormData>({
-		resolver: zodResolver(customOrderSchema),
-		defaultValues: {
-			customerName: '',
-			customerEmail: '',
-			orderDate: today,
-			dueDate: '',
-			orderNotes: '',
-			items: [{ variantId: '', quantity: 1, unitPrice: '' }],
-		},
-	});
+	const updateOrder = useUpdateCustomOrder(order?.id ?? '');
 
 	if (isLoading) return <PageSpinner />;
 	if (error)
@@ -79,38 +43,38 @@ export const CustomOrderForm = () => {
 		);
 	}
 
-	const onSubmit = (formData: CustomOrderFormData) => {
-		createOrder.mutate(toPayload(formData, products), {
-			onSuccess: (order) => {
-				toast.success('Custom order created');
-				navigate(`/orders/${order.id}`);
-			},
-			onError: (err) => toast.error(err.message, 'Could not create order'),
-		});
+	const isEdit = mode === 'edit';
+	const defaultValues =
+		order && isEdit ? orderToFormValues(order, products) : emptyCustomOrderValues();
+
+	const handleSubmit = (formData: CustomOrderFormData) => {
+		const payload = toCustomOrderPayload(formData, products);
+		const onSuccess = (saved: OrderDetail) => {
+			toast.success(isEdit ? 'Custom order updated' : 'Custom order created');
+			navigate(`/orders/${saved.id}`);
+		};
+
+		if (isEdit) {
+			updateOrder.mutate(payload, {
+				onSuccess,
+				onError: (err) => toast.error(err.message, 'Could not update order'),
+			});
+		} else {
+			createOrder.mutate(payload, {
+				onSuccess,
+				onError: (err) => toast.error(err.message, 'Could not create order'),
+			});
+		}
 	};
 
 	return (
-		<FormProvider {...methods}>
-			<form onSubmit={methods.handleSubmit(onSubmit)}>
-				<Stack gap="6">
-					<OrderDetailsFields />
-					<LineItemsField products={products} />
-					<Flex gap="2" justify="end" className="mt-4">
-						<Button
-							type="button"
-							variant="secondary"
-							onClick={() => navigate('/orders')}>
-							Cancel
-						</Button>
-						<Button
-							type="submit"
-							loading={createOrder.isPending}
-							disabled={createOrder.isPending}>
-							Create order
-						</Button>
-					</Flex>
-				</Stack>
-			</form>
-		</FormProvider>
+		<CustomOrderFormFields
+			products={products}
+			defaultValues={defaultValues}
+			submitLabel={isEdit ? 'Save' : 'Create order'}
+			isSubmitting={isEdit ? updateOrder.isPending : createOrder.isPending}
+			cancelTo={isEdit && order ? `/orders/${order.id}` : '/orders'}
+			onSubmit={handleSubmit}
+		/>
 	);
 };

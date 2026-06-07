@@ -1,5 +1,7 @@
-import { useParams, useSearchParams } from 'react-router';
+import { useState } from 'react';
+import { useParams, useSearchParams, useNavigate } from 'react-router';
 import { Table, Flex } from '@artifact-ui/core';
+import { useToast } from '@/providers/toast-context';
 import { PageHeader } from '@/components/page-header';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
@@ -10,23 +12,44 @@ import shared from '@/styles/shared.module.css';
 import { OrderMetadataCard } from './components/order-metadata-card/order-metadata-card';
 import { StageSelect } from './components/stage-select';
 import { OrderTypeBadge } from './components/order-type-badge';
+import { OrderOptionsMenu } from './components/order-options-menu';
+import { DeleteOrderModal } from './components/delete-order-modal';
 import {
 	useOrder,
 	useWorkflowStages,
 	useUpdateOrderStage,
 	useUpdateOrderItemStage,
+	useDeleteOrder,
 } from './api/orders-queries';
 import { getOrderBreadcrumbs } from './utils/order-breadcrumbs';
 
 const OrderDetailPage = () => {
 	const { orderId } = useParams<{ orderId: string }>();
 	const [searchParams] = useSearchParams();
+	const navigate = useNavigate();
+	const toast = useToast();
+
 	const { data: order, isLoading, error } = useOrder(orderId!);
 	const { data: stages } = useWorkflowStages();
+
 	const updateOrderStage = useUpdateOrderStage();
 	const updateItemStage = useUpdateOrderItemStage(orderId!, stages?.itemStages ?? []);
+
+	const deleteOrder = useDeleteOrder();
+	const [showDelete, setShowDelete] = useState(false);
+
 	const from = searchParams.get('from');
 	const batchId = searchParams.get('batchId');
+
+	const handleDelete = () => {
+		deleteOrder.mutate(orderId!, {
+			onSuccess: () => {
+				toast.success('Order deleted');
+				navigate('/orders');
+			},
+			onError: (err) => toast.error(err.message, 'Could not delete order'),
+		});
+	};
 
 	const orderStages = stages?.orderStages ?? [];
 	const itemStages = stages?.itemStages ?? [];
@@ -48,6 +71,12 @@ const OrderDetailPage = () => {
 									updateOrderStage.mutate({ orderId: orderId!, stageId })
 								}
 							/>
+							{order.order_type === 'custom' && (
+								<OrderOptionsMenu
+									onEdit={() => navigate(`/orders/custom/${order.id}/edit`)}
+									onDelete={() => setShowDelete(true)}
+								/>
+							)}
 						</Flex>
 					)
 				}
@@ -109,6 +138,14 @@ const OrderDetailPage = () => {
 								})}
 							</Table.Body>
 						</Table.Root>
+
+						<DeleteOrderModal
+							open={showDelete}
+							onOpenChange={setShowDelete}
+							orderNumber={order.order_number}
+							onDelete={handleDelete}
+							isPending={deleteOrder.isPending}
+						/>
 					</>
 				)}
 			</LoadingWrapper>

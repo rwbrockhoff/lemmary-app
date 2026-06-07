@@ -12,6 +12,15 @@ export const findProductVariant = (
 	return null;
 };
 
+export const findVariantBySku = (products: Product[], sku: string | null) => {
+	if (!sku) return null;
+	for (const product of products) {
+		const variant = product.variants.find((v) => v.platform_sku === sku);
+		if (variant) return variant;
+	}
+	return null;
+};
+
 export const variantLabel = (productName: string, variantName: string) =>
 	variantName && variantName.toLowerCase() !== 'default'
 		? `${productName} (${variantName})`

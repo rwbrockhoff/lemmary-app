@@ -9,7 +9,7 @@ const CustomOrderCreatePage = () => {
 				segments={[{ label: 'Orders', to: '/orders' }]}
 				title="New custom order"
 			/>
-			<CustomOrderForm />
+			<CustomOrderForm mode="create" />
 		</div>
 	);
 };

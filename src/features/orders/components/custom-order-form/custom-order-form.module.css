@@ -6,6 +6,15 @@
 
 .variantTrigger {
 	width: 100%;
+	min-width: 0;
+}
+
+.variantTrigger > span:first-child {
+	display: block;
+	min-width: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .actionCell {

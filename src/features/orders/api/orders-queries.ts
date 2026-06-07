@@ -19,7 +19,10 @@ import type {
 	WorkflowStagesResponse,
 	WorkflowBoardResponse,
 } from '@/types/api';
-import type { CreateCustomOrderRequest } from '../types/custom-order-types';
+import type {
+	CreateCustomOrderRequest,
+	UpdateCustomOrderRequest,
+} from '../types/custom-order-types';
 
 export const useOrdersWithItems = () => {
 	return useQuery({
@@ -246,6 +249,34 @@ export const useCreateCustomOrder = () => {
 			api.post<OrderDetail>('/orders/custom', payload),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+		},
+	});
+};
+
+export const useUpdateCustomOrder = (orderId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payload: UpdateCustomOrderRequest) =>
+			api.patch<OrderDetail>(`/orders/custom/${orderId}`, payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
+export const useDeleteOrder = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (orderId: string) => api.del<{ id: string }>(`/orders/${orderId}`),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
 	});
 };

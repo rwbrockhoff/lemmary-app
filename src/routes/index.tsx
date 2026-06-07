@@ -18,6 +18,9 @@ const OrderDetailPage = lazy(() => import('@/features/orders/order-detail-page')
 const CustomOrderCreatePage = lazy(
 	() => import('@/features/orders/custom-order-create-page'),
 );
+const CustomOrderEditPage = lazy(
+	() => import('@/features/orders/custom-order-edit-page'),
+);
 const CustomerDetailPage = lazy(
 	() => import('@/features/customers/customer-detail-page'),
 );
@@ -120,6 +123,14 @@ const router = createBrowserRouter([
 								element: (
 									<Suspense>
 										<CustomOrderCreatePage />
+									</Suspense>
+								),
+							},
+							{
+								path: '/orders/custom/:orderId/edit',
+								element: (
+									<Suspense>
+										<CustomOrderEditPage />
 									</Suspense>
 								),
 							},

@@ -33,12 +33,13 @@ export const LineItemRow = ({
 	return (
 		<Table.Row>
 			<Table.Cell>
+				<input type="hidden" {...register(`items.${index}.id`)} />
 				<Flex gap="2" align="center">
 					<ProductThumbnail
 						src={match?.variant.image_url ?? match?.product.image_url ?? null}
 						alt={match?.product.name ?? 'Item'}
 					/>
-					<div className="flex-1">
+					<div className="flex-1 min-w-0">
 						<Controller
 							control={control}
 							name={`items.${index}.variantId`}
