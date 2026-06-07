@@ -7,11 +7,7 @@ type LabeledFieldProps = {
 	className?: string;
 };
 
-export const LabeledField = ({
-	label,
-	children,
-	className,
-}: LabeledFieldProps) => (
+export const LabeledField = ({ label, children, className }: LabeledFieldProps) => (
 	<Stack gap="1" className={className}>
 		<Text size="2" color="secondary">
 			{label}

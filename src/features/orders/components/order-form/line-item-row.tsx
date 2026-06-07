@@ -4,10 +4,10 @@ import { TrashIcon } from '@/components/icons';
 import { ProductThumbnail } from '@/components/product-thumbnail/product-thumbnail';
 import { formatCurrency } from '@/utils/format';
 import type { Product } from '@/types/api';
-import type { CustomOrderFormData } from '../../schemas/custom-order-schemas';
+import type { LineItemsForm } from './line-item-schema';
 import { VariantSelect } from './variant-select';
 import { findProductVariant } from './variant-utils';
-import styles from './custom-order-form.module.css';
+import styles from './order-form.module.css';
 
 type LineItemRowProps = {
 	index: number;
@@ -24,7 +24,7 @@ export const LineItemRow = ({
 	onRemove,
 	canRemove,
 }: LineItemRowProps) => {
-	const { control, register, setValue } = useFormContext<CustomOrderFormData>();
+	const { control, register, setValue } = useFormContext<LineItemsForm>();
 
 	const variantId = useWatch({ control, name: `items.${index}.variantId` });
 	const match = findProductVariant(products, variantId);

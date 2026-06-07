@@ -8,7 +8,7 @@ import {
 } from '../../schemas/custom-order-schemas';
 import type { Product } from '@/types/api';
 import { OrderDetailsFields } from './order-details-fields';
-import { LineItemsField } from './line-items-field';
+import { LineItemsField } from '../order-form/line-items-field';
 
 type CustomOrderFormFieldsProps = {
 	products: Product[];

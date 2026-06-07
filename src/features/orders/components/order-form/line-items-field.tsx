@@ -3,9 +3,10 @@ import { Table, Button, Stack, Flex, Text } from '@artifact-ui/core';
 import { PlusIcon } from '@/components/icons';
 import { formatCurrency } from '@/utils/format';
 import type { Product } from '@/types/api';
-import type { CustomOrderFormData } from '../../schemas/custom-order-schemas';
+import type { LineItemsForm } from './line-item-schema';
+import { emptyLineItem } from './line-item-values';
 import { LineItemRow } from './line-item-row';
-import styles from './custom-order-form.module.css';
+import styles from './order-form.module.css';
 
 type LineItemsFieldProps = {
 	products: Product[];
@@ -18,7 +19,7 @@ export const LineItemsField = ({ products }: LineItemsFieldProps) => {
 	const {
 		control,
 		formState: { errors },
-	} = useFormContext<CustomOrderFormData>();
+	} = useFormContext<LineItemsForm>();
 
 	const { fields, append, remove } = useFieldArray({ control, name: 'items' });
 	const watched = useWatch({ control, name: 'items' }) ?? [];
@@ -27,10 +28,7 @@ export const LineItemsField = ({ products }: LineItemsFieldProps) => {
 		(sum, item) => sum + lineTotal(item.quantity, item.unitPrice),
 		0,
 	);
-	const totalUnits = watched.reduce(
-		(sum, item) => sum + (Number(item.quantity) || 0),
-		0,
-	);
+	const totalUnits = watched.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
 
 	return (
 		<Stack gap="3">
@@ -83,10 +81,7 @@ export const LineItemsField = ({ products }: LineItemsFieldProps) => {
 							key={field.id}
 							index={index}
 							products={products}
-							subtotal={lineTotal(
-								watched[index]?.quantity,
-								watched[index]?.unitPrice,
-							)}
+							subtotal={lineTotal(watched[index]?.quantity, watched[index]?.unitPrice)}
 							onRemove={() => remove(index)}
 							canRemove={fields.length > 1}
 						/>
@@ -109,7 +104,7 @@ export const LineItemsField = ({ products }: LineItemsFieldProps) => {
 					color="neutral"
 					size="2"
 					iconLeft={<PlusIcon size={16} />}
-					onClick={() => append({ variantId: '', quantity: 1, unitPrice: '' })}>
+					onClick={() => append(emptyLineItem())}>
 					Add item
 				</Button>
 				<Flex gap="6" align="center" className="pr-4">

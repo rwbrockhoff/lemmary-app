@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import { Card, TextField, TextArea, Stack, Flex } from '@artifact-ui/core';
 import type { CustomOrderFormData } from '../../schemas/custom-order-schemas';
-import { LabeledField } from './labeled-field';
+import { LabeledField } from '../order-form/labeled-field';
 import styles from './custom-order-form.module.css';
 
 export const OrderDetailsFields = () => {
