@@ -23,6 +23,7 @@ import type {
 	CreateCustomOrderRequest,
 	UpdateCustomOrderRequest,
 } from '../types/custom-order-types';
+import type { WorkOrderRequest } from '../types/work-order-types';
 
 export const useOrdersWithItems = (batchId?: string) => {
 	return useQuery({
@@ -263,6 +264,33 @@ export const useUpdateCustomOrder = (orderId: string) => {
 	return useMutation({
 		mutationFn: (payload: UpdateCustomOrderRequest) =>
 			api.patch<OrderDetail>(`/orders/custom/${orderId}`, payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
+export const useCreateWorkOrder = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payload: WorkOrderRequest) =>
+			api.post<OrderDetail>('/orders/work', payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+		},
+	});
+};
+
+export const useUpdateWorkOrder = (orderId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payload: WorkOrderRequest) =>
+			api.patch<OrderDetail>(`/orders/work/${orderId}`, payload),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
