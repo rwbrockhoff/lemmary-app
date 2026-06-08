@@ -1,3 +1,9 @@
+.detailsGrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--space-6);
+}
+
 .variantTrigger {
 	width: 100%;
 	min-width: 0;
