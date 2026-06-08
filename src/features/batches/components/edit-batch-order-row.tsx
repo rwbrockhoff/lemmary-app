@@ -5,6 +5,7 @@ import { LockIcon } from '@/components/icons';
 import { OrderItemsExpanded } from '@/features/orders/components/order-items-expanded/order-items-expanded';
 import { OrderNumberLabel } from '@/components/orders/order-number-label';
 import { formatDate, formatCurrency } from '@/utils/format';
+import { getOrderDisplayName } from '@/utils/orders';
 import shared from '@/styles/shared.module.css';
 import type { OrderWithItems } from '@/types/api';
 
@@ -46,7 +47,7 @@ export const EditBatchOrderRow = ({
 					{locked && <LockIcon size={12} />}
 				</Flex>
 			</Table.Cell>
-			<Table.Cell>{order.customer_name}</Table.Cell>
+			<Table.Cell className="truncate max-w-0">{getOrderDisplayName(order)}</Table.Cell>
 			<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 			<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
 			<Table.Cell className="text-center">{order.item_count}</Table.Cell>

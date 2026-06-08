@@ -10,7 +10,7 @@ import { PageHeader } from '@/components/page-header';
 import { FormActions } from '@/components/form-actions';
 import { EditBatchOrderRow } from './components/edit-batch-order-row';
 import { useOrderSelection } from './hooks/use-order-selection';
-import { isOrderLocked } from '@/components/orders/order-status';
+import { isOrderLocked } from '@/utils/orders';
 import shared from '@/styles/shared.module.css';
 
 const EditBatchPage = () => {
@@ -104,12 +104,14 @@ const EditBatchPage = () => {
 								<Table.Header>
 									<Table.Row>
 										<Table.HeaderCell className="w-10" />
-										<Table.HeaderCell className="w-32">Order #</Table.HeaderCell>
-										<Table.HeaderCell>Customer</Table.HeaderCell>
-										<Table.HeaderCell>Date</Table.HeaderCell>
-										<Table.HeaderCell>Due</Table.HeaderCell>
-										<Table.HeaderCell className="text-center">Items</Table.HeaderCell>
-										<Table.HeaderCell className="text-end">Total</Table.HeaderCell>
+										<Table.HeaderCell className="w-24">Order #</Table.HeaderCell>
+										<Table.HeaderCell className="w-1/4">Name</Table.HeaderCell>
+										<Table.HeaderCell className="w-28">Date</Table.HeaderCell>
+										<Table.HeaderCell className="w-28">Due</Table.HeaderCell>
+										<Table.HeaderCell className="w-16 text-center">
+											Items
+										</Table.HeaderCell>
+										<Table.HeaderCell className="w-24 text-end">Total</Table.HeaderCell>
 										<Table.HeaderCell className="w-14" />
 									</Table.Row>
 								</Table.Header>

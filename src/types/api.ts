@@ -177,6 +177,7 @@ export type BatchOrder = {
 	order_type: OrderType;
 	fulfillment_status: string;
 	order_number: string;
+	order_title: string | null;
 	customer_name: string;
 	order_notes: string | null;
 	order_date: string;

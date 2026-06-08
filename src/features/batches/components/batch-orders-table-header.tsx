@@ -27,7 +27,7 @@ export const BatchOrdersTableHeader = ({
 					className="w-32"
 				/>
 				<SortableHeader<OrderSortKey>
-					label="Customer"
+					label="Name"
 					sortKey="customer_name"
 					activeSortKey={sortKey}
 					sortDirection={sortDirection}

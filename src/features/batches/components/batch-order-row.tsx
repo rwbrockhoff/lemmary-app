@@ -4,7 +4,7 @@ import { StageBadge } from '@/components/orders/stage-badge';
 import { LockIcon } from '@/components/icons';
 import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
 import { OrderNumberLabel } from '@/components/orders/order-number-label';
-import { isOrderLocked } from '@/components/orders/order-status';
+import { isOrderLocked, getOrderDisplayName } from '@/utils/orders';
 import { getProgressColor } from '../utils/batch-utils';
 import { formatDate } from '@/utils/format';
 import type { BatchOrder, BatchOrderItem, WorkflowStage } from '@/types/api';
@@ -54,7 +54,7 @@ export const BatchOrderRow = ({
 			</Table.Cell>
 			<Table.Cell className="truncate max-w-0">
 				<CustomerNameWithNotes
-					name={order.customer_name}
+					name={getOrderDisplayName(order)}
 					hasNotes={Boolean(order.order_notes)}
 				/>
 			</Table.Cell>

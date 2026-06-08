@@ -3,6 +3,7 @@ import { Table, Checkbox, Badge, IconButton, cn } from '@artifact-ui/core';
 import { ChevronDownIcon } from '@/components/icons/icons';
 import { OrderItemsExpanded } from '@/features/orders/components/order-items-expanded/order-items-expanded';
 import { formatDate, formatCurrency } from '@/utils/format';
+import { getOrderDisplayName } from '@/utils/orders';
 import shared from '@/styles/shared.module.css';
 import type { OrderWithItems } from '@/types/api';
 
@@ -33,12 +34,12 @@ export const SelectOrdersTable = ({
 				<Table.Row>
 					{tab === 'available' && <Table.HeaderCell className="w-10" />}
 					<Table.HeaderCell className="w-24">Order #</Table.HeaderCell>
-					<Table.HeaderCell>Customer</Table.HeaderCell>
-					<Table.HeaderCell>Date</Table.HeaderCell>
-					<Table.HeaderCell>Due</Table.HeaderCell>
-					<Table.HeaderCell className="text-center">Items</Table.HeaderCell>
+					<Table.HeaderCell className="w-1/4">Name</Table.HeaderCell>
+					<Table.HeaderCell className="w-28">Date</Table.HeaderCell>
+					<Table.HeaderCell className="w-28">Due</Table.HeaderCell>
+					<Table.HeaderCell className="w-16 text-center">Items</Table.HeaderCell>
 					{tab === 'in-batches' && <Table.HeaderCell>Batch</Table.HeaderCell>}
-					<Table.HeaderCell className="text-end">Total</Table.HeaderCell>
+					<Table.HeaderCell className="w-24 text-end">Total</Table.HeaderCell>
 					<Table.HeaderCell className="w-14" />
 				</Table.Row>
 			</Table.Header>
@@ -60,7 +61,9 @@ export const SelectOrdersTable = ({
 									</Table.Cell>
 								)}
 								<Table.Cell>{order.order_number}</Table.Cell>
-								<Table.Cell>{order.customer_name}</Table.Cell>
+								<Table.Cell className="truncate max-w-0">
+									{getOrderDisplayName(order)}
+								</Table.Cell>
 								<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 								<Table.Cell>
 									{order.due_date ? formatDate(order.due_date) : '—'}
