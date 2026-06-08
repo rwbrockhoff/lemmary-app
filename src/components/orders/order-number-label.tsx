@@ -1,5 +1,5 @@
 import { StageBadge } from './stage-badge';
-import { ORDER_TYPE_DISPLAY } from './order-type-display';
+import { ORDER_TYPE_DISPLAY } from '@/utils/orders';
 import type { OrderType } from '@/types/api';
 
 type OrderNumberLabelProps = {
