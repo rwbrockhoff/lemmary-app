@@ -15,7 +15,9 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 	const [notes, setNotes] = useState(order.order_notes ?? '');
 	const updateNotes = useUpdateOrderNotes(order.id);
 	const toast = useToast();
+
 	const hasNotesChanged = notes !== (order.order_notes ?? '');
+	const isWork = order.order_type === 'work';
 
 	const handleSaveNotes = () => {
 		updateNotes.mutate(notes, {
@@ -28,17 +30,25 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 		<Card.Root className="mb-6">
 			<Card.Body className={styles.metadataGrid}>
 				<Stack gap="3">
-					<CustomerMetadataRow
-						name={order.customer_name}
-						email={order.customer_email}
-						tier={order.customer_tier}
-						fromOrderId={order.id}
-					/>
+					{!isWork && (
+						<CustomerMetadataRow
+							name={order.customer_name}
+							email={order.customer_email}
+							tier={order.customer_tier}
+							fromOrderId={order.id}
+						/>
+					)}
+					{isWork && <MetadataRow label="Title" value={order.order_title ?? '—'} />}
+					{isWork && order.order_description && (
+						<MetadataRow label="Description" value={order.order_description} />
+					)}
 					<MetadataRow label="Date" value={formatDate(order.order_date)} />
 					{order.due_date && (
 						<MetadataRow label="Due" value={formatDate(order.due_date)} />
 					)}
-					<MetadataRow label="Total" value={formatCurrency(order.grand_total)} />
+					{!isWork && (
+						<MetadataRow label="Total" value={formatCurrency(order.grand_total)} />
+					)}
 					{order.shipping_method && (
 						<MetadataRow label="Shipping" value={order.shipping_method} />
 					)}

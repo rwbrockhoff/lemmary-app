@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router';
 import { Table, Flex } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
+import { getOrderDisplayName } from '@/utils/orders';
 import { PageHeader } from '@/components/page-header';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
@@ -55,11 +56,15 @@ const OrderDetailPage = () => {
 	const itemStages = stages?.itemStages ?? [];
 	const breadcrumbs = getOrderBreadcrumbs(from, batchId);
 
+	const pageTitle = order
+		? `${order.order_number} — ${getOrderDisplayName(order)}`
+		: undefined;
+
 	return (
 		<div className={shared.pageContainer}>
 			<PageHeader
 				segments={breadcrumbs}
-				title={order && `${order.order_number} — ${order.customer_name}`}
+				title={pageTitle}
 				actions={
 					order && (
 						<Flex align="center" gap="2">
@@ -71,9 +76,9 @@ const OrderDetailPage = () => {
 									updateOrderStage.mutate({ orderId: orderId!, stageId })
 								}
 							/>
-							{order.order_type === 'custom' && (
+							{order.order_type !== 'platform' && (
 								<OrderOptionsMenu
-									onEdit={() => navigate(`/orders/custom/${order.id}/edit`)}
+									onEdit={() => navigate(`/orders/${order.order_type}/${order.id}/edit`)}
 									onDelete={() => setShowDelete(true)}
 								/>
 							)}
