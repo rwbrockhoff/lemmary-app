@@ -34,7 +34,7 @@ export type Order = {
 	shipping_method: string | null;
 	order_notes: string | null;
 	order_url: string | null;
-	fulfilled_on: string | null;
+	fulfilled_at: string | null;
 	tracking_number: string | null;
 	tracking_url: string | null;
 	carrier_name: string | null;

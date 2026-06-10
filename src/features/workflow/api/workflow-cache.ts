@@ -8,7 +8,7 @@ import { orderKeys } from '@/features/orders/api/orders-keys';
 
 type UpdateStageVariables = { orderId: string; stageId: string };
 
-// match BE sort - open by order_date asc, completed by fulfilled_on desc
+// match BE sort - open by order_date asc, completed by fulfilled_at desc
 // with manual placements (unlocked) on top to keep dragged cards visible
 function sortStageOrders(stage: WorkflowStageWithOrders): WorkflowBoardOrder[] {
 	return [...stage.orders].sort((a, b) => {
@@ -16,8 +16,8 @@ function sortStageOrders(stage: WorkflowStageWithOrders): WorkflowBoardOrder[] {
 			const aLocked = a.fulfillment_status === 'fulfilled';
 			const bLocked = b.fulfillment_status === 'fulfilled';
 			if (aLocked !== bLocked) return aLocked ? 1 : -1;
-			const aTime = new Date(a.fulfilled_on ?? a.order_date).getTime();
-			const bTime = new Date(b.fulfilled_on ?? b.order_date).getTime();
+			const aTime = new Date(a.fulfilled_at ?? a.order_date).getTime();
+			const bTime = new Date(b.fulfilled_at ?? b.order_date).getTime();
 			return bTime - aTime;
 		}
 		return new Date(a.order_date).getTime() - new Date(b.order_date).getTime();

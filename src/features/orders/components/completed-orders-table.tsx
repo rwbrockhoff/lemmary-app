@@ -20,7 +20,7 @@ export const CompletedOrdersTable = () => {
 	const orders = useMemo(() => data?.pages.flatMap((page) => page.orders) ?? [], [data]);
 
 	const { sortedData, sortKey, sortDirection, toggleSort } = useSortableTable(orders, {
-		defaultKey: 'fulfilled_on',
+		defaultKey: 'fulfilled_at',
 		defaultDirection: 'desc',
 		storageKey: 'orders-completed',
 	});
@@ -59,7 +59,7 @@ export const CompletedOrdersTable = () => {
 						/>
 						<SortableHeader
 							label="Fulfilled"
-							sortKey="fulfilled_on"
+							sortKey="fulfilled_at"
 							activeSortKey={sortKey}
 							sortDirection={sortDirection}
 							onSort={toggleSort}
@@ -107,7 +107,7 @@ export const CompletedOrdersTable = () => {
 							</Table.Cell>
 							<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 							<Table.Cell>
-								{order.fulfilled_on ? formatDate(order.fulfilled_on) : '—'}
+								{order.fulfilled_at ? formatDate(order.fulfilled_at) : '—'}
 							</Table.Cell>
 							<Table.Cell>{order.item_count}</Table.Cell>
 							<Table.Cell className="text-end">

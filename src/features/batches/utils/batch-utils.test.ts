@@ -24,7 +24,7 @@ const buildOrder = (overrides: Partial<OrderWithItems> = {}): OrderWithItems => 
 	shipping_method: null,
 	order_notes: null,
 	order_url: null,
-	fulfilled_on: null,
+	fulfilled_at: null,
 	tracking_number: null,
 	tracking_url: null,
 	carrier_name: null,
