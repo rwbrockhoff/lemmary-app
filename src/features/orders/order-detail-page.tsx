@@ -107,20 +107,8 @@ const OrderDetailPage = () => {
 							</Table.Header>
 							<Table.Body>
 								{order.items.map((item) => {
-									const currentStage = itemStages.find(
-										(s) => s.id === item.workflow_stage_id,
-									);
-									const isComplete = currentStage?.is_complete;
-									const isInProgress = !isComplete && !currentStage?.is_default;
-
-									const rowClass = isComplete
-										? shared.completedRow
-										: isInProgress
-											? shared.inProgressRow
-											: '';
-
 									return (
-										<Table.Row key={item.id} className={rowClass}>
+										<Table.Row key={item.id}>
 											<Table.Cell>
 												<ProductThumbnail src={item.image_url} alt={item.product_name} />
 											</Table.Cell>
