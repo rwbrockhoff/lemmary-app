@@ -4,17 +4,9 @@
 	gap: var(--space-6);
 }
 
-/* Minimal look to match the row's other inputs until artifact-ui adds a Combobox variant */
 .variantTrigger {
 	width: 100%;
 	min-width: 0;
-	border: none;
-	background-color: transparent;
-	padding: var(--space-1) var(--space-2);
-}
-
-.variantTrigger:hover {
-	background-color: var(--color-bg-muted);
 }
 
 .variantTrigger > span:first-child {

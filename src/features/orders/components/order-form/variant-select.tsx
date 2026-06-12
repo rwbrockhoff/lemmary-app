@@ -27,6 +27,7 @@ export const VariantSelect = ({
 			options={options}
 			value={value}
 			onValueChange={(selected) => onChange(selected ?? '')}
+			variant="minimal"
 			placeholder="Choose item from store..."
 			searchPlaceholder="Search products..."
 			emptyMessage="No matching products"
