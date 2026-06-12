@@ -23,7 +23,7 @@ export const CustomerOrdersTableHeader = ({
 					activeSortKey={sortKey}
 					sortDirection={sortDirection}
 					onSort={onSort}
-					className="w-24"
+					className="w-32"
 				/>
 				<SortableHeader<CustomerOrderSortKey>
 					label="Date"

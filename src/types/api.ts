@@ -353,6 +353,7 @@ export type CustomerTier = 'new' | 'loyal' | 'super_fan';
 export type CustomerOrder = {
 	id: string;
 	order_number: string;
+	order_type: OrderType;
 	order_date: string;
 	fulfillment_status: string;
 	due_date: string | null;
