@@ -7,6 +7,7 @@ import {
 	type ToastItem,
 	type ToastVariant,
 } from './toast-context';
+import { DEMO_READONLY_MESSAGE } from '@/api/client';
 
 type ToastContextProviderProps = {
 	children: ReactNode;
@@ -29,7 +30,11 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
 
 	const api: ToastApi = {
 		success: (description, title) => pushToast('success', description, title),
-		error: (description, title) => pushToast('error', description, title),
+		// Overwrite error handling for demo users to show info style toasts
+		error: (description, title) =>
+			description === DEMO_READONLY_MESSAGE
+				? pushToast('info', description)
+				: pushToast('error', description, title),
 		info: (description, title) => pushToast('info', description, title),
 		warning: (description, title) => pushToast('warning', description, title),
 	};

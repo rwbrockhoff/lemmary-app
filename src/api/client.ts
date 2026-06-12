@@ -1,5 +1,8 @@
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
+const DEMO_READONLY_CODE = 'DEMO_READ_ONLY';
+export const DEMO_READONLY_MESSAGE = 'Demo mode is read-only. Sign up to make changes.';
+
 type RequestOptions = RequestInit & {
 	params?: Record<string, string>;
 };
@@ -32,10 +35,20 @@ async function request<T>(endpoint: string, options?: RequestOptions): Promise<T
 	});
 
 	if (!response.ok) {
-		const error = await response.json().catch(() => ({}));
+		const body = await response.json().catch(() => ({}));
+		const data = body as {
+			error?: string | { message?: string };
+			message?: string;
+			code?: string;
+		};
+
+		if (data.code === DEMO_READONLY_CODE) {
+			throw new Error(DEMO_READONLY_MESSAGE);
+		}
+
 		const message =
-			(error as { error?: { message?: string }; message?: string }).error?.message ??
-			(error as { message?: string }).message ??
+			(typeof data.error === 'string' ? data.error : data.error?.message) ??
+			data.message ??
 			response.statusText;
 		throw new Error(message);
 	}
