@@ -4,6 +4,8 @@ import { Text, Badge, Card, Flex, Stack, cn } from '@artifact-ui/core';
 import { LockIcon } from '@/components/icons';
 import { formatDate } from '@/utils/format';
 import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
+import { getOrderDisplayName } from '@/utils/orders';
+import { OrderNumberLabel } from '@/components/orders/order-number-label';
 import type { WorkflowBoardOrder } from '@/types/api';
 import { getProgressColor } from '@/features/batches/utils/batch-utils';
 import styles from './order-card.module.css';
@@ -55,7 +57,10 @@ const OrderCardContent = ({ order, isLocked }: OrderCardContentProps) => {
 				<Flex justify="between" align="center" className="mb-1">
 					<Flex align="center" gap="1">
 						<Text size="2" weight="medium">
-							{order.order_number}
+							<OrderNumberLabel
+								orderNumber={order.order_number}
+								orderType={order.order_type}
+							/>
 						</Text>
 						{isLocked && <LockIcon size={11} className={styles.lockIcon} />}
 					</Flex>
@@ -68,7 +73,7 @@ const OrderCardContent = ({ order, isLocked }: OrderCardContentProps) => {
 				<div className="mb-1">
 					<Text size="2" weight="medium" color="secondary">
 						<CustomerNameWithNotes
-							name={order.customer_name}
+							name={getOrderDisplayName(order)}
 							hasNotes={Boolean(order.order_notes)}
 						/>
 					</Text>

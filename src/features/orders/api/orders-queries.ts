@@ -19,11 +19,20 @@ import type {
 	WorkflowStagesResponse,
 	WorkflowBoardResponse,
 } from '@/types/api';
+import type {
+	CreateCustomOrderRequest,
+	UpdateCustomOrderRequest,
+} from '../types/custom-order-types';
+import type { WorkOrderRequest } from '../types/work-order-types';
 
-export const useOrdersWithItems = () => {
+export const useOrdersWithItems = (batchId?: string) => {
 	return useQuery({
-		queryKey: orderKeys.withItems,
-		queryFn: () => api.get<GetOrdersResponse>('/orders', { status: 'pending' }),
+		queryKey: batchId ? [...orderKeys.withItems, batchId] : orderKeys.withItems,
+		queryFn: () => {
+			const params: Record<string, string> = { status: 'pending' };
+			if (batchId) params.includeBatchId = batchId;
+			return api.get<GetOrdersResponse>('/orders', params);
+		},
 	});
 };
 
@@ -224,6 +233,26 @@ export const useUpdateOrderNotes = (orderId: string) => {
 	});
 };
 
+type UpdateOrderDatesInput = {
+	order_date?: string;
+	due_date?: string | null;
+};
+
+export const useUpdateOrderDates = (orderId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (dates: UpdateOrderDatesInput) =>
+			api.put(`/orders/${orderId}/dates`, dates),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
 export const useSyncOrders = () => {
 	const queryClient = useQueryClient();
 
@@ -233,6 +262,73 @@ export const useSyncOrders = () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 			// Dashboard reads /analytics/operations under its own key, so refresh it after a sync
 			queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+		},
+	});
+};
+
+export const useCreateCustomOrder = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payload: CreateCustomOrderRequest) =>
+			api.post<OrderDetail>('/orders/custom', payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+		},
+	});
+};
+
+export const useUpdateCustomOrder = (orderId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payload: UpdateCustomOrderRequest) =>
+			api.patch<OrderDetail>(`/orders/custom/${orderId}`, payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
+export const useCreateWorkOrder = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payload: WorkOrderRequest) =>
+			api.post<OrderDetail>('/orders/work', payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+		},
+	});
+};
+
+export const useUpdateWorkOrder = (orderId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payload: WorkOrderRequest) =>
+			api.patch<OrderDetail>(`/orders/work/${orderId}`, payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
+export const useDeleteOrder = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (orderId: string) => api.del<{ id: string }>(`/orders/${orderId}`),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
 		},
 	});
 };

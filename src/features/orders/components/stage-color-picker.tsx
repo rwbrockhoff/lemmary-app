@@ -3,7 +3,7 @@ import { DropdownMenu, Flex, cn } from '@artifact-ui/core';
 import {
 	WORKFLOW_STAGE_COLORS,
 	type WorkflowStageColor,
-} from '../constants/stage-colors';
+} from '@/components/orders/stage-colors';
 import styles from './stage-color-picker.module.css';
 
 type StageColorPickerProps = {

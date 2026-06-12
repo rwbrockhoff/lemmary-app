@@ -10,11 +10,16 @@ export type OrdersResponse = {
 	lastSyncedAt: string | null;
 };
 
+export type OrderType = 'platform' | 'custom' | 'work';
+
 export type Order = {
 	id: string;
 	store_id: string;
-	platform_order_id: string;
+	order_type: OrderType;
+	platform_order_id: string | null;
 	order_number: string;
+	order_title: string | null;
+	order_description: string | null;
 	customer_name: string;
 	customer_email: string | null;
 	order_date: string;
@@ -29,7 +34,7 @@ export type Order = {
 	shipping_method: string | null;
 	order_notes: string | null;
 	order_url: string | null;
-	fulfilled_on: string | null;
+	fulfilled_at: string | null;
 	tracking_number: string | null;
 	tracking_url: string | null;
 	carrier_name: string | null;
@@ -169,7 +174,10 @@ export type BatchOrder = {
 	id: string;
 	order_id: string;
 	completed: boolean;
+	order_type: OrderType;
+	fulfillment_status: string;
 	order_number: string;
+	order_title: string | null;
 	customer_name: string;
 	order_notes: string | null;
 	order_date: string;
@@ -345,6 +353,7 @@ export type CustomerTier = 'new' | 'loyal' | 'super_fan';
 export type CustomerOrder = {
 	id: string;
 	order_number: string;
+	order_type: OrderType;
 	order_date: string;
 	fulfillment_status: string;
 	due_date: string | null;

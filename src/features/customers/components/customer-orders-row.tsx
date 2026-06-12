@@ -1,4 +1,5 @@
 import { Table, Text } from '@artifact-ui/core';
+import { OrderNumberLabel } from '@/components/orders/order-number-label';
 import { formatDate, formatCurrency } from '@/utils/format';
 import type { CustomerOrder } from '@/types/api';
 
@@ -10,7 +11,9 @@ type CustomerOrdersRowProps = {
 export const CustomerOrdersRow = ({ order, onClick }: CustomerOrdersRowProps) => {
 	return (
 		<Table.Row className="cursor-pointer" onClick={onClick}>
-			<Table.Cell>{order.order_number}</Table.Cell>
+			<Table.Cell>
+				<OrderNumberLabel orderNumber={order.order_number} orderType={order.order_type} />
+			</Table.Cell>
 			<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 			<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
 			<Table.Cell>{order.item_count}</Table.Cell>

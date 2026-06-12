@@ -4,7 +4,7 @@ import { PlusIcon } from '@/components/icons';
 import { useToast } from '@/providers/toast-context';
 import { useCreateWorkflowStage } from '@/features/orders/api/orders-queries';
 import { StageColorPicker } from '@/features/orders/components/stage-color-picker';
-import type { WorkflowStageColor } from '@/features/orders/constants/stage-colors';
+import type { WorkflowStageColor } from '@/components/orders/stage-colors';
 
 type AddStageProps = {
 	defaultColor: WorkflowStageColor;

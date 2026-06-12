@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { Table, Badge, Text, IconButton, cn } from '@artifact-ui/core';
 import { getProgressColor } from '@/features/batches/utils/batch-utils';
 import { StatusBadge } from './status-badge';
+import { OrderNumberLabel } from '@/components/orders/order-number-label';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import { formatDate } from '@/utils/format';
@@ -47,7 +48,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-20"
+						className="w-28"
 					/>
 					<SortableHeader
 						label="Customer"
@@ -63,7 +64,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-32"
+						className="w-40"
 					/>
 					<SortableHeader
 						label="Progress"
@@ -73,7 +74,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 						onSort={toggleSort}
 						className="w-28"
 					/>
-					<Table.HeaderCell>
+					<Table.HeaderCell className="w-44">
 						<Text size="2" weight="medium" color="secondary">
 							Status
 						</Text>
@@ -95,7 +96,12 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 							<Table.Row
 								className="cursor-pointer"
 								onClick={() => navigate(`/orders/${order.id}`)}>
-								<Table.Cell>{order.order_number}</Table.Cell>
+								<Table.Cell>
+									<OrderNumberLabel
+										orderNumber={order.order_number}
+										orderType={order.order_type}
+									/>
+								</Table.Cell>
 								<Table.Cell>
 									<CustomerNameWithNotes
 										name={order.customer_name}

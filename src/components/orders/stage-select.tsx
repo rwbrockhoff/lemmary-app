@@ -1,6 +1,6 @@
 import { Select } from '@artifact-ui/core';
 import type { WorkflowStage } from '@/types/api';
-import { StageBadge } from './stage-badge';
+import { getStageColorStyle } from './stage-colors';
 
 type StageSelectProps = {
 	stages: WorkflowStage[];
@@ -11,13 +11,17 @@ type StageSelectProps = {
 export const StageSelect = ({ stages, value, onChange }: StageSelectProps) => {
 	const currentStage = stages.find((s) => s.id === value);
 
+	// The minimal trigger has no border, so add width/style for the stage color to show
+	const triggerStyle = {
+		...getStageColorStyle(currentStage?.color ?? null),
+		borderWidth: 1,
+		borderStyle: 'solid',
+	};
+
 	return (
 		<Select.Root value={value ?? undefined} onValueChange={onChange} size="1">
-			<Select.Trigger aria-label="Workflow stage" variant="minimal">
-				<StageBadge
-					name={currentStage?.name ?? null}
-					color={currentStage?.color ?? null}
-				/>
+			<Select.Trigger aria-label="Workflow stage" variant="minimal" style={triggerStyle}>
+				{currentStage?.name ?? 'No status'}
 			</Select.Trigger>
 			<Select.Content>
 				<Select.Group>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Text, Button, Flex, Heading, Stack } from '@artifact-ui/core';
+import { Table, Text, Button, Flex, Heading, Stack, cn } from '@artifact-ui/core';
 import { PlusIcon } from '@/components/icons/icons';
 import { useCreateBomItem } from '../../api/bom-queries';
 import { BomRow } from './bom-row';
@@ -39,6 +39,7 @@ export const BomCategorySection = ({
 
 	const dynamicCols = [tracksColor, tracksSize, tracksLength].filter(Boolean).length + 1;
 	const colWidth = `${40 / dynamicCols}%`;
+	const isEmptyTable = items.length === 0;
 
 	const handleDuplicate = (item: BomItem) => {
 		createMutation.mutate({
@@ -85,53 +86,48 @@ export const BomCategorySection = ({
 				)}
 			</Flex>
 
-			{items.length > 0 && (
-				<Table.Root variant="surface" size="1" className={styles.table}>
-					<colgroup>
-						<col style={{ width: '25%' }} />
-						<col style={{ width: '25%' }} />
-						{tracksColor && <col style={{ width: colWidth }} />}
-						{tracksSize && <col style={{ width: colWidth }} />}
-						{tracksLength && <col style={{ width: colWidth }} />}
-						<col style={{ width: colWidth }} />
-						<col style={{ width: '5%' }} />
-						<col style={{ width: '5%' }} />
-					</colgroup>
-					<Table.Header>
-						<Table.Row>
-							<TableHeaderLabel>Type</TableHeaderLabel>
-							<TableHeaderLabel>Piece</TableHeaderLabel>
-							{tracksColor && <TableHeaderLabel>Color</TableHeaderLabel>}
-							{tracksSize && <TableHeaderLabel>Size</TableHeaderLabel>}
-							{tracksLength && <TableHeaderLabel>Length</TableHeaderLabel>}
-							<TableHeaderLabel>Qty</TableHeaderLabel>
-							<Table.HeaderCell className="w-10" />
-							<Table.HeaderCell className={styles.actionsColumn} />
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{items.map((item) => (
-							<BomRow
-								key={item.id}
-								item={item}
-								tracksColor={tracksColor}
-								tracksSize={tracksSize}
-								tracksLength={tracksLength}
-								measurement={measurement}
-								variantId={variantId}
-								isNew={item.id === newItemId}
-								onDuplicate={handleDuplicate}
-							/>
-						))}
-					</Table.Body>
-				</Table.Root>
-			)}
-
-			{items.length === 0 && (
-				<Text size="2" color="secondary">
-					No {title.toLowerCase()} items yet.
-				</Text>
-			)}
+			<Table.Root
+				variant="surface"
+				size="1"
+				className={cn(styles.table, isEmptyTable && styles.emptyTable)}>
+				<colgroup>
+					<col style={{ width: '25%' }} />
+					<col style={{ width: '25%' }} />
+					{tracksColor && <col style={{ width: colWidth }} />}
+					{tracksSize && <col style={{ width: colWidth }} />}
+					{tracksLength && <col style={{ width: colWidth }} />}
+					<col style={{ width: colWidth }} />
+					<col style={{ width: '5%' }} />
+					<col style={{ width: '5%' }} />
+				</colgroup>
+				<Table.Header>
+					<Table.Row>
+						<TableHeaderLabel>Type</TableHeaderLabel>
+						<TableHeaderLabel>Piece</TableHeaderLabel>
+						{tracksColor && <TableHeaderLabel>Color</TableHeaderLabel>}
+						{tracksSize && <TableHeaderLabel>Size</TableHeaderLabel>}
+						{tracksLength && <TableHeaderLabel>Length</TableHeaderLabel>}
+						<TableHeaderLabel>Qty</TableHeaderLabel>
+						<Table.HeaderCell className="w-10" />
+						<Table.HeaderCell className={styles.actionsColumn} />
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{items.map((item) => (
+						<BomRow
+							key={item.id}
+							item={item}
+							tracksColor={tracksColor}
+							tracksSize={tracksSize}
+							tracksLength={tracksLength}
+							measurement={measurement}
+							variantId={variantId}
+							isNew={item.id === newItemId}
+							onDuplicate={handleDuplicate}
+						/>
+					))}
+				</Table.Body>
+			</Table.Root>
 
 			<div>
 				<Button

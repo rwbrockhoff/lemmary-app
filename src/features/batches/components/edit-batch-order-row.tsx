@@ -1,8 +1,11 @@
 import { Fragment } from 'react';
-import { Table, Checkbox, IconButton, cn } from '@artifact-ui/core';
+import { Table, Checkbox, IconButton, Flex, cn } from '@artifact-ui/core';
 import { ChevronDownIcon } from '@/components/icons/icons';
+import { LockIcon } from '@/components/icons';
 import { OrderItemsExpanded } from '@/features/orders/components/order-items-expanded/order-items-expanded';
+import { OrderNumberLabel } from '@/components/orders/order-number-label';
 import { formatDate, formatCurrency } from '@/utils/format';
+import { getOrderDisplayName } from '@/utils/orders';
 import shared from '@/styles/shared.module.css';
 import type { OrderWithItems } from '@/types/api';
 
@@ -10,6 +13,7 @@ type EditBatchOrderRowProps = {
 	order: OrderWithItems;
 	isSelected: boolean;
 	isExpanded: boolean;
+	locked?: boolean;
 	onToggle: (orderId: string) => void;
 	onExpand: (orderId: string) => void;
 };
@@ -18,16 +22,32 @@ export const EditBatchOrderRow = ({
 	order,
 	isSelected,
 	isExpanded,
+	locked = false,
 	onToggle,
 	onExpand,
 }: EditBatchOrderRowProps) => (
 	<Fragment>
-		<Table.Row className="cursor-pointer" onClick={() => onToggle(order.id)}>
+		<Table.Row
+			className={locked ? undefined : 'cursor-pointer'}
+			style={locked ? { opacity: 0.6 } : undefined}
+			onClick={locked ? undefined : () => onToggle(order.id)}>
 			<Table.Cell>
-				<Checkbox checked={isSelected} onCheckedChange={() => onToggle(order.id)} />
+				<Checkbox
+					checked={isSelected}
+					disabled={locked}
+					onCheckedChange={locked ? undefined : () => onToggle(order.id)}
+				/>
 			</Table.Cell>
-			<Table.Cell>{order.order_number}</Table.Cell>
-			<Table.Cell>{order.customer_name}</Table.Cell>
+			<Table.Cell>
+				<Flex align="center" gap="1">
+					<OrderNumberLabel
+						orderNumber={order.order_number}
+						orderType={order.order_type}
+					/>
+					{locked && <LockIcon size={12} />}
+				</Flex>
+			</Table.Cell>
+			<Table.Cell className="truncate max-w-0">{getOrderDisplayName(order)}</Table.Cell>
 			<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 			<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
 			<Table.Cell className="text-center">{order.item_count}</Table.Cell>

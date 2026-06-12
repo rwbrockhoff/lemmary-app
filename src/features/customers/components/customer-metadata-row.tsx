@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Text, Flex } from '@artifact-ui/core';
 import { CustomerTierBadge } from './customer-tier-badge';
@@ -9,6 +10,7 @@ type CustomerMetadataRowProps = {
 	email: string | null;
 	tier: CustomerTier | null;
 	fromOrderId?: string;
+	trailing?: ReactNode;
 };
 
 export const CustomerMetadataRow = ({
@@ -16,6 +18,7 @@ export const CustomerMetadataRow = ({
 	email,
 	tier,
 	fromOrderId,
+	trailing,
 }: CustomerMetadataRowProps) => {
 	const href = email
 		? `/customers/${encodeURIComponent(email)}${
@@ -35,7 +38,12 @@ export const CustomerMetadataRow = ({
 			) : (
 				<Text size="2">{name}</Text>
 			)}
-			{tier && <CustomerTierBadge tier={tier} />}
+			{(tier || trailing) && (
+				<Flex align="center" gap="2">
+					{tier && <CustomerTierBadge tier={tier} />}
+					{trailing}
+				</Flex>
+			)}
 		</Flex>
 	);
 };

@@ -1,5 +1,6 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { api } from '@/api/client';
+import type { OrderType } from '@/types/api';
 
 export type DashboardRange = '30' | '90' | '365';
 export type DashboardBucket = 'day' | 'week' | 'month';
@@ -26,7 +27,9 @@ export type DashboardData = {
 	dueSoon: Array<{
 		id: string;
 		orderNumber: string;
-		customerName: string;
+		orderType: OrderType;
+		orderTitle: string | null;
+		customerName: string | null;
 		orderDate: string;
 		dueDate: string | null;
 		daysUntilDue: number | null;

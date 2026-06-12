@@ -2,10 +2,8 @@
 	display: inline-flex;
 	align-items: center;
 	padding: 0.125rem 0.5rem;
-	border: 1px solid var(--stage-badge-border);
+	border: 1px solid;
 	border-radius: var(--radius-default);
-	background-color: var(--stage-badge-bg);
-	color: var(--stage-badge-fg);
 	font-size: var(--font-size-2);
 	font-weight: var(--font-weight-medium);
 	line-height: 1;

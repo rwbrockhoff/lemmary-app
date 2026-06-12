@@ -24,10 +24,10 @@ export const BatchOrdersTableHeader = ({
 					activeSortKey={sortKey}
 					sortDirection={sortDirection}
 					onSort={onSort}
-					className="w-20"
+					className="w-32"
 				/>
 				<SortableHeader<OrderSortKey>
-					label="Customer"
+					label="Name"
 					sortKey="customer_name"
 					activeSortKey={sortKey}
 					sortDirection={sortDirection}

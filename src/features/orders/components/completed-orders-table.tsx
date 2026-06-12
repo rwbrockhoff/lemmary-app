@@ -8,6 +8,7 @@ import { useCompletedOrders } from '../api/orders-queries';
 import { formatDate, formatCurrency } from '@/utils/format';
 import { ExternalLinkIcon } from '@/components/icons/icons';
 import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
+import { OrderNumberLabel } from '@/components/orders/order-number-label';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 
@@ -19,7 +20,7 @@ export const CompletedOrdersTable = () => {
 	const orders = useMemo(() => data?.pages.flatMap((page) => page.orders) ?? [], [data]);
 
 	const { sortedData, sortKey, sortDirection, toggleSort } = useSortableTable(orders, {
-		defaultKey: 'fulfilled_on',
+		defaultKey: 'fulfilled_at',
 		defaultDirection: 'desc',
 		storageKey: 'orders-completed',
 	});
@@ -58,7 +59,7 @@ export const CompletedOrdersTable = () => {
 						/>
 						<SortableHeader
 							label="Fulfilled"
-							sortKey="fulfilled_on"
+							sortKey="fulfilled_at"
 							activeSortKey={sortKey}
 							sortDirection={sortDirection}
 							onSort={toggleSort}
@@ -93,9 +94,10 @@ export const CompletedOrdersTable = () => {
 							className="cursor-pointer"
 							onClick={() => navigate(`/orders/${order.id}`)}>
 							<Table.Cell>
-								<Text size="2" weight="medium">
-									{order.order_number}
-								</Text>
+								<OrderNumberLabel
+									orderNumber={order.order_number}
+									orderType={order.order_type}
+								/>
 							</Table.Cell>
 							<Table.Cell>
 								<CustomerNameWithNotes
@@ -105,7 +107,7 @@ export const CompletedOrdersTable = () => {
 							</Table.Cell>
 							<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
 							<Table.Cell>
-								{order.fulfilled_on ? formatDate(order.fulfilled_on) : '—'}
+								{order.fulfilled_at ? formatDate(order.fulfilled_at) : '—'}
 							</Table.Cell>
 							<Table.Cell>{order.item_count}</Table.Cell>
 							<Table.Cell className="text-end">

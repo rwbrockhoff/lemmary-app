@@ -3,6 +3,7 @@ import { Card, Heading, Text, Table, Badge, Button, Flex, cn } from '@artifact-u
 import { ChevronRightIcon, ClockIcon } from '@/components/icons';
 import { StatusBadge } from '@/features/orders/components/status-badge';
 import { getProgressColor } from '@/features/batches/utils/batch-utils';
+import { getOrderDisplayName } from '@/utils/orders';
 import type { DashboardData } from '../api/dashboard-queries';
 import styles from './due-soon-list.module.css';
 
@@ -16,6 +17,7 @@ const formatDate = (iso: string | null) => {
 		month: 'short',
 		day: 'numeric',
 		year: 'numeric',
+		timeZone: 'UTC',
 	});
 };
 
@@ -62,7 +64,7 @@ export const DueSoonList = ({ orders }: DueSoonListProps) => {
 								</Table.HeaderCell>
 								<Table.HeaderCell>
 									<Text size="2" weight="medium" color="secondary">
-										Customer
+										Name
 									</Text>
 								</Table.HeaderCell>
 								<Table.HeaderCell>
@@ -100,7 +102,13 @@ export const DueSoonList = ({ orders }: DueSoonListProps) => {
 										className="cursor-pointer"
 										onClick={() => navigate(`/orders/${order.id}`)}>
 										<Table.Cell>#{order.orderNumber}</Table.Cell>
-										<Table.Cell>{order.customerName}</Table.Cell>
+										<Table.Cell>
+											{getOrderDisplayName({
+												order_type: order.orderType,
+												order_title: order.orderTitle,
+												customer_name: order.customerName,
+											})}
+										</Table.Cell>
 										<Table.Cell>{formatDate(order.dueDate)}</Table.Cell>
 										<Table.Cell>
 											<Badge

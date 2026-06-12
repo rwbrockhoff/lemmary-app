@@ -30,7 +30,7 @@ const WorkflowPage = () => {
 		toggleCompletedCollapsed,
 	} = useWorkflowFilters(activeIds);
 
-	const allOrders = useMemo(() => data?.stages.flatMap((s) => s.orders) ?? [], [data]);
+	const allOrders = useMemo(() => data?.stages?.flatMap((s) => s.orders) ?? [], [data]);
 
 	const filteredOrders = useMemo(() => {
 		if (showAll) return allOrders;

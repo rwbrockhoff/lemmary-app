@@ -1,5 +1,21 @@
-import { Heading, Text, Button, Tabs, Stack, Flex } from '@artifact-ui/core';
-import { RefreshIcon, OrdersIcon, InboxIcon } from '@/components/icons';
+import {
+	Heading,
+	Text,
+	Button,
+	Tabs,
+	Stack,
+	Flex,
+	DropdownMenu,
+} from '@artifact-ui/core';
+import { useNavigate } from 'react-router';
+import {
+	RefreshIcon,
+	OrdersIcon,
+	InboxIcon,
+	PlusIcon,
+	CustomersIcon,
+	WarehouseIcon,
+} from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
@@ -8,18 +24,23 @@ import { useOrdersWithItems, useSyncOrders } from './api/orders-queries';
 import { OrdersTable } from './components/orders-table';
 import { OrdersOverviewTable } from './components/orders-overview-table';
 import { CompletedOrdersTable } from './components/completed-orders-table';
+import { WorkOrdersTable } from './components/work-orders-table';
 import { OrdersSummary } from './components/orders-summary';
 import { formatRelativeTime } from '@/utils/format';
 import shared from '@/styles/shared.module.css';
 
 const OrdersPage = () => {
+	const navigate = useNavigate();
 	const { data, isLoading, error } = useOrdersWithItems();
 	const syncMutation = useSyncOrders();
 
 	const orders = data?.orders;
 	const lastSyncedAt = data?.lastSyncedAt;
 
-	const pendingOrders = orders?.filter((o) => o.fulfillment_status === 'pending');
+	// Work orders are internal production
+	// filtered out of the customer tabs and summary
+	const customerOrders = orders?.filter((o) => o.order_type !== 'work') ?? [];
+	const workOrders = orders?.filter((o) => o.order_type === 'work') ?? [];
 
 	return (
 		<div className={shared.pageContainer}>
@@ -34,13 +55,33 @@ const OrdersPage = () => {
 						</Text>
 					)}
 				</Stack>
-				<Button
-					onClick={() => syncMutation.mutate()}
-					disabled={syncMutation.isPending}
-					variant="default"
-					iconLeft={<RefreshIcon size={16} />}>
-					{syncMutation.isPending ? 'Syncing...' : 'Sync Orders'}
-				</Button>
+				<Flex gap="2">
+					<DropdownMenu.DropdownMenu>
+						<DropdownMenu.DropdownMenuTrigger asChild>
+							<Button variant="secondary" iconLeft={<PlusIcon size={16} />}>
+								New
+							</Button>
+						</DropdownMenu.DropdownMenuTrigger>
+						<DropdownMenu.DropdownMenuContent align="end" size="1">
+							<DropdownMenu.DropdownMenuItem
+								onClick={() => navigate('/orders/custom/new')}>
+								<CustomersIcon size={16} />
+								Custom order
+							</DropdownMenu.DropdownMenuItem>
+							<DropdownMenu.DropdownMenuItem onClick={() => navigate('/orders/work/new')}>
+								<WarehouseIcon size={16} />
+								Work order
+							</DropdownMenu.DropdownMenuItem>
+						</DropdownMenu.DropdownMenuContent>
+					</DropdownMenu.DropdownMenu>
+					<Button
+						onClick={() => syncMutation.mutate()}
+						disabled={syncMutation.isPending}
+						variant="default"
+						iconLeft={<RefreshIcon size={16} />}>
+						{syncMutation.isPending ? 'Syncing...' : 'Sync Orders'}
+					</Button>
+				</Flex>
 			</Flex>
 
 			<LoadingWrapper
@@ -56,24 +97,27 @@ const OrdersPage = () => {
 						description="Click 'Sync Orders' to pull orders from your store."
 					/>
 				}>
-				{pendingOrders && pendingOrders.length > 0 && (
-					<OrdersSummary orders={pendingOrders} />
-				)}
+				{customerOrders.length > 0 && <OrdersSummary orders={customerOrders} />}
 
 				{orders && orders.length > 0 && (
 					<Tabs.Root defaultValue="overview">
 						<Tabs.List>
 							<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
 							<Tabs.Trigger value="orders">Order Details</Tabs.Trigger>
+							<Tabs.Trigger value="work">Work Orders ({workOrders.length})</Tabs.Trigger>
 							<Tabs.Trigger value="completed">Completed</Tabs.Trigger>
 						</Tabs.List>
 
 						<Tabs.Content value="overview">
-							<OrdersOverviewTable orders={pendingOrders ?? []} />
+							<OrdersOverviewTable orders={customerOrders} />
 						</Tabs.Content>
 
 						<Tabs.Content value="orders">
-							<OrdersTable orders={orders ?? []} />
+							<OrdersTable orders={customerOrders} />
+						</Tabs.Content>
+
+						<Tabs.Content value="work">
+							<WorkOrdersTable orders={workOrders} />
 						</Tabs.Content>
 
 						<Tabs.Content value="completed">
