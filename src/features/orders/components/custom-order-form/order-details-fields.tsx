@@ -2,6 +2,7 @@ import { useFormContext } from 'react-hook-form';
 import { Card, TextField, TextArea, Stack, Flex } from '@artifact-ui/core';
 import type { CustomOrderFormData } from '../../schemas/custom-order-schemas';
 import { LabeledField } from '../order-form/labeled-field';
+import { DateField } from '../order-form/date-field';
 import styles from '../order-form/order-form.module.css';
 
 export const OrderDetailsFields = () => {
@@ -39,12 +40,8 @@ export const OrderDetailsFields = () => {
 						/>
 					</LabeledField>
 					<Flex gap="3">
-						<LabeledField label="Order date" className="flex-1">
-							<TextField.Standalone type="date" {...register('orderDate')} />
-						</LabeledField>
-						<LabeledField label="Due date" className="flex-1">
-							<TextField.Standalone type="date" {...register('dueDate')} />
-						</LabeledField>
+						<DateField name="orderDate" label="Order date" />
+						<DateField name="dueDate" label="Due date" />
 					</Flex>
 				</Stack>
 

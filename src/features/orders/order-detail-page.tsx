@@ -12,7 +12,6 @@ import { VariantBadges } from '@/components/variant-badges';
 import shared from '@/styles/shared.module.css';
 import { OrderMetadataCard } from './components/order-metadata-card/order-metadata-card';
 import { StageSelect } from '@/components/orders/stage-select';
-import { OrderTypeBadge } from './components/order-type-badge';
 import { OrderOptionsMenu } from './components/order-options-menu';
 import { DeleteOrderModal } from './components/delete-order-modal';
 import {
@@ -68,7 +67,6 @@ const OrderDetailPage = () => {
 				actions={
 					order && (
 						<Flex align="center" gap="2">
-							<OrderTypeBadge orderType={order.order_type} />
 							<StageSelect
 								stages={orderStages}
 								value={order.workflow_stage_id}

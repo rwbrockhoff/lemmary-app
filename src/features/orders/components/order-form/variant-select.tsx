@@ -1,4 +1,4 @@
-import { Select } from '@artifact-ui/core';
+import { Combobox, type ComboboxOption } from '@artifact-ui/core';
 import type { Product } from '@/types/api';
 import { variantLabel } from './variant-utils';
 
@@ -15,28 +15,23 @@ export const VariantSelect = ({
 	onChange,
 	className,
 }: VariantSelectProps) => {
+	const options: ComboboxOption[] = products.flatMap((product) =>
+		product.variants.map((variant) => ({
+			label: variantLabel(product.name, variant.name),
+			value: variant.id,
+		})),
+	);
+
 	return (
-		<Select.Root value={value || undefined} onValueChange={onChange}>
-			<Select.Trigger
-				aria-label="Product"
-				variant="minimal"
-				placeholder="Choose item from store..."
-				className={className}
-			/>
-			<Select.Content>
-				{products.map((product) => (
-					<Select.Group key={product.id}>
-						{product.variants.map((variant) => (
-							<Select.Item
-								key={variant.id}
-								value={variant.id}
-								textValue={variantLabel(product.name, variant.name)}>
-								{variantLabel(product.name, variant.name)}
-							</Select.Item>
-						))}
-					</Select.Group>
-				))}
-			</Select.Content>
-		</Select.Root>
+		<Combobox
+			options={options}
+			value={value}
+			onValueChange={(selected) => onChange(selected ?? '')}
+			placeholder="Choose item from store..."
+			searchPlaceholder="Search products..."
+			emptyMessage="No matching products"
+			width="100%"
+			className={className}
+		/>
 	);
 };

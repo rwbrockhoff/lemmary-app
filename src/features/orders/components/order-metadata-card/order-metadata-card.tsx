@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Text, Card, TextArea, Button, Stack, Flex } from '@artifact-ui/core';
 import { useUpdateOrderNotes } from '../../api/orders-queries';
 import { CustomerMetadataRow } from '@/features/customers/components/customer-metadata-row';
+import { OrderTypeBadge } from '../order-type-badge';
 import { useToast } from '@/providers/toast-context';
 import { formatDate, formatCurrency } from '@/utils/format';
 import type { OrderDetail } from '@/types/api';
@@ -36,9 +37,16 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 							email={order.customer_email}
 							tier={order.customer_tier}
 							fromOrderId={order.id}
+							trailing={<OrderTypeBadge orderType={order.order_type} />}
 						/>
 					)}
-					{isWork && <MetadataRow label="Title" value={order.order_title ?? '—'} />}
+					{isWork && (
+						<MetadataRow
+							label="Title"
+							value={order.order_title ?? '—'}
+							trailing={<OrderTypeBadge orderType={order.order_type} />}
+						/>
+					)}
 					{isWork && order.order_description && (
 						<MetadataRow label="Description" value={order.order_description} />
 					)}
@@ -96,13 +104,15 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 type MetadataRowProps = {
 	label: string;
 	value: string;
+	trailing?: ReactNode;
 };
 
-const MetadataRow = ({ label, value }: MetadataRowProps) => (
-	<Flex gap="4">
+const MetadataRow = ({ label, value, trailing }: MetadataRowProps) => (
+	<Flex gap="4" align="center">
 		<Text size="2" color="secondary" className={styles.label}>
 			{label}
 		</Text>
 		<Text size="2">{value}</Text>
+		{trailing}
 	</Flex>
 );

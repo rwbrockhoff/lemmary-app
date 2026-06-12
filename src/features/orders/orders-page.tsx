@@ -8,7 +8,14 @@ import {
 	DropdownMenu,
 } from '@artifact-ui/core';
 import { useNavigate } from 'react-router';
-import { RefreshIcon, OrdersIcon, InboxIcon, PlusIcon } from '@/components/icons';
+import {
+	RefreshIcon,
+	OrdersIcon,
+	InboxIcon,
+	PlusIcon,
+	CustomersIcon,
+	WarehouseIcon,
+} from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
@@ -58,9 +65,11 @@ const OrdersPage = () => {
 						<DropdownMenu.DropdownMenuContent align="end" size="1">
 							<DropdownMenu.DropdownMenuItem
 								onClick={() => navigate('/orders/custom/new')}>
+								<CustomersIcon size={16} />
 								Custom order
 							</DropdownMenu.DropdownMenuItem>
 							<DropdownMenu.DropdownMenuItem onClick={() => navigate('/orders/work/new')}>
+								<WarehouseIcon size={16} />
 								Work order
 							</DropdownMenu.DropdownMenuItem>
 						</DropdownMenu.DropdownMenuContent>
@@ -95,7 +104,7 @@ const OrdersPage = () => {
 						<Tabs.List>
 							<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
 							<Tabs.Trigger value="orders">Order Details</Tabs.Trigger>
-							<Tabs.Trigger value="work">Work Orders</Tabs.Trigger>
+							<Tabs.Trigger value="work">Work Orders ({workOrders.length})</Tabs.Trigger>
 							<Tabs.Trigger value="completed">Completed</Tabs.Trigger>
 						</Tabs.List>
 

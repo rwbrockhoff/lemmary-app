@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { Table, Badge } from '@artifact-ui/core';
-import { WrenchIcon } from '@/components/icons';
+import { WarehouseIcon } from '@/components/icons';
 import { EmptyState } from '@/components/empty-state/empty-state';
 import { getProgressColor } from '@/features/batches/utils/batch-utils';
 import { StatusBadge } from './status-badge';
@@ -18,7 +18,7 @@ export const WorkOrdersTable = ({ orders }: WorkOrdersTableProps) => {
 	if (orders.length === 0) {
 		return (
 			<EmptyState
-				icon={<WrenchIcon size={20} />}
+				icon={<WarehouseIcon size={20} />}
 				title="No work orders yet"
 				description="Create a work order to build up your store's stock."
 				action={{

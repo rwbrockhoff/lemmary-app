@@ -23,5 +23,5 @@ export const findVariantBySku = (products: Product[], sku: string | null) => {
 
 export const variantLabel = (productName: string, variantName: string) =>
 	variantName && variantName.toLowerCase() !== 'default'
-		? `${productName} (${variantName})`
+		? `${productName} | ${variantName}`
 		: productName;
