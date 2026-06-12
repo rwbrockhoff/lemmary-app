@@ -233,6 +233,26 @@ export const useUpdateOrderNotes = (orderId: string) => {
 	});
 };
 
+type UpdateOrderDatesInput = {
+	order_date?: string;
+	due_date?: string | null;
+};
+
+export const useUpdateOrderDates = (orderId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (dates: UpdateOrderDatesInput) =>
+			api.put(`/orders/${orderId}/dates`, dates),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
+			queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			queryClient.invalidateQueries({ queryKey: orderKeys.workflowBoard });
+			queryClient.invalidateQueries({ queryKey: batchKeys.all });
+		},
+	});
+};
+
 export const useSyncOrders = () => {
 	const queryClient = useQueryClient();
 
