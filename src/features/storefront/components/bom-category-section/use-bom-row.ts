@@ -37,7 +37,10 @@ export const useBomRow = ({ item, measurement, variantId, isNew }: UseBomRowPara
 		if (isNew) return { ...data, materialTypeName: '' };
 		return data;
 	});
+
 	const savedRef = useRef<RowData>(itemToRowData(item));
+	const isFreshRef = useRef(Boolean(isNew));
+
 	const updateMutation = useUpdateBomItem(variantId);
 	const deleteMutation = useDeleteBomItem(variantId);
 
@@ -120,9 +123,24 @@ export const useBomRow = ({ item, measurement, variantId, isNew }: UseBomRowPara
 			);
 			if (isPortalElement) return;
 
+			// Discard a row the user just added but left completely empty
+			const isEmpty =
+				form.piece.trim() === '' &&
+				!form.materialTypeId &&
+				!form.materialTypeName &&
+				!form.color &&
+				!form.size &&
+				!form.length;
+
+			if (isFreshRef.current && isEmpty) {
+				deleteMutation.mutate(item.id);
+				return;
+			}
+
+			isFreshRef.current = false;
 			saveChanges();
 		},
-		[saveChanges],
+		[saveChanges, form, item.id, deleteMutation],
 	);
 
 	const deleteItem = () => deleteMutation.mutate(item.id);

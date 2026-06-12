@@ -1,5 +1,10 @@
 .table {
 	border-top: 3px solid var(--color-primary);
+	transition: opacity 0.15s ease;
+}
+
+.emptyTable {
+	opacity: 0.55;
 }
 
 .actionsColumn {
@@ -21,4 +26,3 @@
 .menuItem:focus-visible {
 	outline: none;
 }
-

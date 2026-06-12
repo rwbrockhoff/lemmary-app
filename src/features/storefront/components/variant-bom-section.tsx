@@ -4,6 +4,7 @@ import {
 	RulerIcon,
 	WrenchIcon,
 	CopyPlusIcon,
+	MaterialsIcon,
 } from '@/components/icons/icons';
 import styles from './variant-bom-section.module.css';
 import { PageSpinner } from '@/components/page-spinner';
@@ -47,7 +48,9 @@ export const VariantBomSection = ({
 			errorState={<ErrorState description="Failed to load BOM data." />}>
 			<Stack gap="8">
 				<Flex align="center" justify="between">
-					<Heading size="4">Bill of Materials</Heading>
+					<Heading size="4" iconLeft={<MaterialsIcon size={18} />}>
+						Bill of Materials
+					</Heading>
 					{copyableVariants.length > 0 && platformSku && (
 						<DropdownMenu.DropdownMenu>
 							<DropdownMenu.DropdownMenuTrigger asChild>
