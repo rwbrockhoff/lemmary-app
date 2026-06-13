@@ -1,7 +1,8 @@
 import { Heading, Stack, Tabs } from '@artifact-ui/core';
-import { SettingsIcon, StorefrontIcon, WorkflowIcon } from '@/components/icons';
-import { StoreSettingsTab } from './components/store-settings-tab';
-import { WorkflowSettingsTab } from './components/workflow-settings-tab';
+import { SettingsIcon, UserIcon, StorefrontIcon, WorkflowIcon } from '@/components/icons';
+import { AccountSettingsTab } from './components/account/account-settings-tab';
+import { StoreSettingsTab } from './components/store/store-settings-tab';
+import { WorkflowSettingsTab } from './components/workflow/workflow-settings-tab';
 
 const SettingsPage = () => {
 	return (
@@ -10,8 +11,12 @@ const SettingsPage = () => {
 				<Heading size="6" iconLeft={<SettingsIcon />}>
 					Settings
 				</Heading>
-				<Tabs.Root defaultValue="store">
+				<Tabs.Root defaultValue="account">
 					<Tabs.List>
+						<Tabs.Trigger value="account" className="gap-2">
+							<UserIcon size={16} />
+							Account
+						</Tabs.Trigger>
 						<Tabs.Trigger value="store" className="gap-2">
 							<StorefrontIcon size={16} />
 							Store
@@ -21,6 +26,9 @@ const SettingsPage = () => {
 							Workflow
 						</Tabs.Trigger>
 					</Tabs.List>
+					<Tabs.Content value="account">
+						<AccountSettingsTab />
+					</Tabs.Content>
 					<Tabs.Content value="store">
 						<StoreSettingsTab />
 					</Tabs.Content>
