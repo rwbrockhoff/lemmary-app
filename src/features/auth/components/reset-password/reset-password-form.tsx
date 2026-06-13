@@ -9,6 +9,8 @@ import {
 	resetPasswordSchema,
 	type ResetPasswordFormData,
 } from '../../schemas/auth-schemas';
+import { extractErrorMessage } from '@/utils/errors';
+import { toFieldError } from '@/utils/forms';
 
 export const ResetPasswordForm = () => {
 	const [accessToken] = useState<string | null>(() => {
@@ -43,8 +45,7 @@ export const ResetPasswordForm = () => {
 		);
 	}
 
-	const errorMessage =
-		mutation.error instanceof Error ? mutation.error.message : 'Something went wrong';
+	const errorMessage = extractErrorMessage(mutation.error);
 
 	const onSubmit = (data: ResetPasswordFormData) => {
 		mutation.mutate({ accessToken, newPassword: data.newPassword });
@@ -59,21 +60,14 @@ export const ResetPasswordForm = () => {
 					placeholder="New password (min 8 characters)"
 					autoFocus
 					{...register('newPassword')}
-					error={
-						errors.newPassword
-							? { error: true, message: errors.newPassword.message ?? '' }
-							: undefined
-					}
+					error={toFieldError(errors.newPassword)}
 				/>
 				{mutation.isError && (
 					<Text size="2" color="danger">
 						{errorMessage}
 					</Text>
 				)}
-				<Button
-					type="submit"
-					loading={mutation.isPending}
-					disabled={mutation.isPending}>
+				<Button type="submit" loading={mutation.isPending} disabled={mutation.isPending}>
 					Update password
 				</Button>
 			</Stack>

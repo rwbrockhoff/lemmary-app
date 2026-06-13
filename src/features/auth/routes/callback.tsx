@@ -2,11 +2,12 @@ import { Link } from 'react-router';
 import { Heading, Text, Stack } from '@artifact-ui/core';
 import { AuthLayout } from '@/features/auth/components/auth-layout';
 import { useCallbackFlow } from '@/features/auth/components/callback/use-callback-flow';
+import { extractErrorMessage } from '@/utils/errors';
 
 const CallbackPage = () => {
 	const { isError, error } = useCallbackFlow();
 
-	const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
+	const errorMessage = extractErrorMessage(error);
 
 	return (
 		<AuthLayout>

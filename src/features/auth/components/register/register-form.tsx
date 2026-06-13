@@ -6,6 +6,8 @@ import { useRegisterFlow } from './use-register-flow';
 import { RegisterSuccess } from './register-success';
 import { GoogleButton, OrDivider } from '../google-auth/google-button';
 import { registerSchema, type RegisterFormData } from '../../schemas/auth-schemas';
+import { extractErrorMessage } from '@/utils/errors';
+import { toFieldError } from '@/utils/forms';
 
 export const RegisterForm = () => {
 	const registerMutation = useRegisterFlow();
@@ -21,10 +23,7 @@ export const RegisterForm = () => {
 		return <RegisterSuccess email={registerMutation.data.email} />;
 	}
 
-	const errorMessage =
-		registerMutation.error instanceof Error
-			? registerMutation.error.message
-			: 'Registration failed';
+	const errorMessage = extractErrorMessage(registerMutation.error, 'Registration failed');
 
 	const onSubmit = (data: RegisterFormData) => {
 		registerMutation.mutate(data);
@@ -41,41 +40,25 @@ export const RegisterForm = () => {
 					placeholder="First name"
 					autoFocus
 					{...register('firstName')}
-					error={
-						errors.firstName
-							? { error: true, message: errors.firstName.message ?? '' }
-							: undefined
-					}
+					error={toFieldError(errors.firstName)}
 				/>
 				<TextField.Standalone
 					type="text"
 					placeholder="Last name"
 					{...register('lastName')}
-					error={
-						errors.lastName
-							? { error: true, message: errors.lastName.message ?? '' }
-							: undefined
-					}
+					error={toFieldError(errors.lastName)}
 				/>
 				<TextField.Standalone
 					type="email"
 					placeholder="Email"
 					{...register('email')}
-					error={
-						errors.email
-							? { error: true, message: errors.email.message ?? '' }
-							: undefined
-					}
+					error={toFieldError(errors.email)}
 				/>
 				<TextField.Standalone
 					type="password"
 					placeholder="Password (min 8 characters)"
 					{...register('password')}
-					error={
-						errors.password
-							? { error: true, message: errors.password.message ?? '' }
-							: undefined
-					}
+					error={toFieldError(errors.password)}
 				/>
 				{registerMutation.isError && (
 					<Text size="2" color="danger">

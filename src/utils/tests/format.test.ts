@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { formatCurrency, formatCurrencyShort, formatRelativeTime } from './format';
+import { formatCurrency, formatCurrencyShort, formatRelativeTime } from '../format';
 
 describe('formatCurrency', () => {
 	it('formats numeric values as USD with two decimals', () => {

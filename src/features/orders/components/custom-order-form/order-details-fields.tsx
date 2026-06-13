@@ -1,6 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import { Card, TextField, TextArea, Stack, Flex } from '@artifact-ui/core';
 import type { CustomOrderFormData } from '../../schemas/custom-order-schemas';
+import { toFieldError } from '@/utils/forms';
 import { LabeledField } from '../order-form/labeled-field';
 import { DateField } from '../order-form/date-field';
 import styles from '../order-form/order-form.module.css';
@@ -20,11 +21,7 @@ export const OrderDetailsFields = () => {
 							type="text"
 							autoFocus
 							{...register('customerName')}
-							error={
-								errors.customerName
-									? { error: true, message: errors.customerName.message ?? '' }
-									: undefined
-							}
+							error={toFieldError(errors.customerName)}
 						/>
 					</LabeledField>
 					<LabeledField label="Customer email">
@@ -32,11 +29,7 @@ export const OrderDetailsFields = () => {
 							type="email"
 							placeholder="Optional"
 							{...register('customerEmail')}
-							error={
-								errors.customerEmail
-									? { error: true, message: errors.customerEmail.message ?? '' }
-									: undefined
-							}
+							error={toFieldError(errors.customerEmail)}
 						/>
 					</LabeledField>
 					<Flex gap="3">
