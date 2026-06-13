@@ -7,6 +7,11 @@ export type AuthUser = {
 	isDemo: boolean;
 };
 
+export type AuthIdentity = {
+	hasPassword: boolean;
+	providers: string[];
+};
+
 export type AuthStatusResponse = {
 	isAuthenticated: boolean;
 	user: AuthUser | null;
