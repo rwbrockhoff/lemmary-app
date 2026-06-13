@@ -10,7 +10,7 @@ import {
 	Checkbox,
 } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
-import { useUpdateStore, type StoreSettings } from '../api/settings-queries';
+import { useUpdateStore, type StoreSettings } from '../../api/settings-queries';
 
 type StoreConnectionCardProps = {
 	settings: StoreSettings;

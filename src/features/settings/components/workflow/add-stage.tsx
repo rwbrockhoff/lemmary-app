@@ -13,6 +13,7 @@ type AddStageProps = {
 export const AddStage = ({ defaultColor }: AddStageProps) => {
 	const toast = useToast();
 	const createStage = useCreateWorkflowStage();
+
 	const [name, setName] = useState('');
 	const [color, setColor] = useState<WorkflowStageColor>(defaultColor);
 	const [prevDefault, setPrevDefault] = useState(defaultColor);
