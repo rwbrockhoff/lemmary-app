@@ -1,14 +1,5 @@
 import { useState } from 'react';
-import {
-	Heading,
-	Text,
-	TextField,
-	Button,
-	Card,
-	Stack,
-	Flex,
-	Checkbox,
-} from '@artifact-ui/core';
+import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
 import { useUpdateStore, type StoreSettings } from '../../api/settings-queries';
 
@@ -16,12 +7,10 @@ type StoreConnectionCardProps = {
 	settings: StoreSettings;
 };
 
-type UpdateStorePayload = {
+type ConnectionPayload = {
 	storeName?: string;
-	leadTimeDays?: number | null;
-	accessToken?: string;
 	storeUrl?: string | null;
-	applyLeadTimeToOpenOrders?: boolean;
+	accessToken?: string;
 };
 
 export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
@@ -31,44 +20,30 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 	const [prevSettings, setPrevSettings] = useState(settings);
 	const [storeName, setStoreName] = useState(settings.storeName);
 	const [storeUrl, setStoreUrl] = useState(settings.storeUrl ?? '');
-	const [leadTime, setLeadTime] = useState(
-		settings.leadTimeDays != null ? String(settings.leadTimeDays) : '',
-	);
 	const [accessToken, setAccessToken] = useState('');
-	const [applyToOpenOrders, setApplyToOpenOrders] = useState(false);
 
 	if (settings !== prevSettings) {
 		setPrevSettings(settings);
 		setStoreName(settings.storeName);
 		setStoreUrl(settings.storeUrl ?? '');
-		setLeadTime(settings.leadTimeDays != null ? String(settings.leadTimeDays) : '');
 	}
 
-	const buildPayload = (): UpdateStorePayload => {
-		const payload: UpdateStorePayload = {};
+	const buildPayload = (): ConnectionPayload => {
+		const payload: ConnectionPayload = {};
 
 		if (storeName !== settings.storeName) {
 			payload.storeName = storeName.trim();
 		}
 
+		// Clean up URL
 		const currentUrl = settings.storeUrl ?? '';
 		const trimmedUrl = storeUrl.trim();
 		if (trimmedUrl !== currentUrl) {
 			payload.storeUrl = trimmedUrl === '' ? null : trimmedUrl;
 		}
 
-		const currentLeadTime = settings.leadTimeDays ?? null;
-		const inputLeadTime = leadTime === '' ? null : Number(leadTime);
-		if (inputLeadTime !== currentLeadTime) {
-			payload.leadTimeDays = inputLeadTime;
-		}
-
 		if (accessToken.trim().length > 0) {
 			payload.accessToken = accessToken.trim();
-		}
-
-		if (applyToOpenOrders && payload.leadTimeDays !== undefined) {
-			payload.applyLeadTimeToOpenOrders = true;
 		}
 
 		return payload;
@@ -79,11 +54,11 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 
 	const handleSave = () => {
 		if (!hasChanges) return;
+
 		updateStore.mutate(payload, {
 			onSuccess: () => {
 				setAccessToken('');
-				setApplyToOpenOrders(false);
-				toast.success('Store settings updated');
+				toast.success('Store connection updated');
 			},
 			onError: (error) => {
 				toast.error(error.message, 'Could not update store');
@@ -136,32 +111,6 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 							value={accessToken}
 							onChange={(e) => setAccessToken(e.target.value)}
 						/>
-					</Stack>
-
-					<Stack gap="2">
-						<Text size="2" weight="medium">
-							Lead Time
-						</Text>
-						<Text size="2" color="secondary">
-							Default number of days from order date to due date. Applied to new orders
-							during sync.
-						</Text>
-						<div className="w-32">
-							<TextField.Standalone
-								type="number"
-								placeholder="Days"
-								value={leadTime}
-								onChange={(e) => setLeadTime(e.target.value)}
-								min={0}
-							/>
-						</div>
-						<label className="flex items-center gap-2 cursor-pointer">
-							<Checkbox
-								checked={applyToOpenOrders}
-								onCheckedChange={(checked) => setApplyToOpenOrders(checked === true)}
-							/>
-							<Text size="2">Apply to existing open orders</Text>
-						</label>
 					</Stack>
 
 					<Flex>

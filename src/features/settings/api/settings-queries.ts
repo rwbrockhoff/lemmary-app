@@ -7,6 +7,7 @@ export type StoreSettings = {
 	platform: string;
 	leadTimeDays: number | null;
 	storeUrl: string | null;
+	timezone: string | null;
 };
 
 type UpdateStorePayload = {
@@ -14,6 +15,7 @@ type UpdateStorePayload = {
 	leadTimeDays?: number | null;
 	accessToken?: string;
 	storeUrl?: string | null;
+	timezone?: string;
 	applyLeadTimeToOpenOrders?: boolean;
 };
 

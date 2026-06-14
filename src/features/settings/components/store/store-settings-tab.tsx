@@ -4,6 +4,7 @@ import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
 import { useSettings } from '../../api/settings-queries';
 import { StoreConnectionCard } from './store-connection-card';
+import { StorePreferencesCard } from './store-preferences-card';
 
 export const StoreSettingsTab = () => {
 	const { data: settings, isLoading, error } = useSettings();
@@ -15,7 +16,12 @@ export const StoreSettingsTab = () => {
 				skeleton={<PageSpinner />}
 				isError={!!error}
 				errorState={<ErrorState description="Failed to load store settings." />}>
-				{settings && <StoreConnectionCard settings={settings} />}
+				{settings && (
+					<>
+						<StoreConnectionCard settings={settings} />
+						<StorePreferencesCard settings={settings} />
+					</>
+				)}
 			</LoadingWrapper>
 		</Stack>
 	);

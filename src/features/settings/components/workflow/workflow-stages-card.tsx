@@ -51,15 +51,15 @@ export const WorkflowStagesCard = ({ stages }: WorkflowStagesCardProps) => {
 	return (
 		<Card.Root>
 			<Card.Header>
-				<Heading size="4">Workflow Stages</Heading>
+				<Stack gap="1">
+					<Heading size="4">Workflow Stages</Heading>
+					<Text size="2" color="secondary" weight="normal">
+						Rename, add, or remove the stages you use for managing your order workflow.
+					</Text>
+				</Stack>
 			</Card.Header>
 			<Card.Body>
 				<Stack gap="4">
-					<Text size="2" color="secondary">
-						Drag to reorder. Rename, add, or remove the stages that appear on your kanban
-						board.
-					</Text>
-
 					<AddStage defaultColor={nextDefaultColor} />
 
 					<Separator />

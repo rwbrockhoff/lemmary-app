@@ -43,7 +43,7 @@ export const ChangeEmailModal = ({
 	const onSubmit = (data: ChangeEmailFormData) => {
 		mutation.mutate(data, {
 			onSuccess: () => {
-				toast.success('Check your inbox to confirm your new email');
+				toast.success('Check both inboxes to confirm your new email');
 				handleOpenChange(false);
 			},
 		});
@@ -65,8 +65,8 @@ export const ChangeEmailModal = ({
 								Your current email is {currentEmail}.
 							</Text>
 							<Text size="2" color="secondary">
-								We'll send a confirmation link to the new address before the change takes
-								effect.
+								We'll send a confirmation link to both your current and new email. The
+								change takes effect once you confirm from both.
 							</Text>
 							<TextField.Standalone
 								type="email"
