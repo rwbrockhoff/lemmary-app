@@ -18,3 +18,8 @@
 .link:hover {
 	opacity: 1;
 }
+
+/** Modify disabled style for DatePicker **/
+.subtleDisabled:disabled {
+	opacity: 0.9;
+}
