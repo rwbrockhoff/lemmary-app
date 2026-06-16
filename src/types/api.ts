@@ -88,11 +88,6 @@ export type WorkflowStage = {
 	is_complete: boolean;
 };
 
-export type WorkflowStagesResponse = {
-	orderStages: WorkflowStage[];
-	itemStages: WorkflowStage[];
-};
-
 export type ProductionSummaryItem = {
 	platform_sku: string | null;
 	product_name: string;

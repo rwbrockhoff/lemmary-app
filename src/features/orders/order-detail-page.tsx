@@ -16,7 +16,8 @@ import { OrderOptionsMenu } from './components/order-options-menu';
 import { DeleteOrderModal } from './components/delete-order-modal';
 import {
 	useOrder,
-	useWorkflowStages,
+	useOrderStages,
+	useItemStages,
 	useUpdateOrderStage,
 	useUpdateOrderItemStage,
 	useDeleteOrder,
@@ -30,10 +31,14 @@ const OrderDetailPage = () => {
 	const toast = useToast();
 
 	const { data: order, isLoading, error } = useOrder(orderId!);
-	const { data: stages } = useWorkflowStages();
+	const { data: orderStagesData } = useOrderStages();
+	const { data: itemStagesData } = useItemStages();
+
+	const orderStages = orderStagesData ?? [];
+	const itemStages = itemStagesData ?? [];
 
 	const updateOrderStage = useUpdateOrderStage();
-	const updateItemStage = useUpdateOrderItemStage(orderId!, stages?.itemStages ?? []);
+	const updateItemStage = useUpdateOrderItemStage(orderId!, itemStages);
 
 	const deleteOrder = useDeleteOrder();
 	const [showDelete, setShowDelete] = useState(false);
@@ -51,8 +56,6 @@ const OrderDetailPage = () => {
 		});
 	};
 
-	const orderStages = stages?.orderStages ?? [];
-	const itemStages = stages?.itemStages ?? [];
 	const breadcrumbs = getOrderBreadcrumbs(from, batchId);
 
 	const pageTitle = order

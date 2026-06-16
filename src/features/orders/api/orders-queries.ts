@@ -16,7 +16,6 @@ import type {
 	OrderDetail,
 	GetOrdersResponse,
 	WorkflowStage,
-	WorkflowStagesResponse,
 	WorkflowBoardResponse,
 } from '@/types/api';
 import type {
@@ -60,10 +59,17 @@ export const useOrder = (orderId: string) => {
 	});
 };
 
-export const useWorkflowStages = () => {
+export const useOrderStages = () => {
 	return useQuery({
-		queryKey: orderKeys.workflowStages,
-		queryFn: () => api.get<WorkflowStagesResponse>('/workflow/stages'),
+		queryKey: orderKeys.orderStages,
+		queryFn: () => api.get<WorkflowStage[]>('/workflow/order-stages'),
+	});
+};
+
+export const useItemStages = () => {
+	return useQuery({
+		queryKey: orderKeys.itemStages,
+		queryFn: () => api.get<WorkflowStage[]>('/workflow/item-stages'),
 	});
 };
 
@@ -78,9 +84,9 @@ export const useUpdateWorkflowStage = () => {
 
 	return useMutation({
 		mutationFn: ({ stageId, name, color }: UpdateWorkflowStagePayload) =>
-			api.put<WorkflowStage>(`/workflow/stages/${stageId}`, { name, color }),
+			api.put<WorkflowStage>(`/workflow/order-stages/${stageId}`, { name, color }),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
+			queryClient.invalidateQueries({ queryKey: orderKeys.orderStages });
 		},
 	});
 };
@@ -90,9 +96,9 @@ export const useCreateWorkflowStage = () => {
 
 	return useMutation({
 		mutationFn: (params: { name: string; color?: string }) =>
-			api.post<WorkflowStage>('/workflow/stages', params),
+			api.post<WorkflowStage>('/workflow/order-stages', params),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
+			queryClient.invalidateQueries({ queryKey: orderKeys.orderStages });
 		},
 	});
 };
@@ -102,9 +108,9 @@ export const useDeleteWorkflowStage = () => {
 
 	return useMutation({
 		mutationFn: (stageId: string) =>
-			api.del<{ id: string }>(`/workflow/stages/${stageId}`),
+			api.del<{ id: string }>(`/workflow/order-stages/${stageId}`),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
+			queryClient.invalidateQueries({ queryKey: orderKeys.orderStages });
 		},
 	});
 };
@@ -114,16 +120,14 @@ export const useReorderWorkflowStages = () => {
 
 	return useMutation({
 		mutationFn: (orderedIds: string[]) =>
-			api.put('/workflow/stages/order', { orderedIds }),
+			api.put('/workflow/order-stages/position', { orderedIds }),
 		onMutate: async (orderedIds) => {
-			await queryClient.cancelQueries({ queryKey: orderKeys.workflowStages });
+			await queryClient.cancelQueries({ queryKey: orderKeys.orderStages });
 
-			const previous = queryClient.getQueryData<WorkflowStagesResponse>(
-				orderKeys.workflowStages,
-			);
+			const previous = queryClient.getQueryData<WorkflowStage[]>(orderKeys.orderStages);
 
 			if (previous) {
-				const stageMap = new Map(previous.orderStages.map((s) => [s.id, s]));
+				const stageMap = new Map(previous.map((s) => [s.id, s]));
 				const reordered = orderedIds
 					.map((id, index) => {
 						const stage = stageMap.get(id);
@@ -131,21 +135,18 @@ export const useReorderWorkflowStages = () => {
 					})
 					.filter((s): s is WorkflowStage => s !== null);
 
-				queryClient.setQueryData<WorkflowStagesResponse>(orderKeys.workflowStages, {
-					...previous,
-					orderStages: reordered,
-				});
+				queryClient.setQueryData<WorkflowStage[]>(orderKeys.orderStages, reordered);
 			}
 
 			return { previous };
 		},
 		onError: (_error, _variables, context) => {
 			if (context?.previous) {
-				queryClient.setQueryData(orderKeys.workflowStages, context.previous);
+				queryClient.setQueryData(orderKeys.orderStages, context.previous);
 			}
 		},
 		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
+			queryClient.invalidateQueries({ queryKey: orderKeys.orderStages });
 		},
 	});
 };
