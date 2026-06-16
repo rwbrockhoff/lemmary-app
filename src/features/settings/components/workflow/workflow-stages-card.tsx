@@ -14,7 +14,7 @@ import {
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { Heading, Text, Card, Stack, Separator } from '@artifact-ui/core';
-import { useReorderWorkflowStages } from '@/features/orders/api/orders-queries';
+import { useReorderWorkflowStages } from '@/features/workflow/api/workflow-queries';
 import { WORKFLOW_STAGE_COLORS } from '@/components/orders/stage-colors';
 import type { WorkflowStage } from '@/types/api';
 import { StageRow } from './stage-row';

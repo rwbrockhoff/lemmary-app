@@ -8,7 +8,7 @@ import { useToast } from '@/providers/toast-context';
 import {
 	useUpdateWorkflowStage,
 	useDeleteWorkflowStage,
-} from '@/features/orders/api/orders-queries';
+} from '@/features/workflow/api/workflow-queries';
 import { StageColorPicker } from '@/features/orders/components/stage-color-picker';
 import {
 	isWorkflowStageColor,

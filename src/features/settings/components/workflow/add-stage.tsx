@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Flex, TextField } from '@artifact-ui/core';
 import { PlusIcon } from '@/components/icons';
 import { useToast } from '@/providers/toast-context';
-import { useCreateWorkflowStage } from '@/features/orders/api/orders-queries';
+import { useCreateWorkflowStage } from '@/features/workflow/api/workflow-queries';
 import { StageColorPicker } from '@/features/orders/components/stage-color-picker';
 import type { WorkflowStageColor } from '@/components/orders/stage-colors';
 

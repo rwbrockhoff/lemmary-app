@@ -14,14 +14,12 @@ import { OrderMetadataCard } from './components/order-metadata-card/order-metada
 import { StageSelect } from '@/components/orders/stage-select';
 import { OrderOptionsMenu } from './components/order-options-menu';
 import { DeleteOrderModal } from './components/delete-order-modal';
+import { useOrder, useUpdateOrderItemStage, useDeleteOrder } from './api/orders-queries';
 import {
-	useOrder,
 	useOrderStages,
 	useItemStages,
 	useUpdateOrderStage,
-	useUpdateOrderItemStage,
-	useDeleteOrder,
-} from './api/orders-queries';
+} from '@/features/workflow/api/workflow-queries';
 import { getOrderBreadcrumbs } from './utils/order-breadcrumbs';
 
 const OrderDetailPage = () => {

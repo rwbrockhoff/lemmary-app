@@ -2,7 +2,7 @@ import { Stack } from '@artifact-ui/core';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
-import { useOrderStages } from '@/features/orders/api/orders-queries';
+import { useOrderStages } from '@/features/workflow/api/workflow-queries';
 import { WorkflowStagesCard } from './workflow-stages-card';
 
 export const WorkflowSettingsTab = () => {
