@@ -24,9 +24,7 @@ const CustomOrderEditPage = lazy(
 const WorkOrderCreatePage = lazy(
 	() => import('@/features/orders/work-order-create-page'),
 );
-const WorkOrderEditPage = lazy(
-	() => import('@/features/orders/work-order-edit-page'),
-);
+const WorkOrderEditPage = lazy(() => import('@/features/orders/work-order-edit-page'));
 const CustomerDetailPage = lazy(
 	() => import('@/features/customers/customer-detail-page'),
 );
@@ -41,6 +39,7 @@ const StorefrontPage = lazy(() => import('@/features/storefront/storefront-page'
 const ProductDetailPage = lazy(() => import('@/features/storefront/product-detail-page'));
 const VariantDetailPage = lazy(() => import('@/features/storefront/variant-detail-page'));
 const SettingsPage = lazy(() => import('@/features/settings/settings-page'));
+const ConnectStorePage = lazy(() => import('@/features/settings/connect-store-page'));
 
 const router = createBrowserRouter([
 	{
@@ -97,6 +96,14 @@ const router = createBrowserRouter([
 			{
 				element: <AuthGuard />,
 				children: [
+					{
+						path: '/connect-store',
+						element: (
+							<Suspense>
+								<ConnectStorePage />
+							</Suspense>
+						),
+					},
 					{
 						element: <AppLayout />,
 						children: [

@@ -4,17 +4,13 @@ import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
 import { useAuthStatus } from '@/features/auth/hooks/use-auth-status';
 import { useIdentity } from '@/features/auth/api/auth-queries';
-import { useSettings } from '../../api/settings-queries';
+import { useStore } from '../../api/store-queries';
 import { AccountInfoHeader } from './account-info-header';
 import { AccountSecurityCard } from './account-security-card';
 
 export const AccountSettingsTab = () => {
 	const { data: status, isLoading: statusLoading, error: statusError } = useAuthStatus();
-	const {
-		data: settings,
-		isLoading: settingsLoading,
-		error: settingsError,
-	} = useSettings();
+	const { data: settings, isLoading: settingsLoading, error: settingsError } = useStore();
 	const { data: identity } = useIdentity();
 
 	const isLoading = statusLoading || settingsLoading;

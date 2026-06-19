@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
-import { useUpdateStore, type StoreSettings } from '../../api/settings-queries';
+import { useUpdateStore, type Store } from '../../api/store-queries';
+import { ApiKeyHelpModal } from './api-key-help-modal';
 
 type StoreConnectionCardProps = {
-	settings: StoreSettings;
+	settings: Store;
 };
 
 type ConnectionPayload = {
@@ -88,7 +89,7 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 							Store URL
 						</Text>
 						<Text size="2" color="secondary">
-							Used to generate links back to your e-commerce admin.
+							Used to show links back to your e-commerce throughout the app.
 						</Text>
 						<TextField.Standalone
 							type="url"
@@ -99,9 +100,12 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 					</Stack>
 
 					<Stack gap="2">
-						<Text size="2" weight="medium">
-							API Key
-						</Text>
+						<Flex align="center" justify="between">
+							<Text size="2" weight="medium">
+								API Key
+							</Text>
+							<ApiKeyHelpModal />
+						</Flex>
 						<Text size="2" color="secondary">
 							Leave blank to keep your current store connection.
 						</Text>

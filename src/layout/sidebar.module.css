@@ -94,6 +94,27 @@
 	padding: var(--space-2);
 }
 
+.connectPrompt {
+	color: var(--color-warning);
+	background: var(--color-warning-bg);
+	border: 1px solid var(--color-warning);
+	margin-bottom: var(--space-2);
+}
+
+.connectPrompt:hover {
+	color: var(--color-warning);
+	background: var(--color-warning-bg);
+	filter: brightness(0.98);
+}
+
+.statusDot {
+	width: 8px;
+	height: 8px;
+	border-radius: var(--radius-full);
+	background: var(--color-warning);
+	flex-shrink: 0;
+}
+
 .toggleButton {
 	all: unset;
 	cursor: pointer;

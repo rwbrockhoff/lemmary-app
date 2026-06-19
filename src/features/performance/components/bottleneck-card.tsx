@@ -24,7 +24,12 @@ type BottleneckCardProps = {
 	stages: StageBottleneckStage[];
 };
 
+const MIN_STAGES = 3;
+
 export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
+	const hasEnoughData =
+		stages.length >= MIN_STAGES && stages.every((stage) => stage.avgDays > 0);
+
 	const chartData = {
 		labels: stages.map((s) => s.stageName),
 		datasets: [
@@ -82,7 +87,7 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 					<WorkflowIcon size={18} />
 					<Heading size="5">Workflow Performance</Heading>
 				</Flex>
-				{stages.length === 0 ? (
+				{!hasEnoughData ? (
 					<ChartPlaceholder
 						message="Not enough workflow activity yet"
 						subtext="Bottlenecks will appear once more orders move through your different workflow stages."

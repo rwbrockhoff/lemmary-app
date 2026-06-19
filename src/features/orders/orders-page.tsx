@@ -15,11 +15,13 @@ import {
 	PlusIcon,
 	CustomersIcon,
 	WarehouseIcon,
+	StorefrontIcon,
 } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
 import { EmptyState } from '@/components/empty-state/empty-state';
+import { useStore } from '@/features/settings/api/store-queries';
 import { useOrdersWithItems, useSyncOrders } from './api/orders-queries';
 import { OrdersTable } from './components/orders-table';
 import { OrdersOverviewTable } from './components/orders-overview-table';
@@ -32,6 +34,7 @@ import shared from '@/styles/shared.module.css';
 const OrdersPage = () => {
 	const navigate = useNavigate();
 	const { data, isLoading, error } = useOrdersWithItems();
+	const { data: store } = useStore();
 	const syncMutation = useSyncOrders();
 
 	const orders = data?.orders;
@@ -91,11 +94,23 @@ const OrdersPage = () => {
 				errorState={<ErrorState description="Failed to load orders. Try again later." />}
 				isEmpty={orders?.length === 0}
 				emptyState={
-					<EmptyState
-						icon={<InboxIcon size={20} />}
-						title="No orders yet"
-						description="Click 'Sync Orders' to pull orders from your store."
-					/>
+					store && !store.connected ? (
+						<EmptyState
+							icon={<StorefrontIcon size={20} />}
+							title="Connect your store"
+							description="Link your store to start pulling in orders."
+							action={{
+								label: 'Connect store',
+								onClick: () => navigate('/connect-store'),
+							}}
+						/>
+					) : (
+						<EmptyState
+							icon={<InboxIcon size={20} />}
+							title="No orders yet"
+							description="Click 'Sync Orders' to pull orders from your store."
+						/>
+					)
 				}>
 				{customerOrders.length > 0 && <OrdersSummary orders={customerOrders} />}
 
