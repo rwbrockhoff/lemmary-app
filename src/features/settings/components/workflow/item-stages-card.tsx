@@ -6,19 +6,21 @@ import {
 	useItemStages,
 	useCreateItemStage,
 	useUpdateItemStage,
-	useDeleteItemStage,
 	useReorderItemStages,
 } from '@/features/workflow/api/workflow-queries';
 import type { WorkflowStageColor } from '@/components/orders/stage-colors';
 import { StageEditor } from './stage-editor/stage-editor';
+import { DeleteItemStageModal } from './delete-item-stage-modal';
+import { useItemStageDeletion } from './use-item-stage-deletion';
 
 export const ItemStagesCard = () => {
 	const toast = useToast();
 	const { data: stages, isLoading, error } = useItemStages();
 	const create = useCreateItemStage();
 	const update = useUpdateItemStage();
-	const remove = useDeleteItemStage();
 	const reorder = useReorderItemStages();
+	const { requestDelete, confirmReassign, cancel, blocked, isDeleting } =
+		useItemStageDeletion(stages);
 
 	const handleCreate = async (name: string, color: WorkflowStageColor) => {
 		await create.mutateAsync(
@@ -47,13 +49,6 @@ export const ItemStagesCard = () => {
 		);
 	};
 
-	const handleDelete = (stageId: string) => {
-		remove.mutate(stageId, {
-			onSuccess: () => toast.success('Stage deleted'),
-			onError: (e) => toast.error(e.message, 'Could not delete'),
-		});
-	};
-
 	return (
 		<LoadingWrapper
 			isLoading={isLoading}
@@ -68,11 +63,22 @@ export const ItemStagesCard = () => {
 					onCreate={handleCreate}
 					onRename={handleRename}
 					onRecolor={handleRecolor}
-					onDelete={handleDelete}
+					onDelete={requestDelete}
 					onReorder={(orderedIds) => reorder.mutate(orderedIds)}
 					isCreating={create.isPending}
 					isUpdating={update.isPending}
-					isDeleting={remove.isPending}
+					isDeleting={isDeleting}
+				/>
+			)}
+			{blocked && (
+				<DeleteItemStageModal
+					open
+					onOpenChange={(open) => !open && cancel()}
+					block={blocked.details}
+					stageName={blocked.stageName}
+					reassignStages={(stages ?? []).filter((s) => s.id !== blocked.stageId)}
+					onConfirm={confirmReassign}
+					isDeleting={isDeleting}
 				/>
 			)}
 		</LoadingWrapper>

@@ -130,14 +130,25 @@ export const useUpdateItemStage = () => {
 	});
 };
 
+type DeleteItemStagePayload = {
+	stageId: string;
+	reassignStageId?: string;
+};
+
 export const useDeleteItemStage = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (stageId: string) =>
-			api.del<{ id: string }>(`/workflow/item-stages/${stageId}`),
-		onSuccess: () => {
+		mutationFn: ({ stageId, reassignStageId }: DeleteItemStagePayload) =>
+			api.del<{ id: string }>(
+				`/workflow/item-stages/${stageId}`,
+				reassignStageId ? { reassignStageId } : undefined,
+			),
+		onSuccess: (_data, variables) => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.itemStages });
+			if (variables.reassignStageId) {
+				queryClient.invalidateQueries({ queryKey: orderKeys.all });
+			}
 		},
 	});
 };
