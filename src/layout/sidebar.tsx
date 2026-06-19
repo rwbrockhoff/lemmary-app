@@ -12,6 +12,7 @@ import {
 } from '@/components/icons';
 import { BrandMark } from '@/components/brand-mark/brand-mark';
 import { SidebarUserMenu } from './sidebar-user-menu';
+import { ConnectStorePrompt } from './connect-store-prompt';
 import styles from './sidebar.module.css';
 
 type SidebarProps = {
@@ -81,6 +82,7 @@ export const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 				</nav>
 
 				<div className={styles.footer}>
+					<ConnectStorePrompt isCollapsed={isCollapsed} />
 					<SidebarUserMenu isCollapsed={isCollapsed} />
 				</div>
 			</div>
