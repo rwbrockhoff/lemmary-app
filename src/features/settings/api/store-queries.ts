@@ -20,6 +20,14 @@ type UpdateStorePayload = {
 	applyLeadTimeToOpenOrders?: boolean;
 };
 
+type CreateStorePayload = {
+	storeName: string;
+	accessToken: string;
+	timezone: string;
+	storeUrl?: string | null;
+	leadTimeDays?: number | null;
+};
+
 export const useStore = () => {
 	return useQuery({
 		queryKey: storeKeys.all,
@@ -32,6 +40,17 @@ export const useUpdateStore = () => {
 
 	return useMutation({
 		mutationFn: (payload: UpdateStorePayload) => api.patch<Store>('/store', payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: storeKeys.all });
+		},
+	});
+};
+
+export const useCreateStore = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payload: CreateStorePayload) => api.post<Store>('/store', payload),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: storeKeys.all });
 		},
