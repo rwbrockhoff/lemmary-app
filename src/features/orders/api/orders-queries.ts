@@ -8,17 +8,7 @@ import { api } from '@/api/client';
 import { orderKeys } from './orders-keys';
 import { batchKeys } from '@/features/batches/api/batches-keys';
 import { optimisticallyUpdateItemStage, rollbackOrderDetail } from './orders-cache';
-import {
-	optimisticallyUpdateOrderStage,
-	rollbackOrderStage,
-} from '@/features/workflow/api/workflow-cache';
-import type {
-	OrderDetail,
-	GetOrdersResponse,
-	WorkflowStage,
-	WorkflowStagesResponse,
-	WorkflowBoardResponse,
-} from '@/types/api';
+import type { OrderDetail, GetOrdersResponse, WorkflowStage } from '@/types/api';
 import type {
 	CreateCustomOrderRequest,
 	UpdateCustomOrderRequest,
@@ -57,124 +47,6 @@ export const useOrder = (orderId: string) => {
 	return useQuery({
 		queryKey: orderKeys.detail(orderId),
 		queryFn: () => api.get<OrderDetail>(`/orders/${orderId}`),
-	});
-};
-
-export const useWorkflowStages = () => {
-	return useQuery({
-		queryKey: orderKeys.workflowStages,
-		queryFn: () => api.get<WorkflowStagesResponse>('/workflow/stages'),
-	});
-};
-
-type UpdateWorkflowStagePayload = {
-	stageId: string;
-	name?: string;
-	color?: string;
-};
-
-export const useUpdateWorkflowStage = () => {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: ({ stageId, name, color }: UpdateWorkflowStagePayload) =>
-			api.put<WorkflowStage>(`/workflow/stages/${stageId}`, { name, color }),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
-		},
-	});
-};
-
-export const useCreateWorkflowStage = () => {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (params: { name: string; color?: string }) =>
-			api.post<WorkflowStage>('/workflow/stages', params),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
-		},
-	});
-};
-
-export const useDeleteWorkflowStage = () => {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (stageId: string) =>
-			api.del<{ id: string }>(`/workflow/stages/${stageId}`),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
-		},
-	});
-};
-
-export const useReorderWorkflowStages = () => {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (orderedIds: string[]) =>
-			api.put('/workflow/stages/order', { orderedIds }),
-		onMutate: async (orderedIds) => {
-			await queryClient.cancelQueries({ queryKey: orderKeys.workflowStages });
-
-			const previous = queryClient.getQueryData<WorkflowStagesResponse>(
-				orderKeys.workflowStages,
-			);
-
-			if (previous) {
-				const stageMap = new Map(previous.orderStages.map((s) => [s.id, s]));
-				const reordered = orderedIds
-					.map((id, index) => {
-						const stage = stageMap.get(id);
-						return stage ? { ...stage, position: index } : null;
-					})
-					.filter((s): s is WorkflowStage => s !== null);
-
-				queryClient.setQueryData<WorkflowStagesResponse>(orderKeys.workflowStages, {
-					...previous,
-					orderStages: reordered,
-				});
-			}
-
-			return { previous };
-		},
-		onError: (_error, _variables, context) => {
-			if (context?.previous) {
-				queryClient.setQueryData(orderKeys.workflowStages, context.previous);
-			}
-		},
-		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: orderKeys.workflowStages });
-		},
-	});
-};
-
-export const useWorkflowBoard = () => {
-	return useQuery({
-		queryKey: orderKeys.workflowBoard,
-		queryFn: () => api.get<WorkflowBoardResponse>('/orders/workflow-board'),
-	});
-};
-
-export const useUpdateOrderStage = () => {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (params: { orderId: string; stageId: string }) =>
-			api.put(`/orders/${params.orderId}/stage`, { stageId: params.stageId }),
-		onMutate: (variables) => optimisticallyUpdateOrderStage(queryClient, variables),
-		onError: (_error, _variables, context) => {
-			rollbackOrderStage(queryClient, context?.previous);
-		},
-		onSettled: (_data, _error, variables) => {
-			// skip workflowBoard refetch - optimistic update already updates position & stage_id
-			queryClient.invalidateQueries({
-				queryKey: orderKeys.detail(variables.orderId),
-			});
-			queryClient.invalidateQueries({ queryKey: orderKeys.all });
-			queryClient.invalidateQueries({ queryKey: batchKeys.all });
-		},
 	});
 };
 

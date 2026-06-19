@@ -8,6 +8,8 @@ import {
 	forgotPasswordSchema,
 	type ForgotPasswordFormData,
 } from '../../schemas/auth-schemas';
+import { extractErrorMessage } from '@/utils/errors';
+import { toFieldError } from '@/utils/forms';
 
 export const ForgotPasswordForm = () => {
 	const mutation = useForgotPasswordFlow();
@@ -23,8 +25,7 @@ export const ForgotPasswordForm = () => {
 		return <ForgotPasswordSuccess />;
 	}
 
-	const errorMessage =
-		mutation.error instanceof Error ? mutation.error.message : 'Something went wrong';
+	const errorMessage = extractErrorMessage(mutation.error);
 
 	const onSubmit = (data: ForgotPasswordFormData) => {
 		mutation.mutate(data);
@@ -42,11 +43,7 @@ export const ForgotPasswordForm = () => {
 					placeholder="Email"
 					autoFocus
 					{...register('email')}
-					error={
-						errors.email
-							? { error: true, message: errors.email.message ?? '' }
-							: undefined
-					}
+					error={toFieldError(errors.email)}
 				/>
 				{mutation.isError && (
 					<Text size="2" color="danger">

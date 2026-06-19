@@ -6,24 +6,21 @@ import {
 	type DragStartEvent,
 	type DragEndEvent,
 } from '@dnd-kit/core';
-import { useUpdateOrderStage } from '@/features/orders/api/orders-queries';
+import { useUpdateOrderStage } from '@/features/workflow/api/workflow-queries';
 import type { WorkflowBoardOrder } from '@/types/api';
 
 type PendingMove = { orderId: string; stageId: string };
 
 export const useWorkflowDnd = (orders: WorkflowBoardOrder[]) => {
 	const updateStage = useUpdateOrderStage();
-	const [activeOrder, setActiveOrder] = useState<WorkflowBoardOrder | null>(
-		null,
-	);
+
+	const [activeOrder, setActiveOrder] = useState<WorkflowBoardOrder | null>(null);
 	const [pendingMove, setPendingMove] = useState<PendingMove | null>(null);
 
 	const displayOrders = useMemo(() => {
 		if (!pendingMove) return orders;
 		return orders.map((o) =>
-			o.id === pendingMove.orderId
-				? { ...o, workflow_stage_id: pendingMove.stageId }
-				: o,
+			o.id === pendingMove.orderId ? { ...o, workflow_stage_id: pendingMove.stageId } : o,
 		);
 	}, [orders, pendingMove]);
 

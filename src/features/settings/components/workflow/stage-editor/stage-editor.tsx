@@ -14,19 +14,41 @@ import {
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { Heading, Text, Card, Stack, Separator } from '@artifact-ui/core';
-import { useReorderWorkflowStages } from '@/features/orders/api/orders-queries';
-import { WORKFLOW_STAGE_COLORS } from '@/components/orders/stage-colors';
+import {
+	WORKFLOW_STAGE_COLORS,
+	type WorkflowStageColor,
+} from '@/components/orders/stage-colors';
 import type { WorkflowStage } from '@/types/api';
 import { StageRow } from './stage-row';
 import { AddStage } from './add-stage';
 
-type WorkflowStagesCardProps = {
+type StageEditorProps = {
+	title: string;
+	description: string;
 	stages: WorkflowStage[];
+	onCreate: (name: string, color: WorkflowStageColor) => Promise<void>;
+	onRename: (id: string, name: string) => void;
+	onRecolor: (id: string, color: WorkflowStageColor) => void;
+	onDelete: (id: string) => void;
+	onReorder: (orderedIds: string[]) => void;
+	isCreating: boolean;
+	isUpdating: boolean;
+	isDeleting: boolean;
 };
 
-export const WorkflowStagesCard = ({ stages }: WorkflowStagesCardProps) => {
-	const reorderStages = useReorderWorkflowStages();
-
+export const StageEditor = ({
+	title,
+	description,
+	stages,
+	onCreate,
+	onRename,
+	onRecolor,
+	onDelete,
+	onReorder,
+	isCreating,
+	isUpdating,
+	isDeleting,
+}: StageEditorProps) => {
 	const sensors = useSensors(
 		useSensor(PointerSensor),
 		useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -41,7 +63,7 @@ export const WorkflowStagesCard = ({ stages }: WorkflowStagesCardProps) => {
 		if (oldIndex === -1 || newIndex === -1) return;
 
 		const reordered = arrayMove(stages, oldIndex, newIndex);
-		reorderStages.mutate(reordered.map((s) => s.id));
+		onReorder(reordered.map((s) => s.id));
 	};
 
 	const stageIds = stages.map((s) => s.id);
@@ -51,16 +73,20 @@ export const WorkflowStagesCard = ({ stages }: WorkflowStagesCardProps) => {
 	return (
 		<Card.Root>
 			<Card.Header>
-				<Heading size="4">Workflow Stages</Heading>
+				<Stack gap="1">
+					<Heading size="4">{title}</Heading>
+					<Text size="2" color="secondary" weight="normal">
+						{description}
+					</Text>
+				</Stack>
 			</Card.Header>
 			<Card.Body>
 				<Stack gap="4">
-					<Text size="2" color="secondary">
-						Drag to reorder. Rename, add, or remove the stages that appear on your kanban
-						board.
-					</Text>
-
-					<AddStage defaultColor={nextDefaultColor} />
+					<AddStage
+						defaultColor={nextDefaultColor}
+						onAdd={onCreate}
+						isAdding={isCreating}
+					/>
 
 					<Separator />
 
@@ -77,6 +103,11 @@ export const WorkflowStagesCard = ({ stages }: WorkflowStagesCardProps) => {
 										name={stage.name}
 										color={stage.color}
 										isDefault={stage.is_default}
+										onRename={onRename}
+										onRecolor={onRecolor}
+										onDelete={onDelete}
+										isSaving={isUpdating}
+										isDeleting={isDeleting}
 									/>
 								))}
 							</Stack>

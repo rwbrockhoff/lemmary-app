@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatBucketDate } from './format-bucket-date';
+import { formatBucketDate } from '../format-bucket-date';
 
 describe('formatBucketDate', () => {
 	describe('month bucket', () => {
@@ -11,8 +11,7 @@ describe('formatBucketDate', () => {
 			expect(formatBucketDate('2026-02-01', 'month', true)).toBe('Feb 2026');
 		});
 
-		// Regression: YYYY-MM-DD parsed as UTC was shifting January back to December
-		// for users in negative-offset timezones
+		// a Jan 1 date was slipping back to Dec depending on the timezone
 		it('treats the YYYY-MM-DD string as a local date, not UTC', () => {
 			expect(formatBucketDate('2026-01-01', 'month')).toBe('Jan');
 		});

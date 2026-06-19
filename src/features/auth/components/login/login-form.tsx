@@ -5,6 +5,8 @@ import { TextField, Button, Text, Stack } from '@artifact-ui/core';
 import { useLoginFlow } from './use-login-flow';
 import { GoogleButton, OrDivider } from '../google-auth/google-button';
 import { loginSchema, type LoginFormData } from '../../schemas/auth-schemas';
+import { extractErrorMessage } from '@/utils/errors';
+import { toFieldError } from '@/utils/forms';
 
 export const LoginForm = () => {
 	const loginMutation = useLoginFlow();
@@ -16,8 +18,7 @@ export const LoginForm = () => {
 		resolver: zodResolver(loginSchema),
 	});
 
-	const errorMessage =
-		loginMutation.error instanceof Error ? loginMutation.error.message : 'Login failed';
+	const errorMessage = extractErrorMessage(loginMutation.error, 'Login failed');
 
 	const onSubmit = (data: LoginFormData) => {
 		loginMutation.mutate(data);
@@ -33,21 +34,13 @@ export const LoginForm = () => {
 					placeholder="Email"
 					autoFocus
 					{...register('email')}
-					error={
-						errors.email
-							? { error: true, message: errors.email.message ?? '' }
-							: undefined
-					}
+					error={toFieldError(errors.email)}
 				/>
 				<TextField.Standalone
 					type="password"
 					placeholder="Password"
 					{...register('password')}
-					error={
-						errors.password
-							? { error: true, message: errors.password.message ?? '' }
-							: undefined
-					}
+					error={toFieldError(errors.password)}
 				/>
 				{loginMutation.isError && (
 					<Text size="2" color="danger">

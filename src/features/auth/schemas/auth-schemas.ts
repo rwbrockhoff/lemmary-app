@@ -27,3 +27,17 @@ export const resetPasswordSchema = z.object({
 });
 
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
+
+export const changePasswordSchema = z.object({
+	currentPassword: z.string().min(1, 'Current password is required'),
+	newPassword: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+export type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;
+
+export const changeEmailSchema = z.object({
+	newEmail: z.string().trim().toLowerCase().pipe(z.email()),
+	currentPassword: z.string().min(1, 'Current password is required'),
+});
+
+export type ChangeEmailFormData = z.infer<typeof changeEmailSchema>;

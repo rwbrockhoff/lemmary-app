@@ -83,6 +83,7 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 							disabled={order.order_type === 'platform'}
 							placeholder="Set order date"
 							size="1"
+							className={styles.subtleDisabled}
 						/>
 					</Flex>
 					<Flex gap="4" align="center">

@@ -1,46 +1,41 @@
-import { Heading, Stack } from '@artifact-ui/core';
-import { SettingsIcon } from '@/components/icons';
-import { PageSpinner } from '@/components/page-spinner';
-import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
-import { ErrorState } from '@/components/error-state/error-state';
-import { useWorkflowStages } from '@/features/orders/api/orders-queries';
-import { useSettings } from './api/settings-queries';
-import { StoreConnectionCard } from './components/store-connection-card';
-import { WorkflowStagesCard } from './components/workflow-stages-card';
+import { Heading, Stack, Tabs } from '@artifact-ui/core';
+import { SettingsIcon, UserIcon, StorefrontIcon, WorkflowIcon } from '@/components/icons';
+import { AccountSettingsTab } from './components/account/account-settings-tab';
+import { StoreSettingsTab } from './components/store/store-settings-tab';
+import { WorkflowSettingsTab } from './components/workflow/workflow-settings-tab';
 
 const SettingsPage = () => {
-	const {
-		data: settings,
-		isLoading: settingsLoading,
-		error: settingsError,
-	} = useSettings();
-	const {
-		data: stages,
-		isLoading: stagesLoading,
-		error: stagesError,
-	} = useWorkflowStages();
-
-	const isLoading = settingsLoading || stagesLoading;
-	const error = settingsError || stagesError;
-
 	return (
-		<div className="p-8 max-w-2xl">
+		<div className="p-8">
 			<Stack gap="6">
 				<Heading size="6" iconLeft={<SettingsIcon />}>
 					Settings
 				</Heading>
-				<LoadingWrapper
-					isLoading={isLoading}
-					skeleton={<PageSpinner />}
-					isError={!!error}
-					errorState={<ErrorState description="Failed to load settings." />}>
-					{settings && stages && (
-						<>
-							<StoreConnectionCard settings={settings} />
-							<WorkflowStagesCard stages={stages.orderStages} />
-						</>
-					)}
-				</LoadingWrapper>
+				<Tabs.Root defaultValue="account">
+					<Tabs.List>
+						<Tabs.Trigger value="account" className="gap-2">
+							<UserIcon size={16} />
+							Account
+						</Tabs.Trigger>
+						<Tabs.Trigger value="store" className="gap-2">
+							<StorefrontIcon size={16} />
+							Store
+						</Tabs.Trigger>
+						<Tabs.Trigger value="workflow" className="gap-2">
+							<WorkflowIcon size={16} />
+							Workflow
+						</Tabs.Trigger>
+					</Tabs.List>
+					<Tabs.Content value="account">
+						<AccountSettingsTab />
+					</Tabs.Content>
+					<Tabs.Content value="store">
+						<StoreSettingsTab />
+					</Tabs.Content>
+					<Tabs.Content value="workflow">
+						<WorkflowSettingsTab />
+					</Tabs.Content>
+				</Tabs.Root>
 			</Stack>
 		</div>
 	);

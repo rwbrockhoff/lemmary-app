@@ -5,7 +5,7 @@ import { WorkflowIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
-import { useWorkflowBoard } from '@/features/orders/api/orders-queries';
+import { useWorkflowBoard } from '@/features/workflow/api/workflow-queries';
 import { BatchFilter } from './components/batch-filter';
 import { KanbanColumn } from './components/kanban-column';
 import { OrderCardOverlay } from './components/order-card';

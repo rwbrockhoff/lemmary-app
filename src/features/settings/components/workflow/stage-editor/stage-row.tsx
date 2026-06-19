@@ -4,11 +4,6 @@ import { CSS } from '@dnd-kit/utilities';
 import { Button, Flex, TextField, IconButton, cn } from '@artifact-ui/core';
 import shared from '@/styles/shared.module.css';
 import { GripIcon, TrashIcon } from '@/components/icons';
-import { useToast } from '@/providers/toast-context';
-import {
-	useUpdateWorkflowStage,
-	useDeleteWorkflowStage,
-} from '@/features/orders/api/orders-queries';
 import { StageColorPicker } from '@/features/orders/components/stage-color-picker';
 import {
 	isWorkflowStageColor,
@@ -20,6 +15,11 @@ type StageRowProps = {
 	name: string;
 	color: string | null;
 	isDefault: boolean;
+	onRename: (id: string, name: string) => void;
+	onRecolor: (id: string, color: WorkflowStageColor) => void;
+	onDelete: (id: string) => void;
+	isSaving: boolean;
+	isDeleting: boolean;
 };
 
 const resolveColor = (color: string | null): WorkflowStageColor => {
@@ -27,10 +27,17 @@ const resolveColor = (color: string | null): WorkflowStageColor => {
 	return 'slate';
 };
 
-export const StageRow = ({ id, name, color, isDefault }: StageRowProps) => {
-	const toast = useToast();
-	const updateStage = useUpdateWorkflowStage();
-	const deleteStage = useDeleteWorkflowStage();
+export const StageRow = ({
+	id,
+	name,
+	color,
+	isDefault,
+	onRename,
+	onRecolor,
+	onDelete,
+	isSaving,
+	isDeleting,
+}: StageRowProps) => {
 	const [value, setValue] = useState(name);
 
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -47,31 +54,12 @@ export const StageRow = ({ id, name, color, isDefault }: StageRowProps) => {
 
 	const handleSaveName = () => {
 		if (!hasChanged) return;
-		updateStage.mutate(
-			{ stageId: id, name: value.trim() },
-			{
-				onSuccess: () => toast.success('Stage renamed'),
-				onError: (error) => toast.error(error.message, 'Could not rename'),
-			},
-		);
+		onRename(id, value.trim());
 	};
 
 	const handleColorChange = (next: WorkflowStageColor) => {
 		if (next === currentColor) return;
-		updateStage.mutate(
-			{ stageId: id, color: next },
-			{
-				onError: (error) => toast.error(error.message, 'Could not update color'),
-			},
-		);
-	};
-
-	const handleDelete = () => {
-		if (isDefault) return;
-		deleteStage.mutate(id, {
-			onSuccess: () => toast.success('Stage deleted'),
-			onError: (error) => toast.error(error.message, 'Could not delete'),
-		});
+		onRecolor(id, next);
 	};
 
 	return (
@@ -93,7 +81,7 @@ export const StageRow = ({ id, name, color, isDefault }: StageRowProps) => {
 				<Button
 					size="2"
 					onClick={handleSaveName}
-					disabled={!hasChanged || updateStage.isPending}
+					disabled={!hasChanged || isSaving}
 					variant="secondary"
 					className="cursor-pointer">
 					Save
@@ -102,8 +90,8 @@ export const StageRow = ({ id, name, color, isDefault }: StageRowProps) => {
 					size="1"
 					variant="ghost"
 					color="danger"
-					onClick={handleDelete}
-					disabled={isDefault || deleteStage.isPending}
+					onClick={() => !isDefault && onDelete(id)}
+					disabled={isDefault || isDeleting}
 					label={isDefault ? 'Default stage cannot be deleted' : 'Delete stage'}
 					icon={<TrashIcon size={18} />}
 					className="cursor-pointer"

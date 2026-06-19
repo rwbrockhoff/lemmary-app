@@ -4,11 +4,11 @@ import { Table } from '@artifact-ui/core';
 import { CompleteItemsModal } from './complete-items-modal';
 import { BatchOrderRow } from './batch-order-row';
 import { BatchOrdersTableHeader } from './batch-orders-table-header';
+import { useCompleteAllOrderItems } from '@/features/orders/api/orders-queries';
 import {
-	useWorkflowStages,
+	useOrderStages,
 	useUpdateOrderStage,
-	useCompleteAllOrderItems,
-} from '@/features/orders/api/orders-queries';
+} from '@/features/workflow/api/workflow-queries';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import type { BatchOrder, BatchOrderItem } from '@/types/api';
 
@@ -28,10 +28,10 @@ export const BatchOrdersTable = ({
 	onToggle,
 }: BatchOrdersTableProps) => {
 	const navigate = useNavigate();
-	const { data: stages, isLoading: stagesLoading } = useWorkflowStages();
+	const { data: orderStagesData, isLoading: stagesLoading } = useOrderStages();
 	const updateOrderStage = useUpdateOrderStage();
 	const completeAllItems = useCompleteAllOrderItems();
-	const orderStages = stages?.orderStages ?? [];
+	const orderStages = orderStagesData ?? [];
 
 	const [completeModalOrder, setCompleteModalOrder] = useState<{
 		orderId: string;

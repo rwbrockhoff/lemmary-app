@@ -3,6 +3,20 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 const DEMO_READONLY_CODE = 'DEMO_READ_ONLY';
 export const DEMO_READONLY_MESSAGE = 'Demo mode is read-only. Sign up to make changes.';
 
+export class ApiError extends Error {
+	status: number;
+	code?: string;
+	details?: unknown;
+
+	constructor(status: number, message: string, code?: string, details?: unknown) {
+		super(message);
+		this.name = 'ApiError';
+		this.status = status;
+		this.code = code;
+		this.details = details;
+	}
+}
+
 type RequestOptions = RequestInit & {
 	params?: Record<string, string>;
 };
@@ -37,20 +51,23 @@ async function request<T>(endpoint: string, options?: RequestOptions): Promise<T
 	if (!response.ok) {
 		const body = await response.json().catch(() => ({}));
 		const data = body as {
-			error?: string | { message?: string };
+			error?: string | { message?: string; code?: string; details?: unknown };
 			message?: string;
 			code?: string;
 		};
 
-		if (data.code === DEMO_READONLY_CODE) {
-			throw new Error(DEMO_READONLY_MESSAGE);
+		const errorObject = typeof data.error === 'object' ? data.error : null;
+		const code = data.code ?? errorObject?.code;
+
+		if (code === DEMO_READONLY_CODE) {
+			throw new ApiError(response.status, DEMO_READONLY_MESSAGE, code);
 		}
 
 		const message =
-			(typeof data.error === 'string' ? data.error : data.error?.message) ??
+			(typeof data.error === 'string' ? data.error : errorObject?.message) ??
 			data.message ??
 			response.statusText;
-		throw new Error(message);
+		throw new ApiError(response.status, message, code, errorObject?.details);
 	}
 
 	return response.json() as Promise<T>;
@@ -78,6 +95,6 @@ export const api = {
 			body: body ? JSON.stringify(body) : undefined,
 		}).then((r) => r.data),
 
-	del: <T = void>(endpoint: string) =>
-		request<ApiResponse<T>>(endpoint, { method: 'DELETE' }).then((r) => r.data),
+	del: <T = void>(endpoint: string, params?: Record<string, string>) =>
+		request<ApiResponse<T>>(endpoint, { method: 'DELETE', params }).then((r) => r.data),
 };

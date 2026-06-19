@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import { Button, Flex, TextField } from '@artifact-ui/core';
 import { PlusIcon } from '@/components/icons';
-import { useToast } from '@/providers/toast-context';
-import { useCreateWorkflowStage } from '@/features/orders/api/orders-queries';
 import { StageColorPicker } from '@/features/orders/components/stage-color-picker';
 import type { WorkflowStageColor } from '@/components/orders/stage-colors';
 
 type AddStageProps = {
 	defaultColor: WorkflowStageColor;
+	onAdd: (name: string, color: WorkflowStageColor) => Promise<void>;
+	isAdding: boolean;
 };
 
-export const AddStage = ({ defaultColor }: AddStageProps) => {
-	const toast = useToast();
-	const createStage = useCreateWorkflowStage();
+export const AddStage = ({ defaultColor, onAdd, isAdding }: AddStageProps) => {
 	const [name, setName] = useState('');
 	const [color, setColor] = useState<WorkflowStageColor>(defaultColor);
 	const [prevDefault, setPrevDefault] = useState(defaultColor);
@@ -22,20 +20,16 @@ export const AddStage = ({ defaultColor }: AddStageProps) => {
 		setColor(defaultColor);
 	}
 
-	const handleAdd = () => {
+	const handleAdd = async () => {
 		const trimmed = name.trim();
 		if (trimmed.length === 0) return;
 
-		createStage.mutate(
-			{ name: trimmed, color },
-			{
-				onSuccess: () => {
-					setName('');
-					toast.success('Stage added');
-				},
-				onError: (error) => toast.error(error.message, 'Could not add stage'),
-			},
-		);
+		try {
+			await onAdd(trimmed, color);
+			setName('');
+		} catch {
+			// keep the input so the user can retry (container toasts the error)
+		}
 	};
 
 	return (
@@ -49,7 +43,7 @@ export const AddStage = ({ defaultColor }: AddStageProps) => {
 			<Button
 				size="2"
 				onClick={handleAdd}
-				disabled={name.trim().length === 0 || createStage.isPending}
+				disabled={name.trim().length === 0 || isAdding}
 				iconLeft={<PlusIcon size={16} />}
 				className="cursor-pointer">
 				Add
