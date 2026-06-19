@@ -12,10 +12,10 @@ import {
 } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
 import { timezoneOptions } from '@/utils/timezones';
-import { useUpdateStore, type StoreSettings } from '../../api/settings-queries';
+import { useUpdateStore, type Store } from '../../api/store-queries';
 
 type StorePreferencesCardProps = {
-	settings: StoreSettings;
+	settings: Store;
 };
 
 type PreferencesPayload = {

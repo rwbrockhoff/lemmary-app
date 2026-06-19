@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
-import { useUpdateStore, type StoreSettings } from '../../api/settings-queries';
+import { useUpdateStore, type Store } from '../../api/store-queries';
 
 type StoreConnectionCardProps = {
-	settings: StoreSettings;
+	settings: Store;
 };
 
 type ConnectionPayload = {

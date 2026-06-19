@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
-import { settingsKeys } from './settings-keys';
+import { storeKeys } from './store-keys';
 
-export type StoreSettings = {
+export type Store = {
+	connected: boolean;
 	storeName: string;
 	platform: string;
 	leadTimeDays: number | null;
@@ -19,10 +20,10 @@ type UpdateStorePayload = {
 	applyLeadTimeToOpenOrders?: boolean;
 };
 
-export const useSettings = () => {
+export const useStore = () => {
 	return useQuery({
-		queryKey: settingsKeys.all,
-		queryFn: () => api.get<StoreSettings>('/settings'),
+		queryKey: storeKeys.all,
+		queryFn: () => api.get<Store>('/store'),
 	});
 };
 
@@ -30,10 +31,9 @@ export const useUpdateStore = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (payload: UpdateStorePayload) =>
-			api.patch<StoreSettings>('/store', payload),
+		mutationFn: (payload: UpdateStorePayload) => api.patch<Store>('/store', payload),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: settingsKeys.all });
+			queryClient.invalidateQueries({ queryKey: storeKeys.all });
 		},
 	});
 };
