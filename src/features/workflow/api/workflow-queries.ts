@@ -106,6 +106,78 @@ export const useReorderWorkflowStages = () => {
 	});
 };
 
+export const useCreateItemStage = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (params: { name: string; color?: string }) =>
+			api.post<WorkflowStage>('/workflow/item-stages', params),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.itemStages });
+		},
+	});
+};
+
+export const useUpdateItemStage = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ stageId, name, color }: UpdateWorkflowStagePayload) =>
+			api.put<WorkflowStage>(`/workflow/item-stages/${stageId}`, { name, color }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.itemStages });
+		},
+	});
+};
+
+export const useDeleteItemStage = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (stageId: string) =>
+			api.del<{ id: string }>(`/workflow/item-stages/${stageId}`),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.itemStages });
+		},
+	});
+};
+
+export const useReorderItemStages = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (orderedIds: string[]) =>
+			api.put('/workflow/item-stages/position', { orderedIds }),
+		onMutate: async (orderedIds) => {
+			await queryClient.cancelQueries({ queryKey: orderKeys.itemStages });
+
+			const previous = queryClient.getQueryData<WorkflowStage[]>(orderKeys.itemStages);
+
+			if (previous) {
+				const stageMap = new Map(previous.map((s) => [s.id, s]));
+				const reordered = orderedIds
+					.map((id, index) => {
+						const stage = stageMap.get(id);
+						return stage ? { ...stage, position: index } : null;
+					})
+					.filter((s): s is WorkflowStage => s !== null);
+
+				queryClient.setQueryData<WorkflowStage[]>(orderKeys.itemStages, reordered);
+			}
+
+			return { previous };
+		},
+		onError: (_error, _variables, context) => {
+			if (context?.previous) {
+				queryClient.setQueryData(orderKeys.itemStages, context.previous);
+			}
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: orderKeys.itemStages });
+		},
+	});
+};
+
 export const useWorkflowBoard = () => {
 	return useQuery({
 		queryKey: orderKeys.workflowBoard,
