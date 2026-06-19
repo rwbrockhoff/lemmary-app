@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
 import { useUpdateStore, type Store } from '../../api/store-queries';
+import { ApiKeyHelpModal } from './api-key-help-modal';
 
 type StoreConnectionCardProps = {
 	settings: Store;
@@ -99,9 +100,12 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 					</Stack>
 
 					<Stack gap="2">
-						<Text size="2" weight="medium">
-							API Key
-						</Text>
+						<Flex align="center" justify="between">
+							<Text size="2" weight="medium">
+								API Key
+							</Text>
+							<ApiKeyHelpModal />
+						</Flex>
 						<Text size="2" color="secondary">
 							Leave blank to keep your current store connection.
 						</Text>
