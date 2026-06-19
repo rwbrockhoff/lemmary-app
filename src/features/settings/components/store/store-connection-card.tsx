@@ -89,7 +89,7 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 							Store URL
 						</Text>
 						<Text size="2" color="secondary">
-							Used to generate links back to your e-commerce admin.
+							Used to show links back to your e-commerce throughout the app.
 						</Text>
 						<TextField.Standalone
 							type="url"

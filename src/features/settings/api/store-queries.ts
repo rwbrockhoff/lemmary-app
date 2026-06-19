@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+	useQuery,
+	useMutation,
+	useQueryClient,
+	type QueryClient,
+} from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { storeKeys } from './store-keys';
 
@@ -33,6 +38,19 @@ export const useStore = () => {
 		queryKey: storeKeys.all,
 		queryFn: () => api.get<Store>('/store'),
 	});
+};
+
+// Where to send a user after auth: onboarding if they have no store yet, else home
+export const resolveLandingPath = async (queryClient: QueryClient): Promise<string> => {
+	try {
+		const store = await queryClient.fetchQuery({
+			queryKey: storeKeys.all,
+			queryFn: () => api.get<Store>('/store'),
+		});
+		return store.connected ? '/' : '/connect-store';
+	} catch {
+		return '/';
+	}
 };
 
 export const useUpdateStore = () => {
