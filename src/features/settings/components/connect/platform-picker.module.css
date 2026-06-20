@@ -1,0 +1,30 @@
+.list {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid var(--color-border-default);
+	border-radius: var(--radius-3);
+	overflow: hidden;
+	box-shadow: var(--shadow-paper);
+}
+
+.row {
+	all: unset;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: var(--space-4);
+	cursor: pointer;
+	color: var(--color-text-subtle);
+	transition: background 0.15s ease;
+}
+
+.row:hover {
+	background: var(--color-bg-muted);
+	color: var(--color-text-default);
+}
+
+.row:not(:last-child) {
+	border-bottom: 1px solid var(--color-border-default);
+}

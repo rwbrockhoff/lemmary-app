@@ -36,7 +36,7 @@ type GoogleButtonProps = {
 
 export const GoogleButton = ({ label = 'Continue with Google' }: GoogleButtonProps) => {
 	const handleClick = () => {
-		window.location.href = buildGoogleAuthUrl();
+		window.location.assign(buildGoogleAuthUrl());
 	};
 
 	return (
