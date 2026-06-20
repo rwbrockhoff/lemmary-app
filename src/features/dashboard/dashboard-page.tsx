@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Heading, Text, SegmentControl, Flex, Button, cn } from '@artifact-ui/core';
 import { DashboardIcon, RefreshIcon } from '@/components/icons';
+import { useStoreConnectionToast } from '@/features/settings/hooks/use-store-connection-toast';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
@@ -23,6 +24,8 @@ const DashboardPage = () => {
 	const [range, setRange] = useState<DashboardRange>('30');
 	const { data, isLoading, error } = useDashboard(range);
 	const syncMutation = useSyncOrders();
+
+	useStoreConnectionToast();
 
 	return (
 		<div className={cn(shared.pageContainer, styles.page)}>
