@@ -6,9 +6,11 @@ import { ChevronLeftIcon } from '@/components/icons';
 import { PlatformPicker, type Platform } from './components/connect/platform-picker';
 import { ShopifyConnect } from './components/connect/shopify-connect';
 import { SquarespaceConnect } from './components/connect/squarespace-connect';
+import { useStoreConnectionToast } from './hooks/use-store-connection-toast';
 
 const ConnectStorePage = () => {
 	const navigate = useNavigate();
+	useStoreConnectionToast();
 
 	const [platform, setPlatform] = useState<Platform | null>(null);
 
