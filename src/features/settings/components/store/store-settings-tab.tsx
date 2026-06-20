@@ -8,6 +8,7 @@ import { StorefrontIcon } from '@/components/icons';
 import { useStore } from '../../api/store-queries';
 import { StoreConnectionCard } from './store-connection-card';
 import { StorePreferencesCard } from './store-preferences-card';
+import { StoreDangerZoneCard } from './store-danger-zone-card';
 
 export const StoreSettingsTab = () => {
 	const navigate = useNavigate();
@@ -24,6 +25,7 @@ export const StoreSettingsTab = () => {
 					<>
 						<StoreConnectionCard settings={settings} />
 						<StorePreferencesCard settings={settings} />
+						<StoreDangerZoneCard settings={settings} />
 					</>
 				) : (
 					// Show redirect for storeless users

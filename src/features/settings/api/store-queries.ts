@@ -74,3 +74,14 @@ export const useCreateStore = () => {
 		},
 	});
 };
+
+export const useDeleteStore = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: () => api.del('/store'),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: storeKeys.all });
+		},
+	});
+};

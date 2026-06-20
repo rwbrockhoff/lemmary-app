@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
+import { StorefrontIcon } from '@/components/icons';
 import { useToast } from '@/providers/toast-context';
 import { useUpdateStore, type Store } from '../../api/store-queries';
 import { ApiKeyHelpModal } from './api-key-help-modal';
+import styles from './store-connection-card.module.css';
+
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
 type StoreConnectionCardProps = {
 	settings: Store;
@@ -17,6 +21,9 @@ type ConnectionPayload = {
 export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 	const toast = useToast();
 	const updateStore = useUpdateStore();
+	const isShopify = settings.platform === 'shopify';
+	const platformLabel =
+		settings.platform.charAt(0).toUpperCase() + settings.platform.slice(1);
 
 	const [prevSettings, setPrevSettings] = useState(settings);
 	const [storeName, setStoreName] = useState(settings.storeName);
@@ -36,10 +43,9 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 			payload.storeName = storeName.trim();
 		}
 
-		// Clean up URL
 		const currentUrl = settings.storeUrl ?? '';
 		const trimmedUrl = storeUrl.trim();
-		if (trimmedUrl !== currentUrl) {
+		if (!isShopify && trimmedUrl !== currentUrl) {
 			payload.storeUrl = trimmedUrl === '' ? null : trimmedUrl;
 		}
 
@@ -67,10 +73,24 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 		});
 	};
 
+	const handleReconnect = () => {
+		const domain = (settings.storeUrl ?? '').replace(/^https?:\/\//, '');
+		if (!domain) return;
+		window.location.assign(
+			`${API_URL}/auth/shopify/connect?shop=${encodeURIComponent(domain)}`,
+		);
+	};
+
 	return (
 		<Card.Root>
 			<Card.Header>
-				<Heading size="4">Store Connection</Heading>
+				<Flex align="center" justify="between">
+					<Heading size="4">Store Connection</Heading>
+					<div className={styles.statusBadge}>
+						<span className={styles.statusDot} aria-hidden="true" />
+						Connected to {platformLabel}
+					</div>
+				</Flex>
 			</Card.Header>
 			<Card.Body>
 				<Stack gap="5">
@@ -84,38 +104,61 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 						/>
 					</Stack>
 
-					<Stack gap="2">
-						<Text size="2" weight="medium">
-							Store URL
-						</Text>
-						<Text size="2" color="secondary">
-							Used to show links back to your e-commerce throughout the app.
-						</Text>
-						<TextField.Standalone
-							type="url"
-							placeholder="https://yourstore.squarespace.com"
-							value={storeUrl}
-							onChange={(e) => setStoreUrl(e.target.value)}
-						/>
-					</Stack>
-
-					<Stack gap="2">
-						<Flex align="center" justify="between">
+					{isShopify ? (
+						<Stack gap="2">
 							<Text size="2" weight="medium">
-								API Key
+								Connected store
 							</Text>
-							<ApiKeyHelpModal />
-						</Flex>
-						<Text size="2" color="secondary">
-							Leave blank to keep your current store connection.
-						</Text>
-						<TextField.Standalone
-							type="password"
-							placeholder="Paste new API key to update"
-							value={accessToken}
-							onChange={(e) => setAccessToken(e.target.value)}
-						/>
-					</Stack>
+							<Text size="2" color="secondary">
+								{(settings.storeUrl ?? '').replace(/^https?:\/\//, '')}
+							</Text>
+							<Flex>
+								<Button
+									variant="outline"
+									color="neutral"
+									onClick={handleReconnect}
+									iconLeft={<StorefrontIcon size={16} />}
+									className="cursor-pointer">
+									Reconnect with Shopify
+								</Button>
+							</Flex>
+						</Stack>
+					) : (
+						<>
+							<Stack gap="2">
+								<Text size="2" weight="medium">
+									Store URL
+								</Text>
+								<Text size="2" color="secondary">
+									Used to show links back to your e-commerce throughout the app.
+								</Text>
+								<TextField.Standalone
+									type="url"
+									placeholder="https://yourstore.squarespace.com"
+									value={storeUrl}
+									onChange={(e) => setStoreUrl(e.target.value)}
+								/>
+							</Stack>
+
+							<Stack gap="2">
+								<Flex align="center" justify="between">
+									<Text size="2" weight="medium">
+										API Key
+									</Text>
+									<ApiKeyHelpModal />
+								</Flex>
+								<Text size="2" color="secondary">
+									Leave blank to keep your current store connection.
+								</Text>
+								<TextField.Standalone
+									type="password"
+									placeholder="Paste new API key to update"
+									value={accessToken}
+									onChange={(e) => setAccessToken(e.target.value)}
+								/>
+							</Stack>
+						</>
+					)}
 
 					<Flex>
 						<Button

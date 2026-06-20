@@ -1,0 +1,21 @@
+.statusBadge {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	width: fit-content;
+	padding: var(--space-1) var(--space-3);
+	border-radius: var(--radius-full);
+	background: var(--color-success-bg);
+	border: 1px solid var(--color-success);
+	color: var(--color-success);
+	font-size: var(--font-size-1);
+	font-weight: var(--font-weight-medium);
+}
+
+.statusDot {
+	width: 8px;
+	height: 8px;
+	border-radius: var(--radius-full);
+	background: var(--color-success);
+	flex-shrink: 0;
+}
