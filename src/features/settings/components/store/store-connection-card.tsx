@@ -74,11 +74,9 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 	};
 
 	const handleReconnect = () => {
-		const domain = (settings.storeUrl ?? '').replace(/^https?:\/\//, '');
-		if (!domain) return;
-		window.location.assign(
-			`${API_URL}/auth/shopify/connect?shop=${encodeURIComponent(domain)}`,
-		);
+		// Same install hand off as a new connect
+		// Callback recognizes existing store -> refreshes token in place
+		window.location.assign(`${API_URL}/auth/shopify/start`);
 	};
 
 	return (
