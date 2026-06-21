@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router';
-import { AppLayout } from '@/layout/app-layout';
+import { SubscriptionGuard } from '@/layout/subscription-guard';
 import { AuthGuard } from '@/features/auth/auth-guard';
 import { RouteErrorBoundary } from '@/components/error-boundary/route-error-boundary';
 
@@ -105,7 +105,7 @@ const router = createBrowserRouter([
 						),
 					},
 					{
-						element: <AppLayout />,
+						element: <SubscriptionGuard />,
 						children: [
 							{
 								path: '/',
