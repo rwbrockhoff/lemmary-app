@@ -84,9 +84,14 @@ export const BillingSettingsTab = () => {
 									</Flex>
 								</Stack>
 							) : (
-								<Text size="2" color="secondary">
-									You have free access. No subscription needed.
-								</Text>
+								<Stack gap="3">
+									<Badge variant="soft" size="1" color="success">
+										Free access
+									</Badge>
+									<Text size="2" color="secondary">
+										No subscription needed.
+									</Text>
+								</Stack>
 							)}
 						</Card.Body>
 					</Card.Root>
