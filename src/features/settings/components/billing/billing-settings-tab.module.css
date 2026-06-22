@@ -1,3 +1,7 @@
 .trialBadge {
 	border: 1px solid var(--color-info);
 }
+
+.freeBadge {
+	border: 1px solid var(--color-success);
+}
