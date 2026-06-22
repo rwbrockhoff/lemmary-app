@@ -10,8 +10,9 @@ import {
 } from 'chart.js';
 import { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Card, Heading, Text, Flex } from '@artifact-ui/core';
+import { Card, Heading, Flex } from '@artifact-ui/core';
 import { TrendingUpIcon } from '@/components/icons';
+import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import { formatCurrencyShort } from '@/utils/format';
 import { formatBucketDate } from '@/utils/format-bucket-date';
 import type { DashboardBucket, DashboardData } from '../api/dashboard-queries';
@@ -126,9 +127,10 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 					<Heading size="5">Orders & AOV</Heading>
 				</Flex>
 				{data.length === 0 ? (
-					<Text className={styles.empty} size="2">
-						No order data for this period.
-					</Text>
+					<ChartPlaceholder
+						message="Not enough order data yet"
+						subtext="Order and revenue trends appear as more orders come in."
+					/>
 				) : (
 					<div className={styles.chartWrapper}>
 						<Line data={chartData} options={options} />
