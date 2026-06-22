@@ -95,7 +95,7 @@ export const TopProductsCard = ({ products }: TopProductsCardProps) => {
 				</Flex>
 				{products.length === 0 ? (
 					<ChartPlaceholder
-						message="No sales data for this period"
+						message="Not enough sales data yet"
 						subtext="Top products will appear once orders come through."
 					/>
 				) : (

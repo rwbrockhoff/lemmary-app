@@ -60,9 +60,9 @@ export type PerformanceData = {
 	topProducts: {
 		products: TopProduct[];
 	};
-	customerMix: CustomerMix;
-	couponUsage: CouponUsage;
-	onTimeDelivery: OnTimeDelivery;
+	customerMix: CustomerMix | null;
+	couponUsage: CouponUsage | null;
+	onTimeDelivery: OnTimeDelivery | null;
 	materialConsumption: {
 		materials: MaterialConsumptionEntry[];
 	};
