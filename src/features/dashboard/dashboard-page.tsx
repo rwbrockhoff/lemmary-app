@@ -12,6 +12,7 @@ import { useDashboard, type DashboardRange } from './api/dashboard-queries';
 import { KpiCard } from './components/kpi-card';
 import { DueSoonList } from './components/due-soon-list';
 import { OrdersChart } from './components/orders-chart';
+import { CapacityCard } from './components/capacity-card';
 import styles from './dashboard-page.module.css';
 
 const RANGE_OPTIONS: { value: DashboardRange; label: string }[] = [
@@ -65,12 +66,20 @@ const DashboardPage = () => {
 				{data && (
 					<>
 						<div className={styles.kpiGrid}>
-							<KpiCard label="Orders in progress" value={String(data.ordersInProgress)} />
-							<KpiCard label="Completed" value={String(data.ordersCompletedInPeriod)} />
+							<KpiCard
+								label="Open orders"
+								value={String(data.ordersInProgress)}
+								footer={`${data.ordersCompletedInPeriod} completed this period`}
+							/>
+							<CapacityCard
+								dueThisWeek={data.capacity.dueThisWeek}
+								typicalPerWeek={data.capacity.typicalPerWeek}
+								peakPerWeek={data.capacity.peakPerWeek}
+							/>
 							<KpiCard
 								label="Avg lead time"
 								value={data.avgLeadTime.days !== null ? `${data.avgLeadTime.days}d` : '—'}
-								subtitle={
+								footer={
 									data.avgLeadTime.target !== null
 										? `Target: ${data.avgLeadTime.target}d`
 										: undefined
