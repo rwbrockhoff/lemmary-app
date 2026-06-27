@@ -10,6 +10,7 @@ import {
 } from '@/features/billing/api/subscription-queries';
 import { useToast } from '@/providers/toast-context';
 import { CancelSubscriptionModal } from './cancel-subscription-modal';
+import { PaymentMethodSection } from './payment-method-section';
 import { formatDate, formatCurrencyShort } from '@/utils/format';
 import styles from './billing-settings-tab.module.css';
 
@@ -103,6 +104,8 @@ export const BillingSettingsTab = () => {
 											</Text>
 										)
 									)}
+
+									{!isShopify && <PaymentMethodSection />}
 
 									<Flex>
 										{cancelScheduled ? (

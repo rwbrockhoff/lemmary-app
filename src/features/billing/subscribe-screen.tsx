@@ -80,7 +80,11 @@ export const SubscribeScreen = () => {
 						</Text>
 					</Stack>
 					<Elements stripe={stripePromise} options={{ clientSecret }}>
-						<StripePaymentForm onComplete={() => setFinishing(true)} />
+						<StripePaymentForm
+							submitLabel="Start 7-day free trial"
+							errorTitle="Could not start your trial"
+							onConfirmed={() => setFinishing(true)}
+						/>
 					</Elements>
 				</Stack>
 			</AuthLayout>

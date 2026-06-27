@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import type { SetupIntent } from '@stripe/stripe-js';
 import { Button, Stack } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
 
 type StripePaymentFormProps = {
-	onComplete: () => void;
+	submitLabel: string;
+	errorTitle: string;
+	onConfirmed: (setupIntent: SetupIntent) => void | Promise<void>;
 };
 
-export const StripePaymentForm = ({ onComplete }: StripePaymentFormProps) => {
+export const StripePaymentForm = ({
+	submitLabel,
+	errorTitle,
+	onConfirmed,
+}: StripePaymentFormProps) => {
 	const stripe = useStripe();
 	const elements = useElements();
 	const toast = useToast();
@@ -18,22 +25,23 @@ export const StripePaymentForm = ({ onComplete }: StripePaymentFormProps) => {
 		if (!stripe || !elements) return;
 
 		setSubmitting(true);
-		const { error } = await stripe.confirmSetup({
+		const { error, setupIntent } = await stripe.confirmSetup({
 			elements,
 			confirmParams: { return_url: `${window.location.origin}/` },
 			redirect: 'if_required',
 		});
 
-		if (error) {
+		if (error || !setupIntent) {
 			setSubmitting(false);
 			toast.error(
-				error.message ?? 'Please check your card details and try again.',
-				'Could not start your trial',
+				error?.message ?? 'Please check your card details and try again.',
+				errorTitle,
 			);
 			return;
 		}
 
-		onComplete();
+		await onConfirmed(setupIntent);
+		setSubmitting(false);
 	};
 
 	return (
@@ -45,7 +53,7 @@ export const StripePaymentForm = ({ onComplete }: StripePaymentFormProps) => {
 					loading={submitting}
 					disabled={!stripe || submitting}
 					className="cursor-pointer">
-					Start 7-day free trial
+					{submitLabel}
 				</Button>
 			</Stack>
 		</form>
