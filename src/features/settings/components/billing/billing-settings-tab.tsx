@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { Heading, Text, Button, Card, Stack, Flex, Badge } from '@artifact-ui/core';
+import {
+	Heading,
+	Text,
+	Button,
+	Card,
+	Stack,
+	Flex,
+	Badge,
+	Separator,
+} from '@artifact-ui/core';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
@@ -54,6 +63,25 @@ export const BillingSettingsTab = () => {
 		});
 	};
 
+	const actionButton = cancelScheduled ? (
+		<Button
+			variant="outline"
+			onClick={handleResume}
+			loading={resume.isPending}
+			disabled={resume.isPending}
+			className="cursor-pointer">
+			Resume subscription
+		</Button>
+	) : (
+		<Button
+			variant="outline"
+			color="danger"
+			onClick={() => setConfirmOpen(true)}
+			className="cursor-pointer">
+			Cancel subscription
+		</Button>
+	);
+
 	return (
 		<Stack gap="6" className="max-w-2xl">
 			<LoadingWrapper
@@ -68,10 +96,10 @@ export const BillingSettingsTab = () => {
 						</Card.Header>
 						<Card.Body>
 							{data.subscribed ? (
-								<Stack gap="4">
+								<Stack gap="3">
 									<Flex align="center" gap="2">
 										<Text size="3" weight="medium">
-											{data.planName}
+											Plan: {data.planName}
 										</Text>
 										<Badge
 											variant="soft"
@@ -105,28 +133,29 @@ export const BillingSettingsTab = () => {
 										)
 									)}
 
-									{!isShopify && <PaymentMethodSection />}
+									{!isShopify && (
+										<>
+											<Separator spaceY="3" />
+											<PaymentMethodSection />
+										</>
+									)}
 
-									<Flex>
-										{cancelScheduled ? (
-											<Button
-												variant="outline"
-												onClick={handleResume}
-												loading={resume.isPending}
-												disabled={resume.isPending}
-												className="cursor-pointer">
-												Resume subscription
-											</Button>
-										) : (
-											<Button
-												variant="outline"
-												color="danger"
-												onClick={() => setConfirmOpen(true)}
-												className="cursor-pointer">
-												Cancel subscription
-											</Button>
-										)}
-									</Flex>
+									<Separator spaceY="3" />
+
+									<Stack gap="4">
+										<Stack gap="2">
+											<Text size="3" weight="medium">
+												Manage subscription
+											</Text>
+											{!cancelScheduled && (
+												<Text size="2" color="secondary">
+													Cancel anytime. You keep access until the end of your billing
+													period.
+												</Text>
+											)}
+										</Stack>
+										<Flex>{actionButton}</Flex>
+									</Stack>
 								</Stack>
 							) : (
 								<Stack gap="3">

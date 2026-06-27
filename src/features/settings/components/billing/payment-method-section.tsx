@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import type { SetupIntent } from '@stripe/stripe-js';
 import { Text, Button, Stack, Flex } from '@artifact-ui/core';
+import { BillingIcon } from '@/components/icons';
 import { useToast } from '@/providers/toast-context';
 import { stripePromise } from '@/features/billing/stripe';
 import { StripePaymentForm } from '@/features/billing/stripe-payment-form';
@@ -43,14 +44,17 @@ export const PaymentMethodSection = () => {
 
 	return (
 		<Stack gap="3">
-			<Text size="2" weight="medium">
+			<Text size="3" weight="medium">
 				Payment method
 			</Text>
 
 			{card ? (
-				<Text size="2" color="secondary">
-					{capitalize(card.brand)} •••• {card.last4}
-				</Text>
+				<Flex align="center" gap="2">
+					<BillingIcon size={16} />
+					<Text size="2" color="secondary">
+						{capitalize(card.brand)} •••• {card.last4}
+					</Text>
+				</Flex>
 			) : (
 				<Text size="2" color="secondary">
 					No card on file.
@@ -63,13 +67,12 @@ export const PaymentMethodSection = () => {
 						submitLabel="Save card"
 						errorTitle="Could not update card"
 						onConfirmed={handleConfirmed}
+						onCancel={() => setClientSecret(null)}
 					/>
 				</Elements>
 			) : (
 				<Flex>
 					<Button
-						variant="outline"
-						size="1"
 						onClick={openUpdate}
 						loading={startUpdate.isPending}
 						disabled={startUpdate.isPending}

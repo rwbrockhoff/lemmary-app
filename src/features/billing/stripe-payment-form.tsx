@@ -1,19 +1,21 @@
 import { useState } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import type { SetupIntent } from '@stripe/stripe-js';
-import { Button, Stack } from '@artifact-ui/core';
+import { Button, Stack, Flex } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
 
 type StripePaymentFormProps = {
 	submitLabel: string;
 	errorTitle: string;
 	onConfirmed: (setupIntent: SetupIntent) => void | Promise<void>;
+	onCancel?: () => void;
 };
 
 export const StripePaymentForm = ({
 	submitLabel,
 	errorTitle,
 	onConfirmed,
+	onCancel,
 }: StripePaymentFormProps) => {
 	const stripe = useStripe();
 	const elements = useElements();
@@ -48,13 +50,26 @@ export const StripePaymentForm = ({
 		<form onSubmit={handleSubmit}>
 			<Stack gap="4">
 				<PaymentElement />
-				<Button
-					type="submit"
-					loading={submitting}
-					disabled={!stripe || submitting}
-					className="cursor-pointer">
-					{submitLabel}
-				</Button>
+				<Flex gap="2">
+					<Button
+						type="submit"
+						loading={submitting}
+						disabled={!stripe || submitting}
+						className="cursor-pointer">
+						{submitLabel}
+					</Button>
+					{onCancel && (
+						<Button
+							type="button"
+							variant="ghost"
+							color="neutral"
+							onClick={onCancel}
+							disabled={submitting}
+							className="cursor-pointer">
+							Cancel
+						</Button>
+					)}
+				</Flex>
 			</Stack>
 		</form>
 	);
