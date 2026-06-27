@@ -65,6 +65,11 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 		plugins: {
 			legend: { display: true, position: 'top' as const, align: 'end' as const },
 			tooltip: {
+				bodySpacing: 5,
+				bodyFont: { size: 13 },
+				titleFont: { size: 13 },
+				titleMarginBottom: 10,
+				padding: 10,
 				callbacks: {
 					title: (items: TooltipItem<'line'>[]) => {
 						const idx = items[0]?.dataIndex;
@@ -84,10 +89,11 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 						if (idx === undefined) return '';
 						const point = data[idx];
 						if (!point) return '';
+						const lines = [`Revenue: ${formatCurrencyShort(Number(point.revenue))}`];
 						const anomaly = detectAnomaly(point, periodStats);
-						if (anomaly === 'spike') return 'ℹ AOV spike from fewer orders';
-						if (anomaly === 'dip') return 'ℹ AOV dip on high volume';
-						return '';
+						if (anomaly === 'spike') lines.push('ℹ AOV spike from fewer orders');
+						if (anomaly === 'dip') lines.push('ℹ AOV dip on high volume');
+						return lines;
 					},
 				},
 			},
