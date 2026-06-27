@@ -28,6 +28,8 @@
 		"@dnd-kit/sortable": "^10.0.0",
 		"@hookform/resolvers": "^5.2.2",
 		"@sentry/react": "^10.55.0",
+		"@stripe/react-stripe-js": "^6.6.0",
+		"@stripe/stripe-js": "^9.8.0",
 		"@tailwindcss/vite": "^4.2.1",
 		"@tanstack/react-query": "^5.90.21",
 		"chart.js": "^4.5.1",
@@ -44,7 +46,10 @@
 		"zod": "^4.3.6"
 	},
 	"lint-staged": {
-		"*.{ts,tsx}": ["eslint", "prettier --write"]
+		"*.{ts,tsx}": [
+			"eslint",
+			"prettier --write"
+		]
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.39.1",

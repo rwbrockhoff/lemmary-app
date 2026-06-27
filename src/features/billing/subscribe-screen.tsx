@@ -1,10 +1,16 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Elements } from '@stripe/react-stripe-js';
 import { Heading, Text, Stack, Button } from '@artifact-ui/core';
 import { AuthLayout } from '@/features/auth/components/auth-layout';
 import { StorefrontIcon } from '@/components/icons';
 import { useToast } from '@/providers/toast-context';
 import { useStore } from '@/features/settings/api/store-queries';
-import { useCreateSubscription } from './api/subscription-queries';
+import { stripePromise } from './stripe';
+import { StripePaymentForm } from './stripe-payment-form';
+import { useCreateSubscription, useSubscription } from './api/subscription-queries';
+
+const POLL_TIMEOUT_MS = 30_000;
 
 export const SubscribeScreen = () => {
 	const navigate = useNavigate();
@@ -12,12 +18,23 @@ export const SubscribeScreen = () => {
 
 	const { data: store } = useStore();
 	const createSubscription = useCreateSubscription();
+	const [clientSecret, setClientSecret] = useState<string | null>(null);
+	const [pollStartedAt, setPollStartedAt] = useState<number | null>(null);
+
+	// Poll so the guard flips to the app once the webhook lands, capped by the deadline
+	useSubscription(
+		pollStartedAt ? { startedAt: pollStartedAt, timeoutMs: POLL_TIMEOUT_MS } : undefined,
+	);
 
 	const startTrial = () => {
 		createSubscription.mutate(undefined, {
-			onSuccess: ({ confirmationUrl }) => {
-				// Direct to Shopify to approve the charge
-				window.location.assign(confirmationUrl);
+			onSuccess: (result) => {
+				// Shopify approves the charge on their side, Stripe pays on-page
+				if (result.confirmationUrl) {
+					window.location.assign(result.confirmationUrl);
+					return;
+				}
+				if (result.clientSecret) setClientSecret(result.clientSecret);
 			},
 			onError: (error) => {
 				toast.error(error.message, 'Could not start your trial');
@@ -43,6 +60,50 @@ export const SubscribeScreen = () => {
 		);
 	}
 
+	if (pollStartedAt) {
+		return (
+			<AuthLayout>
+				<Stack gap="5">
+					<Stack gap="1">
+						<Heading size="5">Setting up your account</Heading>
+						<Text size="2" color="secondary">
+							One moment while we finish setting up your subscription.
+						</Text>
+					</Stack>
+					<Button
+						variant="ghost"
+						color="neutral"
+						onClick={() => window.location.reload()}
+						className="cursor-pointer">
+						Taking a while? Refresh
+					</Button>
+				</Stack>
+			</AuthLayout>
+		);
+	}
+
+	if (clientSecret && stripePromise) {
+		return (
+			<AuthLayout>
+				<Stack gap="5">
+					<Stack gap="1">
+						<Heading size="5">Add your payment method</Heading>
+						<Text size="2" color="secondary">
+							7 days free, then $19/month. Cancel anytime.
+						</Text>
+					</Stack>
+					<Elements stripe={stripePromise} options={{ clientSecret }}>
+						<StripePaymentForm
+							submitLabel="Start 7-day free trial"
+							errorTitle="Could not start your trial"
+							onConfirmed={() => setPollStartedAt(Date.now())}
+						/>
+					</Elements>
+				</Stack>
+			</AuthLayout>
+		);
+	}
+
 	return (
 		<AuthLayout>
 			<Stack gap="5">
@@ -59,6 +120,7 @@ export const SubscribeScreen = () => {
 
 				<Button
 					onClick={startTrial}
+					loading={createSubscription.isPending}
 					disabled={createSubscription.isPending}
 					iconLeft={<StorefrontIcon size={16} />}
 					className="cursor-pointer">

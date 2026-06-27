@@ -12,19 +12,40 @@ export type Subscription = {
 	cancelAtPeriodEnd: boolean;
 };
 
+export type SavedCard = {
+	brand: string;
+	last4: string;
+};
+
 export const subscriptionKeys = {
 	all: ['subscription'] as const,
 };
 
-export const useSubscription = () =>
+export const paymentMethodKeys = {
+	all: ['payment-method'] as const,
+};
+
+type SubscriptionPoll = {
+	startedAt: number;
+	timeoutMs: number;
+};
+
+export const useSubscription = (poll?: SubscriptionPoll) =>
 	useQuery({
 		queryKey: subscriptionKeys.all,
 		queryFn: () => api.get<Subscription>('/subscription'),
+		refetchInterval: (query) => {
+			if (!poll) return false;
+			if (query.state.data?.access) return false;
+			if (Date.now() - poll.startedAt > poll.timeoutMs) return false;
+			return 1500;
+		},
 	});
 
 export const useCreateSubscription = () =>
 	useMutation({
-		mutationFn: () => api.post<{ confirmationUrl: string }>('/subscription'),
+		mutationFn: () =>
+			api.post<{ confirmationUrl?: string; clientSecret?: string }>('/subscription'),
 	});
 
 export const useCancelSubscription = () => {
@@ -33,5 +54,35 @@ export const useCancelSubscription = () => {
 	return useMutation({
 		mutationFn: () => api.del('/subscription'),
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: subscriptionKeys.all }),
+	});
+};
+
+export const useResumeSubscription = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: () => api.put('/subscription/resume'),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: subscriptionKeys.all }),
+	});
+};
+
+export const usePaymentMethod = () =>
+	useQuery({
+		queryKey: paymentMethodKeys.all,
+		queryFn: () => api.get<{ card: SavedCard | null }>('/subscription/payment-method'),
+	});
+
+export const useStartPaymentMethodUpdate = () =>
+	useMutation({
+		mutationFn: () => api.post<{ clientSecret: string }>('/subscription/payment-method'),
+	});
+
+export const useUpdatePaymentMethod = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (paymentMethodId: string) =>
+			api.put('/subscription/payment-method', { paymentMethodId }),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: paymentMethodKeys.all }),
 	});
 };
