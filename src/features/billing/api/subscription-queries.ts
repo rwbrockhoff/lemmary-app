@@ -16,10 +16,11 @@ export const subscriptionKeys = {
 	all: ['subscription'] as const,
 };
 
-export const useSubscription = () =>
+export const useSubscription = (refetchInterval?: number) =>
 	useQuery({
 		queryKey: subscriptionKeys.all,
 		queryFn: () => api.get<Subscription>('/subscription'),
+		refetchInterval,
 	});
 
 export const useCreateSubscription = () =>
