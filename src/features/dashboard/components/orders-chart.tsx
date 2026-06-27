@@ -10,8 +10,9 @@ import {
 } from 'chart.js';
 import { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Card, Heading, Text, Flex } from '@artifact-ui/core';
+import { Card, Heading, Flex } from '@artifact-ui/core';
 import { TrendingUpIcon } from '@/components/icons';
+import { ChartPlaceholder } from '@/components/chart-placeholder/chart-placeholder';
 import { formatCurrencyShort } from '@/utils/format';
 import { formatBucketDate } from '@/utils/format-bucket-date';
 import type { DashboardBucket, DashboardData } from '../api/dashboard-queries';
@@ -64,6 +65,11 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 		plugins: {
 			legend: { display: true, position: 'top' as const, align: 'end' as const },
 			tooltip: {
+				bodySpacing: 5,
+				bodyFont: { size: 13 },
+				titleFont: { size: 13 },
+				titleMarginBottom: 10,
+				padding: 10,
 				callbacks: {
 					title: (items: TooltipItem<'line'>[]) => {
 						const idx = items[0]?.dataIndex;
@@ -83,10 +89,11 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 						if (idx === undefined) return '';
 						const point = data[idx];
 						if (!point) return '';
+						const lines = [`Revenue: ${formatCurrencyShort(Number(point.revenue))}`];
 						const anomaly = detectAnomaly(point, periodStats);
-						if (anomaly === 'spike') return 'ℹ AOV spike from fewer orders';
-						if (anomaly === 'dip') return 'ℹ AOV dip on high volume';
-						return '';
+						if (anomaly === 'spike') lines.push('ℹ AOV spike from fewer orders');
+						if (anomaly === 'dip') lines.push('ℹ AOV dip on high volume');
+						return lines;
 					},
 				},
 			},
@@ -126,9 +133,10 @@ export const OrdersChart = ({ data, bucket }: OrdersChartProps) => {
 					<Heading size="5">Orders & AOV</Heading>
 				</Flex>
 				{data.length === 0 ? (
-					<Text className={styles.empty} size="2">
-						No order data for this period.
-					</Text>
+					<ChartPlaceholder
+						message="Not enough order data yet"
+						subtext="Order and revenue trends appear as more orders come in."
+					/>
 				) : (
 					<div className={styles.chartWrapper}>
 						<Line data={chartData} options={options} />

@@ -24,9 +24,7 @@ export const BillingSettingsTab = () => {
 	const isShopify = store?.platform === 'shopify';
 
 	const isTrialing =
-		!!data?.subscribed &&
-		!!data.trialEndsAt &&
-		new Date(data.trialEndsAt) > new Date();
+		!!data?.subscribed && !!data.trialEndsAt && new Date(data.trialEndsAt) > new Date();
 
 	return (
 		<Stack gap="6" className="max-w-2xl">
@@ -85,9 +83,15 @@ export const BillingSettingsTab = () => {
 								</Stack>
 							) : (
 								<Stack gap="3">
-									<Badge variant="soft" size="1" color="success">
-										Free access
-									</Badge>
+									<Flex>
+										<Badge
+											variant="soft"
+											size="1"
+											color="success"
+											className={styles.freeBadge}>
+											Free access
+										</Badge>
+									</Flex>
 									<Text size="2" color="secondary">
 										No subscription needed.
 									</Text>

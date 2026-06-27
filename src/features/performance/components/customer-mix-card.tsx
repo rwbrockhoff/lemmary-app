@@ -3,11 +3,14 @@ import { KpiBarCard } from '@/components/kpi-bar-card/kpi-bar-card';
 import type { CustomerMix } from '../api/performance-queries';
 
 type CustomerMixCardProps = {
-	mix: CustomerMix;
+	mix: CustomerMix | null;
 };
 
 export const CustomerMixCard = ({ mix }: CustomerMixCardProps) => {
-	const { returningCount, totalCount, priorReturningCount, priorTotalCount } = mix;
+	const returningCount = mix?.returningCount ?? 0;
+	const totalCount = mix?.totalCount ?? 0;
+	const priorReturningCount = mix?.priorReturningCount ?? 0;
+	const priorTotalCount = mix?.priorTotalCount ?? 0;
 
 	const returningPct =
 		totalCount > 0 ? Math.round((returningCount / totalCount) * 100) : 0;
@@ -26,8 +29,8 @@ export const CustomerMixCard = ({ mix }: CustomerMixCardProps) => {
 			delta={delta}
 			barColor="var(--wf-stage-color-cobalt)"
 			footer={`${returningCount} of ${totalCount} returning`}
-			isEmpty={totalCount === 0}
-			emptyMessage="No customers in this period yet"
+			isEmpty={mix === null}
+			emptyMessage="Not enough customer data yet"
 			emptySubtext="Returning vs new mix appears as orders come in."
 		/>
 	);

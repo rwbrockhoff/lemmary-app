@@ -15,9 +15,8 @@ type EmptyStateProps = {
 export const EmptyState = ({ icon, title, description, action }: EmptyStateProps) => {
 	return (
 		<Stack align="center" gap="3" className={styles.container}>
-			<Heading size="4" iconLeft={icon}>
-				{title}
-			</Heading>
+			<div className={styles.icon}>{icon}</div>
+			<Heading size="4">{title}</Heading>
 			{description && (
 				<Text color="secondary" size="2">
 					{description}

@@ -47,7 +47,7 @@ export const MaterialConsumptionCard = ({
 				</Text>
 				{materials.length === 0 ? (
 					<ChartPlaceholder
-						message="No material trends yet"
+						message="Not enough material data yet"
 						subtext="Material trends appear as more orders come in."
 					/>
 				) : (

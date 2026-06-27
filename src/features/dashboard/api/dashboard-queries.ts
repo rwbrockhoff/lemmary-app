@@ -24,6 +24,11 @@ export type DashboardData = {
 		days: number | null;
 		target: number | null;
 	};
+	capacity: {
+		dueThisWeek: number;
+		typicalPerWeek: number;
+		peakPerWeek: number;
+	};
 	dueSoon: Array<{
 		id: string;
 		orderNumber: string;

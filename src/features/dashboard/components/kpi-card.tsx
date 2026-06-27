@@ -5,7 +5,7 @@ type KpiCardProps = {
 	label: string;
 	value: string;
 	delta?: number;
-	subtitle?: string;
+	footer?: string;
 };
 
 const formatDelta = (delta: number) => {
@@ -19,26 +19,24 @@ const deltaColorVar = (delta: number) => {
 	return delta > 0 ? 'var(--color-success)' : 'var(--color-error)';
 };
 
-export const KpiCard = ({ label, value, delta, subtitle }: KpiCardProps) => {
+export const KpiCard = ({ label, value, delta, footer }: KpiCardProps) => {
 	return (
 		<Card.Root>
 			<div className={styles.card}>
-				<Text size="2" color="secondary" weight="medium">
-					{label}
-				</Text>
-				<Text size="7" weight="bold" color="accent">
-					{value}
-				</Text>
-				{delta !== undefined && (
-					<Text size="2" style={{ color: deltaColorVar(delta) }}>
-						{formatDelta(delta)}
+				<div className={styles.cardContent}>
+					<Text size="2" color="secondary" weight="medium">
+						{label}
 					</Text>
-				)}
-				{subtitle && (
-					<Text size="1" color="tertiary">
-						{subtitle}
+					<Text size="7" weight="bold" color="accent">
+						{value}
 					</Text>
-				)}
+					{delta !== undefined && (
+						<Text size="2" style={{ color: deltaColorVar(delta) }}>
+							{formatDelta(delta)}
+						</Text>
+					)}
+				</div>
+				{footer && <div className={styles.footer}>{footer}</div>}
 			</div>
 		</Card.Root>
 	);
