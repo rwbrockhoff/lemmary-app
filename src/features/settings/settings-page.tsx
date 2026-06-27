@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router';
 import { Heading, Stack, Tabs } from '@artifact-ui/core';
 import {
 	SettingsIcon,
@@ -11,14 +12,22 @@ import { StoreSettingsTab } from './components/store/store-settings-tab';
 import { BillingSettingsTab } from './components/billing/billing-settings-tab';
 import { WorkflowSettingsTab } from './components/workflow/workflow-settings-tab';
 
+const TAB_VALUES = ['account', 'store', 'billing', 'workflow'];
+
 const SettingsPage = () => {
+	const [params] = useSearchParams();
+	const updateCard = params.get('update_card') === 'true';
+	const requestedTab = updateCard ? 'billing' : params.get('tab');
+	const defaultTab =
+		requestedTab && TAB_VALUES.includes(requestedTab) ? requestedTab : 'account';
+
 	return (
 		<div className="p-8">
 			<Stack gap="6">
 				<Heading size="6" iconLeft={<SettingsIcon />}>
 					Settings
 				</Heading>
-				<Tabs.Root defaultValue="account">
+				<Tabs.Root defaultValue={defaultTab}>
 					<Tabs.List>
 						<Tabs.Trigger value="account" className="gap-2">
 							<UserIcon size={16} />
