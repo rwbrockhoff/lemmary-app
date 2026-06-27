@@ -24,7 +24,8 @@ export const useSubscription = () =>
 
 export const useCreateSubscription = () =>
 	useMutation({
-		mutationFn: () => api.post<{ confirmationUrl: string }>('/subscription'),
+		mutationFn: () =>
+			api.post<{ confirmationUrl?: string; clientSecret?: string }>('/subscription'),
 	});
 
 export const useCancelSubscription = () => {
