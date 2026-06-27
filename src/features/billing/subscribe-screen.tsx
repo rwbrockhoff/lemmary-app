@@ -10,6 +10,8 @@ import { stripePromise } from './stripe';
 import { StripePaymentForm } from './stripe-payment-form';
 import { useCreateSubscription, useSubscription } from './api/subscription-queries';
 
+const POLL_TIMEOUT_MS = 30_000;
+
 export const SubscribeScreen = () => {
 	const navigate = useNavigate();
 	const toast = useToast();
@@ -17,10 +19,12 @@ export const SubscribeScreen = () => {
 	const { data: store } = useStore();
 	const createSubscription = useCreateSubscription();
 	const [clientSecret, setClientSecret] = useState<string | null>(null);
-	const [finishing, setFinishing] = useState(false);
+	const [pollStartedAt, setPollStartedAt] = useState<number | null>(null);
 
-	// While finishing, poll so the guard flips to the app once the webhook lands
-	useSubscription(finishing ? 1500 : undefined);
+	// Poll so the guard flips to the app once the webhook lands, capped by the deadline
+	useSubscription(
+		pollStartedAt ? { startedAt: pollStartedAt, timeoutMs: POLL_TIMEOUT_MS } : undefined,
+	);
 
 	const startTrial = () => {
 		createSubscription.mutate(undefined, {
@@ -56,14 +60,23 @@ export const SubscribeScreen = () => {
 		);
 	}
 
-	if (finishing) {
+	if (pollStartedAt) {
 		return (
 			<AuthLayout>
-				<Stack gap="1">
-					<Heading size="5">Setting up your account</Heading>
-					<Text size="2" color="secondary">
-						One moment while we finish setting up your subscription.
-					</Text>
+				<Stack gap="5">
+					<Stack gap="1">
+						<Heading size="5">Setting up your account</Heading>
+						<Text size="2" color="secondary">
+							One moment while we finish setting up your subscription.
+						</Text>
+					</Stack>
+					<Button
+						variant="ghost"
+						color="neutral"
+						onClick={() => window.location.reload()}
+						className="cursor-pointer">
+						Taking a while? Refresh
+					</Button>
 				</Stack>
 			</AuthLayout>
 		);
@@ -83,7 +96,7 @@ export const SubscribeScreen = () => {
 						<StripePaymentForm
 							submitLabel="Start 7-day free trial"
 							errorTitle="Could not start your trial"
-							onConfirmed={() => setFinishing(true)}
+							onConfirmed={() => setPollStartedAt(Date.now())}
 						/>
 					</Elements>
 				</Stack>

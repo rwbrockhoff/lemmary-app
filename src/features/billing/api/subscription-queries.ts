@@ -25,11 +25,21 @@ export const paymentMethodKeys = {
 	all: ['payment-method'] as const,
 };
 
-export const useSubscription = (refetchInterval?: number) =>
+type SubscriptionPoll = {
+	startedAt: number;
+	timeoutMs: number;
+};
+
+export const useSubscription = (poll?: SubscriptionPoll) =>
 	useQuery({
 		queryKey: subscriptionKeys.all,
 		queryFn: () => api.get<Subscription>('/subscription'),
-		refetchInterval,
+		refetchInterval: (query) => {
+			if (!poll) return false;
+			if (query.state.data?.access) return false;
+			if (Date.now() - poll.startedAt > poll.timeoutMs) return false;
+			return 1500;
+		},
 	});
 
 export const useCreateSubscription = () =>
