@@ -4,12 +4,22 @@ import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
 import { useStore } from '../../api/store-queries';
-import { useSubscription } from '@/features/billing/api/subscription-queries';
+import {
+	useSubscription,
+	useResumeSubscription,
+} from '@/features/billing/api/subscription-queries';
+import { useToast } from '@/providers/toast-context';
 import { CancelSubscriptionModal } from './cancel-subscription-modal';
 import { formatDate, formatCurrencyShort } from '@/utils/format';
 import styles from './billing-settings-tab.module.css';
 
 const DAY_MS = 86_400_000;
+
+type BadgeState = {
+	label: string;
+	color: 'success' | 'warning' | 'info';
+	className?: string;
+};
 
 function trialDaysLeft(trialEndsAt: string): number {
 	const diff = new Date(trialEndsAt).getTime() - Date.now();
@@ -19,12 +29,29 @@ function trialDaysLeft(trialEndsAt: string): number {
 export const BillingSettingsTab = () => {
 	const { data: store } = useStore();
 	const { data, isLoading, error } = useSubscription();
+	const resume = useResumeSubscription();
+	const toast = useToast();
 	const [confirmOpen, setConfirmOpen] = useState(false);
 
 	const isShopify = store?.platform === 'shopify';
 
 	const isTrialing =
 		!!data?.subscribed && !!data.trialEndsAt && new Date(data.trialEndsAt) > new Date();
+
+	const cancelScheduled = !!data?.cancelAtPeriodEnd;
+	const endsOn = data?.currentPeriodEnd ?? data?.trialEndsAt;
+
+	let badge: BadgeState = { label: 'Active', color: 'success' };
+	if (cancelScheduled) badge = { label: 'Canceling', color: 'warning' };
+	else if (isTrialing)
+		badge = { label: 'Trial', color: 'info', className: styles.trialBadge };
+
+	const handleResume = () => {
+		resume.mutate(undefined, {
+			onSuccess: () => toast.success('Subscription resumed'),
+			onError: (err) => toast.error(err.message, 'Could not resume'),
+		});
+	};
 
 	return (
 		<Stack gap="6" className="max-w-2xl">
@@ -48,9 +75,9 @@ export const BillingSettingsTab = () => {
 										<Badge
 											variant="soft"
 											size="1"
-											color={isTrialing ? 'info' : 'success'}
-											className={isTrialing ? styles.trialBadge : undefined}>
-											{isTrialing ? 'Trial' : 'Active'}
+											color={badge.color}
+											className={badge.className}>
+											{badge.label}
 										</Badge>
 									</Flex>
 
@@ -58,7 +85,13 @@ export const BillingSettingsTab = () => {
 										{`${formatCurrencyShort(data.price)}/month`}
 									</Text>
 
-									{isTrialing && data.trialEndsAt ? (
+									{cancelScheduled ? (
+										endsOn && (
+											<Text size="2" color="secondary">
+												Your subscription ends on {formatDate(endsOn)}.
+											</Text>
+										)
+									) : isTrialing && data.trialEndsAt ? (
 										<Text size="2" color="secondary">
 											{trialDaysLeft(data.trialEndsAt)} days left in your free trial.
 											First charge on {formatDate(data.trialEndsAt)}.
@@ -72,13 +105,24 @@ export const BillingSettingsTab = () => {
 									)}
 
 									<Flex>
-										<Button
-											variant="outline"
-											color="danger"
-											onClick={() => setConfirmOpen(true)}
-											className="cursor-pointer">
-											Cancel subscription
-										</Button>
+										{cancelScheduled ? (
+											<Button
+												variant="outline"
+												onClick={handleResume}
+												loading={resume.isPending}
+												disabled={resume.isPending}
+												className="cursor-pointer">
+												Resume subscription
+											</Button>
+										) : (
+											<Button
+												variant="outline"
+												color="danger"
+												onClick={() => setConfirmOpen(true)}
+												className="cursor-pointer">
+												Cancel subscription
+											</Button>
+										)}
 									</Flex>
 								</Stack>
 							) : (

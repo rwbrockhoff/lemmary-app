@@ -37,3 +37,12 @@ export const useCancelSubscription = () => {
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: subscriptionKeys.all }),
 	});
 };
+
+export const useResumeSubscription = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: () => api.put('/subscription/resume'),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: subscriptionKeys.all }),
+	});
+};
