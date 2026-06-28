@@ -5,7 +5,8 @@ import shared from '@/styles/shared.module.css';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import { useCompletedOrders } from '../api/orders-queries';
-import { formatDate, formatCurrency } from '@/utils/format';
+import { formatCurrency } from '@/utils/format';
+import { useFormatDateTz } from '@/hooks/use-format-date-tz';
 import { ExternalLinkIcon } from '@/components/icons/icons';
 import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
 import { OrderNumberLabel } from '@/components/orders/order-number-label';
@@ -14,6 +15,7 @@ import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 
 export const CompletedOrdersTable = () => {
 	const navigate = useNavigate();
+	const formatTz = useFormatDateTz();
 	const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
 		useCompletedOrders();
 
@@ -105,9 +107,9 @@ export const CompletedOrdersTable = () => {
 									hasNotes={Boolean(order.order_notes)}
 								/>
 							</Table.Cell>
-							<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
+							<Table.Cell>{formatTz(order.order_date)}</Table.Cell>
 							<Table.Cell>
-								{order.fulfilled_at ? formatDate(order.fulfilled_at) : '—'}
+								{order.fulfilled_at ? formatTz(order.fulfilled_at) : '—'}
 							</Table.Cell>
 							<Table.Cell>{order.item_count}</Table.Cell>
 							<Table.Cell className="text-end">

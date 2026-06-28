@@ -25,15 +25,17 @@ type BottleneckCardProps = {
 };
 
 export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
-	const hasEnoughData = stages.length > 0;
+	// drop stages that round to 0 min, not real bottlenecks
+	const visibleStages = stages.filter((s) => Math.round(s.avgDays * 24 * 60) > 0);
+	const hasEnoughData = visibleStages.length > 0;
 
 	const chartData = {
-		labels: stages.map((s) => s.stageName),
+		labels: visibleStages.map((s) => s.stageName),
 		datasets: [
 			{
 				label: 'Avg time',
-				data: stages.map((s) => Number(s.avgDays.toFixed(2))),
-				backgroundColor: stages.map((s) => resolveStageColor(s.stageColor)),
+				data: visibleStages.map((s) => Number(s.avgDays.toFixed(2))),
+				backgroundColor: visibleStages.map((s) => resolveStageColor(s.stageColor)),
 				minBarLength: 75,
 				...BAR_DATASET_STYLE,
 			},

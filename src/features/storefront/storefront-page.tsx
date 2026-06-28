@@ -6,6 +6,7 @@ import { ErrorState } from '@/components/error-state/error-state';
 import { EmptyState } from '@/components/empty-state/empty-state';
 import { useProducts, useSyncProducts } from './api/storefront-queries';
 import { ProductsTable } from './components/products-table';
+import { ProductsActionsMenu } from './components/products-actions-menu';
 import { formatRelativeTime } from '@/utils/format';
 import shared from '@/styles/shared.module.css';
 
@@ -29,13 +30,16 @@ const StorefrontPage = () => {
 						</Text>
 					)}
 				</Stack>
-				<Button
-					onClick={() => syncMutation.mutate()}
-					disabled={syncMutation.isPending}
-					variant="default"
-					iconLeft={<RefreshIcon size={16} />}>
-					{syncMutation.isPending ? 'Syncing...' : 'Sync Products'}
-				</Button>
+				<Flex gap="3" align="center">
+					<Button
+						onClick={() => syncMutation.mutate()}
+						disabled={syncMutation.isPending}
+						variant="default"
+						iconLeft={<RefreshIcon size={16} />}>
+						{syncMutation.isPending ? 'Syncing...' : 'Sync Products'}
+					</Button>
+					<ProductsActionsMenu />
+				</Flex>
 			</Flex>
 
 			<LoadingWrapper

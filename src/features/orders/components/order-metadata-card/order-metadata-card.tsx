@@ -5,7 +5,9 @@ import { CustomerMetadataRow } from '@/features/customers/components/customer-me
 import { OrderTypeBadge } from '../order-type-badge';
 import { useToast } from '@/providers/toast-context';
 import { formatCurrency } from '@/utils/format';
-import { parseDateValue, formatDateValue } from '@/utils/date';
+import { parseDateValue, formatDateValue, toZonedDateValue } from '@/utils/date';
+import { useStore } from '@/features/settings/api/store-queries';
+import { DEFAULT_TIMEZONE } from '@/utils/timezones';
 import type { OrderDetail } from '@/types/api';
 import styles from './order-metadata-card.module.css';
 
@@ -17,6 +19,7 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 	const [notes, setNotes] = useState(order.order_notes ?? '');
 	const updateNotes = useUpdateOrderNotes(order.id);
 	const updateDates = useUpdateOrderDates(order.id);
+	const { data: store } = useStore();
 	const toast = useToast();
 
 	const hasNotesChanged = notes !== (order.order_notes ?? '');
@@ -78,7 +81,9 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 							Date
 						</Text>
 						<DatePicker
-							selected={parseDateValue(order.order_date.slice(0, 10))}
+							selected={parseDateValue(
+								toZonedDateValue(order.order_date, store?.timezone ?? DEFAULT_TIMEZONE),
+							)}
 							onSelect={handleOrderDateChange}
 							disabled={order.order_type === 'platform'}
 							placeholder="Set order date"

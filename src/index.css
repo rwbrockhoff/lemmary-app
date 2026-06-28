@@ -1,3 +1,5 @@
+/* utilities last so Tailwind overrides Artifact */
+@layer theme, base, foundation, components, overrides, utilities;
 @import 'tailwindcss';
 
 @media (max-width: 768px) {
@@ -41,5 +43,10 @@ textarea:focus,
 textarea:focus-visible,
 select:focus,
 select:focus-visible {
+	outline: none;
+}
+
+/* skip dialog focus-ring flash */
+[role='dialog']:focus-visible {
 	outline: none;
 }

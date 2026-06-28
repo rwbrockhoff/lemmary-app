@@ -1,3 +1,6 @@
+// matches the stores.timezone column default
+export const DEFAULT_TIMEZONE = 'America/Denver';
+
 // US zones only
 export const timezoneOptions = [
 	{ value: 'America/New_York', label: 'Eastern Time (ET)' },

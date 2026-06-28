@@ -1,6 +1,7 @@
 import { Flex, Heading, Stack, Text } from '@artifact-ui/core';
 import { CustomerTierBadge } from './customer-tier-badge';
-import { formatCurrencyShort, formatDate } from '@/utils/format';
+import { formatCurrencyShort } from '@/utils/format';
+import { useFormatDateTz } from '@/hooks/use-format-date-tz';
 import type { CustomerDetail } from '@/types/api';
 
 type CustomerHeaderProps = {
@@ -8,6 +9,7 @@ type CustomerHeaderProps = {
 };
 
 export const CustomerHeader = ({ customer }: CustomerHeaderProps) => {
+	const formatTz = useFormatDateTz();
 	const lifetimeSpend = Number(customer.lifetimeSpend);
 	const avgOrderValue = customer.orderCount > 0 ? lifetimeSpend / customer.orderCount : 0;
 
@@ -53,7 +55,7 @@ export const CustomerHeader = ({ customer }: CustomerHeaderProps) => {
 						Customer since
 					</Text>
 					<Text size="4" weight="medium">
-						{formatDate(customer.firstOrderDate)}
+						{formatTz(customer.firstOrderDate)}
 					</Text>
 				</Stack>
 			</Flex>

@@ -7,6 +7,16 @@ export function formatDate(dateString: string) {
 	});
 }
 
+// a timestamptz instant as a date in the store's zone
+export function formatDateTz(dateString: string, timeZone?: string) {
+	return new Date(dateString).toLocaleDateString('en-US', {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
+		timeZone,
+	});
+}
+
 export function formatRelativeTime(dateString: string) {
 	const now = Date.now();
 	const then = new Date(dateString).getTime();

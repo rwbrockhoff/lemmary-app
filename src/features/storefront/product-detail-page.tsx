@@ -6,13 +6,18 @@ import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
 import { ProductThumbnail } from '@/components/product-thumbnail/product-thumbnail';
 import { formatCurrency } from '@/utils/format';
-import { useProduct } from './api/storefront-queries';
+import { useToast } from '@/providers/toast-context';
+import { useProduct, useUpdateVariantProductionType } from './api/storefront-queries';
+import { ProductionTypeSelect } from './components/production-type-select';
 import shared from '@/styles/shared.module.css';
 
 const ProductDetailPage = () => {
 	const { productId } = useParams<{ productId: string }>();
 	const navigate = useNavigate();
+	const toast = useToast();
+
 	const { data: product, isLoading, error } = useProduct(productId!);
+	const updateProductionType = useUpdateVariantProductionType(productId!);
 
 	return (
 		<div className={shared.pageContainer}>
@@ -41,7 +46,8 @@ const ProductDetailPage = () => {
 							<colgroup>
 								<col />
 								<col className="w-40" />
-								<col className="w-40" />
+								<col className="w-36" />
+								<col className="w-24" />
 								<col className="w-40" />
 							</colgroup>
 							<Table.Header>
@@ -64,6 +70,11 @@ const ProductDetailPage = () => {
 									<Table.HeaderCell>
 										<Text size="2" weight="medium" color="secondary">
 											Stock
+										</Text>
+									</Table.HeaderCell>
+									<Table.HeaderCell>
+										<Text size="2" weight="medium" color="secondary">
+											Production
 										</Text>
 									</Table.HeaderCell>
 								</Table.Row>
@@ -97,6 +108,23 @@ const ProductDetailPage = () => {
 											{variant.stock_unlimited
 												? 'Unlimited'
 												: (variant.stock_quantity ?? 0)}
+										</Table.Cell>
+										<Table.Cell onClick={(e) => e.stopPropagation()}>
+											<ProductionTypeSelect
+												value={variant.production_type}
+												onChange={(productionType) =>
+													updateProductionType.mutate(
+														{ variantId: variant.id, productionType },
+														{
+															onError: (err) =>
+																toast.error(
+																	err.message,
+																	'Could not update production type',
+																),
+														},
+													)
+												}
+											/>
 										</Table.Cell>
 									</Table.Row>
 								))}
