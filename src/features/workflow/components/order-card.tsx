@@ -3,6 +3,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { Text, Badge, Card, Flex, Stack, cn } from '@artifact-ui/core';
 import { LockIcon } from '@/components/icons';
 import { formatDate } from '@/utils/format';
+import { useFormatDateTz } from '@/hooks/use-format-date-tz';
 import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
 import { getOrderDisplayName } from '@/utils/orders';
 import { OrderNumberLabel } from '@/components/orders/order-number-label';
@@ -45,6 +46,7 @@ type OrderCardContentProps = {
 };
 
 const OrderCardContent = ({ order, isLocked }: OrderCardContentProps) => {
+	const formatTz = useFormatDateTz();
 	const stageColor = order.workflow_stage_color
 		? `var(--wf-stage-color-${order.workflow_stage_color})`
 		: undefined;
@@ -81,7 +83,7 @@ const OrderCardContent = ({ order, isLocked }: OrderCardContentProps) => {
 				<div className="mb-2">
 					<Stack gap="1">
 						<Text size="1" color="secondary">
-							Ordered: {formatDate(order.order_date)}
+							Ordered: {formatTz(order.order_date)}
 						</Text>
 						{order.due_date && (
 							<Text size="1" color="secondary">

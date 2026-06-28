@@ -16,3 +16,12 @@ export const formatDateValue = (date: Date): string => {
 	const day = String(date.getDate()).padStart(2, '0');
 	return `${year}-${month}-${day}`;
 };
+
+// a timestamptz instant as 'YYYY-MM-DD' in the given zone
+export const toZonedDateValue = (iso: string, timeZone?: string): string =>
+	new Intl.DateTimeFormat('en-CA', {
+		timeZone,
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit',
+	}).format(new Date(iso));

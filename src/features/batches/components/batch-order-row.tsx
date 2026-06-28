@@ -7,6 +7,7 @@ import { OrderNumberLabel } from '@/components/orders/order-number-label';
 import { isOrderLocked, getOrderDisplayName } from '@/utils/orders';
 import { getProgressColor } from '../utils/batch-utils';
 import { formatDate } from '@/utils/format';
+import { useFormatDateTz } from '@/hooks/use-format-date-tz';
 import type { BatchOrder, BatchOrderItem, WorkflowStage } from '@/types/api';
 
 type BatchOrderRowProps = {
@@ -28,6 +29,7 @@ export const BatchOrderRow = ({
 	onCheckboxToggle,
 	onStageChange,
 }: BatchOrderRowProps) => {
+	const formatTz = useFormatDateTz();
 	const completed = items.filter((i) => i.is_complete).length;
 	const total = items.length;
 
@@ -58,7 +60,7 @@ export const BatchOrderRow = ({
 					hasNotes={Boolean(order.order_notes)}
 				/>
 			</Table.Cell>
-			<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
+			<Table.Cell>{formatTz(order.order_date)}</Table.Cell>
 			<Table.Cell>{order.due_date ? formatDate(order.due_date) : '—'}</Table.Cell>
 			<Table.Cell>
 				<Badge size="1" variant="soft" color={getProgressColor(completed, total)}>

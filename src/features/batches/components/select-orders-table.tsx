@@ -3,6 +3,7 @@ import { Table, Checkbox, Badge, IconButton, cn } from '@artifact-ui/core';
 import { ChevronDownIcon } from '@/components/icons/icons';
 import { OrderItemsExpanded } from '@/features/orders/components/order-items-expanded/order-items-expanded';
 import { formatDate, formatCurrency } from '@/utils/format';
+import { useFormatDateTz } from '@/hooks/use-format-date-tz';
 import { getOrderDisplayName } from '@/utils/orders';
 import shared from '@/styles/shared.module.css';
 import type { OrderWithItems } from '@/types/api';
@@ -26,6 +27,7 @@ export const SelectOrdersTable = ({
 	onToggle,
 	onExpand,
 }: SelectOrdersTableProps) => {
+	const formatTz = useFormatDateTz();
 	const colCount = tab === 'available' ? 8 : 8;
 
 	return (
@@ -64,7 +66,7 @@ export const SelectOrdersTable = ({
 								<Table.Cell className="truncate max-w-0">
 									{getOrderDisplayName(order)}
 								</Table.Cell>
-								<Table.Cell>{formatDate(order.order_date)}</Table.Cell>
+								<Table.Cell>{formatTz(order.order_date)}</Table.Cell>
 								<Table.Cell>
 									{order.due_date ? formatDate(order.due_date) : '—'}
 								</Table.Cell>

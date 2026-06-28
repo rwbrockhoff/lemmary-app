@@ -6,7 +6,7 @@ import {
 	ListChecksIcon,
 } from '@/components/icons/icons';
 import { BatchStatusSelect } from './batch-status-select';
-import { formatDate } from '@/utils/format';
+import { useFormatDateTz } from '@/hooks/use-format-date-tz';
 import type { Batch } from '@/types/api';
 
 type BatchRowProps = {
@@ -26,6 +26,8 @@ export const BatchRow = ({
 	onRename,
 	onDelete,
 }: BatchRowProps) => {
+	const formatTz = useFormatDateTz();
+
 	const handleEditOrders = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onEditOrders();
@@ -51,7 +53,7 @@ export const BatchRow = ({
 			<Table.Cell onClick={(e) => e.stopPropagation()}>
 				<BatchStatusSelect value={batch.status} onChange={onStatusChange} />
 			</Table.Cell>
-			<Table.Cell>{formatDate(batch.created_at)}</Table.Cell>
+			<Table.Cell>{formatTz(batch.created_at)}</Table.Cell>
 			<Table.Cell>
 				<DropdownMenu.DropdownMenu>
 					<DropdownMenu.DropdownMenuTrigger asChild>
