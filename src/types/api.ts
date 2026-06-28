@@ -12,6 +12,8 @@ export type OrdersResponse = {
 
 export type OrderType = 'platform' | 'custom' | 'work';
 
+export type ProductionType = 'made_to_order' | 'ready_made' | 'dropship' | 'digital';
+
 export type Order = {
 	id: string;
 	store_id: string;
@@ -233,6 +235,7 @@ export type ProductVariant = {
 	on_sale: boolean;
 	stock_quantity: number | null;
 	stock_unlimited: boolean;
+	production_type: ProductionType;
 	image_url: string | null;
 	bom_item_count: number;
 	created_at: string;

@@ -4,7 +4,11 @@ import { SortableHeader } from '@/components/sortable-header';
 import { ProductThumbnail } from '@/components/product-thumbnail/product-thumbnail';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import { formatCurrency } from '@/utils/format';
+import { useToast } from '@/providers/toast-context';
 import type { Product, ProductVariant } from '@/types/api';
+import { ProductionTypeSelect } from './production-type-select';
+import { getProductProductionType } from '../production-type';
+import { useUpdateProductProductionType } from '../api/storefront-queries';
 
 type ProductsTableProps = {
 	products: Product[];
@@ -33,23 +37,24 @@ function getStockDisplay(variants: ProductVariant[]) {
 	return String(total);
 }
 
-
 export const ProductsTable = ({ products }: ProductsTableProps) => {
 	const navigate = useNavigate();
-	const { sortedData, sortKey, sortDirection, toggleSort } =
-		useSortableTable(products, {
-			defaultKey: 'is_visible',
-			defaultDirection: 'desc',
-			storageKey: 'storefront-products',
-		});
+	const toast = useToast();
+	const updateProductionType = useUpdateProductProductionType();
+	const { sortedData, sortKey, sortDirection, toggleSort } = useSortableTable(products, {
+		defaultKey: 'is_visible',
+		defaultDirection: 'desc',
+		storageKey: 'storefront-products',
+	});
 
 	return (
 		<Table.Root variant="surface" size="2">
 			<colgroup>
-				<col className="w-1/2" />
+				<col className="w-2/5" />
 				<col className="w-28" />
 				<col className="w-28" />
-				<col className="w-28" />
+				<col className="w-24" />
+				<col className="w-40" />
 				<col className="w-28" />
 			</colgroup>
 			<Table.Header>
@@ -69,10 +74,19 @@ export const ProductsTable = ({ products }: ProductsTableProps) => {
 						onSort={toggleSort}
 					/>
 					<Table.HeaderCell>
-						<Text size="2" weight="medium" color="secondary">Price</Text>
+						<Text size="2" weight="medium" color="secondary">
+							Price
+						</Text>
 					</Table.HeaderCell>
 					<Table.HeaderCell>
-						<Text size="2" weight="medium" color="secondary">Stock</Text>
+						<Text size="2" weight="medium" color="secondary">
+							Stock
+						</Text>
+					</Table.HeaderCell>
+					<Table.HeaderCell>
+						<Text size="2" weight="medium" color="secondary">
+							Production
+						</Text>
 					</Table.HeaderCell>
 					<SortableHeader
 						label="Visibility"
@@ -88,25 +102,35 @@ export const ProductsTable = ({ products }: ProductsTableProps) => {
 					<Table.Row
 						key={product.id}
 						className="cursor-pointer"
-						onClick={() => navigate(`/storefront/${product.id}`)}
-					>
+						onClick={() => navigate(`/storefront/${product.id}`)}>
 						<Table.Cell>
 							<Flex align="center" gap="3">
 								<ProductThumbnail src={product.image_url} alt={product.name} />
 								{product.name}
 							</Flex>
 						</Table.Cell>
-						<Table.Cell>
-							{product.variant_count}
-						</Table.Cell>
+						<Table.Cell>{product.variant_count}</Table.Cell>
 						<Table.Cell>{getPriceDisplay(product.variants)}</Table.Cell>
 						<Table.Cell>{getStockDisplay(product.variants)}</Table.Cell>
+						<Table.Cell onClick={(e) => e.stopPropagation()}>
+							<ProductionTypeSelect
+								value={getProductProductionType(product.variants)}
+								onChange={(productionType) =>
+									updateProductionType.mutate(
+										{ productId: product.id, productionType },
+										{
+											onError: (err) =>
+												toast.error(err.message, 'Could not update production type'),
+										},
+									)
+								}
+							/>
+						</Table.Cell>
 						<Table.Cell>
 							<Badge
 								size="1"
 								variant="soft"
-								color={product.is_visible ? 'success' : 'neutral'}
-							>
+								color={product.is_visible ? 'success' : 'neutral'}>
 								{product.is_visible ? 'Visible' : 'Hidden'}
 							</Badge>
 						</Table.Cell>

@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import { storefrontKeys } from './storefront-keys';
-import type { ProductDetail, ProductsResponse } from '@/types/api';
+import type { ProductDetail, ProductsResponse, ProductionType } from '@/types/api';
 
 export const useProducts = () => {
 	return useQuery({
@@ -22,6 +22,26 @@ export const useSyncProducts = () => {
 
 	return useMutation({
 		mutationFn: () => api.post<{ synced: number }>('/products/sync'),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: storefrontKeys.all });
+		},
+	});
+};
+
+export const useUpdateProductProductionType = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({
+			productId,
+			productionType,
+		}: {
+			productId: string;
+			productionType: ProductionType;
+		}) =>
+			api.patch<{ updated: number }>(`/products/${productId}/variants`, {
+				productionType,
+			}),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: storefrontKeys.all });
 		},
