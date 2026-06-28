@@ -40,3 +40,15 @@ export const useUpdateMaterial = () => {
 		},
 	});
 };
+
+export const useDeleteMaterial = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (materialId: string) => api.del(`/materials/${materialId}`),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: materialsKeys.library });
+			queryClient.invalidateQueries({ queryKey: materialsKeys.report });
+		},
+	});
+};

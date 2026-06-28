@@ -1,8 +1,11 @@
-import { Table, TextField, Flex, cn } from '@artifact-ui/core';
+import { useState } from 'react';
+import { Table, TextField, Flex, IconButton, cn } from '@artifact-ui/core';
 import { LinkPopup } from '@/features/storefront/components/link-popup/link-popup';
-import { ExternalLinkIcon } from '@/components/icons/icons';
+import { ExternalLinkIcon, TrashIcon } from '@/components/icons/icons';
 import { useLibraryRow } from './use-library-row';
+import { DeleteMaterialModal } from './delete-material-modal';
 import shared from '@/styles/shared.module.css';
+import styles from './library-row.module.css';
 import type { MaterialLibraryItem } from '@/types/api';
 
 const toHref = (raw: string) => (/^https?:\/\//.test(raw) ? raw : `https://${raw}`);
@@ -14,9 +17,12 @@ type LibraryRowProps = {
 export const LibraryRow = ({ material }: LibraryRowProps) => {
 	const { form, handleFieldChange, handleLinkSave, handleRowBlur } =
 		useLibraryRow(material);
+	const [confirmOpen, setConfirmOpen] = useState(false);
 
 	return (
-		<Table.Row onBlur={handleRowBlur}>
+		<Table.Row
+			onBlur={handleRowBlur}
+			className={cn(material.usage_count === 0 && styles.draftRow)}>
 			<Table.Cell>{material.material_type_name}</Table.Cell>
 			<Table.Cell>
 				<TextField.Standalone
@@ -58,6 +64,26 @@ export const LibraryRow = ({ material }: LibraryRowProps) => {
 					</Flex>
 				) : (
 					<LinkPopup url={form.purchaseUrl} onSave={handleLinkSave} />
+				)}
+			</Table.Cell>
+			<Table.Cell textAlign="end">
+				{material.usage_count === 0 && (
+					<>
+						<IconButton
+							size="1"
+							variant="ghost"
+							color="neutral"
+							label="Delete material"
+							icon={<TrashIcon size={14} />}
+							onClick={() => setConfirmOpen(true)}
+							className="opacity-60"
+						/>
+						<DeleteMaterialModal
+							material={material}
+							open={confirmOpen}
+							onOpenChange={setConfirmOpen}
+						/>
+					</>
 				)}
 			</Table.Cell>
 		</Table.Row>

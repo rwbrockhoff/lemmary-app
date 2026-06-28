@@ -1,0 +1,7 @@
+.draftRow {
+	background-color: color-mix(
+		in srgb,
+		var(--color-bg-muted) 50%,
+		var(--color-bg-subtle)
+	);
+}

@@ -53,6 +53,7 @@ export const LibraryTable = ({ items }: LibraryTableProps) => {
 							Purchase
 						</Text>
 					</Table.HeaderCell>
+					<Table.HeaderCell className="w-16" aria-label="Actions" />
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>

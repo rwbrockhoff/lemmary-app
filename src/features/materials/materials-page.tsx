@@ -60,7 +60,9 @@ const MaterialsPage = () => {
 							</Tabs.Trigger>
 						)}
 
-						<Tabs.Trigger value="library">Library</Tabs.Trigger>
+						<Tabs.Trigger value="library">
+							Library ({materials?.length ?? 0})
+						</Tabs.Trigger>
 					</Tabs.List>
 
 					<Tabs.Content value="fabric" className="pt-4">
