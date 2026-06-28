@@ -47,3 +47,27 @@ export const useUpdateProductProductionType = () => {
 		},
 	});
 };
+
+export const useUpdateVariantProductionType = (productId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({
+			variantId,
+			productionType,
+		}: {
+			variantId: string;
+			productionType: ProductionType;
+		}) =>
+			api.patch<{ id: string; production_type: ProductionType }>(
+				`/products/${productId}/variants/${variantId}`,
+				{ productionType },
+			),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: storefrontKeys.detail(productId),
+			});
+			queryClient.invalidateQueries({ queryKey: storefrontKeys.all });
+		},
+	});
+};

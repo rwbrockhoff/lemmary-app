@@ -54,8 +54,8 @@ export const ProductsTable = ({ products }: ProductsTableProps) => {
 				<col className="w-28" />
 				<col className="w-28" />
 				<col className="w-24" />
-				<col className="w-40" />
 				<col className="w-28" />
+				<col className="w-40" />
 			</colgroup>
 			<Table.Header>
 				<Table.Row>
@@ -83,11 +83,6 @@ export const ProductsTable = ({ products }: ProductsTableProps) => {
 							Stock
 						</Text>
 					</Table.HeaderCell>
-					<Table.HeaderCell>
-						<Text size="2" weight="medium" color="secondary">
-							Production
-						</Text>
-					</Table.HeaderCell>
 					<SortableHeader
 						label="Visibility"
 						sortKey="is_visible"
@@ -95,6 +90,11 @@ export const ProductsTable = ({ products }: ProductsTableProps) => {
 						sortDirection={sortDirection}
 						onSort={toggleSort}
 					/>
+					<Table.HeaderCell>
+						<Text size="2" weight="medium" color="secondary">
+							Production
+						</Text>
+					</Table.HeaderCell>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
@@ -112,6 +112,14 @@ export const ProductsTable = ({ products }: ProductsTableProps) => {
 						<Table.Cell>{product.variant_count}</Table.Cell>
 						<Table.Cell>{getPriceDisplay(product.variants)}</Table.Cell>
 						<Table.Cell>{getStockDisplay(product.variants)}</Table.Cell>
+						<Table.Cell>
+							<Badge
+								size="1"
+								variant="soft"
+								color={product.is_visible ? 'success' : 'neutral'}>
+								{product.is_visible ? 'Visible' : 'Hidden'}
+							</Badge>
+						</Table.Cell>
 						<Table.Cell onClick={(e) => e.stopPropagation()}>
 							<ProductionTypeSelect
 								value={getProductProductionType(product.variants)}
@@ -125,14 +133,6 @@ export const ProductsTable = ({ products }: ProductsTableProps) => {
 									)
 								}
 							/>
-						</Table.Cell>
-						<Table.Cell>
-							<Badge
-								size="1"
-								variant="soft"
-								color={product.is_visible ? 'success' : 'neutral'}>
-								{product.is_visible ? 'Visible' : 'Hidden'}
-							</Badge>
 						</Table.Cell>
 					</Table.Row>
 				))}
