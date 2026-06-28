@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import type { MaterialLibraryItem, MaterialsReport } from '@/types/api';
 
@@ -18,5 +18,25 @@ export const useMaterials = () => {
 	return useQuery({
 		queryKey: materialsKeys.library,
 		queryFn: () => api.get<MaterialLibraryItem[]>('/materials'),
+	});
+};
+
+export const useUpdateMaterial = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({
+			materialId,
+			...data
+		}: {
+			materialId: string;
+			color: string | null;
+			size: string | null;
+			purchase_url: string | null;
+		}) => api.patch(`/materials/${materialId}`, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: materialsKeys.library });
+			queryClient.invalidateQueries({ queryKey: materialsKeys.report });
+		},
 	});
 };

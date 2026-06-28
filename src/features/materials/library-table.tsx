@@ -1,8 +1,7 @@
-import { Table, Text, cn } from '@artifact-ui/core';
-import shared from '@/styles/shared.module.css';
+import { Table, Text } from '@artifact-ui/core';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
-import { ExternalLinkIcon } from '@/components/icons/icons';
+import { LibraryRow } from './library-row';
 import type { MaterialLibraryItem } from '@/types/api';
 
 type LibraryTableProps = {
@@ -42,7 +41,7 @@ export const LibraryTable = ({ items }: LibraryTableProps) => {
 						onSort={toggleSort}
 					/>
 					<SortableHeader
-						label="Used"
+						label="Used in"
 						sortKey="usage_count"
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
@@ -58,26 +57,7 @@ export const LibraryTable = ({ items }: LibraryTableProps) => {
 			</Table.Header>
 			<Table.Body>
 				{sortedData.map((material) => (
-					<Table.Row key={material.id}>
-						<Table.Cell>{material.material_type_name}</Table.Cell>
-						<Table.Cell>{material.color || '—'}</Table.Cell>
-						<Table.Cell>{material.size || '—'}</Table.Cell>
-						<Table.Cell textAlign="center">{material.usage_count}</Table.Cell>
-						<Table.Cell>
-							{material.purchase_url ? (
-								<a
-									href={material.purchase_url}
-									target="_blank"
-									rel="noopener noreferrer"
-									className={cn(shared.brandLink, 'inline-flex items-center gap-1')}>
-									Buy
-									<ExternalLinkIcon size={14} />
-								</a>
-							) : (
-								'—'
-							)}
-						</Table.Cell>
-					</Table.Row>
+					<LibraryRow key={material.id} material={material} />
 				))}
 			</Table.Body>
 		</Table.Root>
