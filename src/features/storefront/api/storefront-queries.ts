@@ -48,6 +48,18 @@ export const useUpdateProductProductionType = () => {
 	});
 };
 
+export const useUpdateAllProductionTypes = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (productionType: ProductionType) =>
+			api.patch<{ updated: number }>('/products/variants', { productionType }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: storefrontKeys.all });
+		},
+	});
+};
+
 export const useUpdateVariantProductionType = (productId: string) => {
 	const queryClient = useQueryClient();
 

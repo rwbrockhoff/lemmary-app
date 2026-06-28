@@ -6,19 +6,23 @@ type ProductionTypeSelectProps = {
 	value: ProductionType | undefined;
 	onChange: (value: ProductionType) => void;
 	disabled?: boolean;
+	variant?: 'default' | 'minimal';
+	size?: '1' | '2' | '3' | '4';
 };
 
 export const ProductionTypeSelect = ({
 	value,
 	onChange,
 	disabled,
+	variant = 'minimal',
+	size = '1',
 }: ProductionTypeSelectProps) => (
 	<Select.Root
 		value={value}
 		onValueChange={(v) => isProductionType(v) && onChange(v)}
-		size="1"
+		size={size}
 		disabled={disabled}>
-		<Select.Trigger aria-label="Production type" variant="minimal" placeholder="Mixed" />
+		<Select.Trigger aria-label="Production type" variant={variant} placeholder="Mixed" />
 		<Select.Content>
 			<Select.Group>
 				{PRODUCTION_TYPES.map((type) => (
