@@ -134,6 +134,19 @@ export type MaterialsReport = {
 	mismatches: MaterialsMismatch[];
 };
 
+export type MaterialLibraryItem = {
+	id: string;
+	material_type_id: string;
+	material_type_name: string;
+	measurement: 'count' | 'linear' | 'area';
+	color: string | null;
+	size: string | null;
+	purchase_url: string | null;
+	usage_count: number;
+	created_at: string;
+	updated_at: string;
+};
+
 export type WorkflowBoardOrder = Order & {
 	batch_name: string | null;
 	batch_id: string | null;
