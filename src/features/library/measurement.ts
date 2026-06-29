@@ -1,6 +1,13 @@
+import { ScissorsIcon, RulerIcon, WrenchIcon } from '@/components/icons/icons';
 import type { MaterialLibraryItem } from '@/types/api';
 
 type Measurement = MaterialLibraryItem['measurement'];
+
+export const MEASUREMENT_ICON: Record<Measurement, typeof ScissorsIcon> = {
+	area: ScissorsIcon,
+	linear: RulerIcon,
+	count: WrenchIcon,
+};
 
 export const MEASUREMENT_LABELS: Record<Measurement, string> = {
 	area: 'Fabric',

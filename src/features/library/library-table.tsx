@@ -2,13 +2,16 @@ import { Table, Text } from '@artifact-ui/core';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
 import { LibraryRow } from './library-row';
+import { LibraryAddRow } from './library-add-row';
 import type { MaterialLibraryItem } from '@/types/api';
 
 type LibraryTableProps = {
 	items: MaterialLibraryItem[];
+	isAdding: boolean;
+	onCloseDraft: () => void;
 };
 
-export const LibraryTable = ({ items }: LibraryTableProps) => {
+export const LibraryTable = ({ items, isAdding, onCloseDraft }: LibraryTableProps) => {
 	const { sortedData, sortKey, sortDirection, toggleSort } = useSortableTable(items, {
 		defaultKey: 'material_type_name',
 		defaultDirection: 'asc',
@@ -66,6 +69,7 @@ export const LibraryTable = ({ items }: LibraryTableProps) => {
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
+				{isAdding && <LibraryAddRow onClose={onCloseDraft} />}
 				{sortedData.map((material) => (
 					<LibraryRow key={material.id} material={material} />
 				))}

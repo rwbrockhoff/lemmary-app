@@ -1,20 +1,17 @@
 import type { CSSProperties } from 'react';
 import type { MaterialLibraryItem } from '@/types/api';
-import { ScissorsIcon, RulerIcon, WrenchIcon } from '@/components/icons/icons';
-import { MEASUREMENT_LABELS, MEASUREMENT_COLOR_SLUG } from './measurement';
+import {
+	MEASUREMENT_LABELS,
+	MEASUREMENT_COLOR_SLUG,
+	MEASUREMENT_ICON,
+} from './measurement';
 import styles from './category-badge.module.css';
 
 type Measurement = MaterialLibraryItem['measurement'];
 
-const CATEGORY_ICONS: Record<Measurement, typeof ScissorsIcon> = {
-	area: ScissorsIcon,
-	linear: RulerIcon,
-	count: WrenchIcon,
-};
-
 export const CategoryBadge = ({ measurement }: { measurement: Measurement }) => {
 	const cssVar = `var(--wf-stage-color-${MEASUREMENT_COLOR_SLUG[measurement]})`;
-	const Icon = CATEGORY_ICONS[measurement];
+	const Icon = MEASUREMENT_ICON[measurement];
 
 	const style = {
 		'--category-badge-bg': `color-mix(in srgb, ${cssVar} 18%, transparent)`,
