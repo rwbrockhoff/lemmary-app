@@ -8,12 +8,11 @@ type LinearTableProps = {
 };
 
 export const LinearTable = ({ items }: LinearTableProps) => {
-	const { sortedData, sortKey, sortDirection, toggleSort } =
-		useSortableTable(items, {
-			defaultKey: 'material_type',
-			defaultDirection: 'asc',
-			storageKey: 'materials-linear',
-		});
+	const { sortedData, sortKey, sortDirection, toggleSort } = useSortableTable(items, {
+		defaultKey: 'material_type',
+		defaultDirection: 'asc',
+		storageKey: 'materials-linear',
+	});
 
 	return (
 		<Table.Root variant="surface" size="2">
