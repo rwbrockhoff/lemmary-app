@@ -34,7 +34,7 @@ export const BottleneckCard = ({ stages }: BottleneckCardProps) => {
 		datasets: [
 			{
 				label: 'Avg time',
-				data: visibleStages.map((s) => Number(s.avgDays.toFixed(2))),
+				data: visibleStages.map((s) => s.avgDays),
 				backgroundColor: visibleStages.map((s) => resolveStageColor(s.stageColor)),
 				minBarLength: 75,
 				...BAR_DATASET_STYLE,
