@@ -4,6 +4,7 @@ import { LinkPopup } from '@/features/storefront/components/link-popup/link-popu
 import { ExternalLinkIcon, TrashIcon } from '@/components/icons/icons';
 import { useLibraryRow } from './use-library-row';
 import { DeleteMaterialModal } from './delete-material-modal';
+import { CategoryBadge } from './category-badge';
 import shared from '@/styles/shared.module.css';
 import styles from './library-row.module.css';
 import type { MaterialLibraryItem } from '@/types/api';
@@ -24,6 +25,9 @@ export const LibraryRow = ({ material }: LibraryRowProps) => {
 			onBlur={handleRowBlur}
 			className={cn(material.usage_count === 0 && styles.draftRow)}>
 			<Table.Cell>{material.material_type_name}</Table.Cell>
+			<Table.Cell>
+				<CategoryBadge measurement={material.measurement} />
+			</Table.Cell>
 			<Table.Cell>
 				<TextField.Standalone
 					label="Color"
@@ -48,7 +52,7 @@ export const LibraryRow = ({ material }: LibraryRowProps) => {
 					placeholder="Size"
 				/>
 			</Table.Cell>
-			<Table.Cell textAlign="center">{material.usage_count}</Table.Cell>
+			<Table.Cell>{material.usage_count}</Table.Cell>
 			<Table.Cell>
 				{form.purchaseUrl ? (
 					<Flex align="center" gap="6">

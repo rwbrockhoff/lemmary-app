@@ -25,6 +25,14 @@ export const LibraryTable = ({ items }: LibraryTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
+						className="w-1/4"
+					/>
+					<SortableHeader
+						label="Category"
+						sortKey="measurement"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
 					/>
 					<SortableHeader
 						label="Color"
@@ -32,6 +40,7 @@ export const LibraryTable = ({ items }: LibraryTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
+						className="w-1/6 pl-6"
 					/>
 					<SortableHeader
 						label="Size"
@@ -39,6 +48,7 @@ export const LibraryTable = ({ items }: LibraryTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
+						className="pl-6"
 					/>
 					<SortableHeader
 						label="Used in"
@@ -46,7 +56,6 @@ export const LibraryTable = ({ items }: LibraryTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						align="center"
 					/>
 					<Table.HeaderCell>
 						<Text size="2" weight="medium" color="secondary">
