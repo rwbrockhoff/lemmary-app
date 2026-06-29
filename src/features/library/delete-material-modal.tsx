@@ -1,6 +1,6 @@
 import { Text, Button, Stack, Flex, Modal } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
-import { useDeleteMaterial } from './materials-queries';
+import { useDeleteMaterial } from './library-queries';
 import type { MaterialLibraryItem } from '@/types/api';
 
 type DeleteMaterialModalProps = {

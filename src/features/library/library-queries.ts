@@ -2,14 +2,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import type { MaterialLibraryItem } from '@/types/api';
 
-export const materialsKeys = {
+export const libraryKeys = {
 	report: ['materials-report'] as const,
 	library: ['materials-library'] as const,
 };
 
 export const useMaterials = () => {
 	return useQuery({
-		queryKey: materialsKeys.library,
+		queryKey: libraryKeys.library,
 		queryFn: () => api.get<MaterialLibraryItem[]>('/materials'),
 	});
 };
@@ -28,8 +28,8 @@ export const useUpdateMaterial = () => {
 			purchase_url: string | null;
 		}) => api.patch(`/materials/${materialId}`, data),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: materialsKeys.library });
-			queryClient.invalidateQueries({ queryKey: materialsKeys.report });
+			queryClient.invalidateQueries({ queryKey: libraryKeys.library });
+			queryClient.invalidateQueries({ queryKey: libraryKeys.report });
 		},
 	});
 };
@@ -40,8 +40,8 @@ export const useDeleteMaterial = () => {
 	return useMutation({
 		mutationFn: (materialId: string) => api.del(`/materials/${materialId}`),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: materialsKeys.library });
-			queryClient.invalidateQueries({ queryKey: materialsKeys.report });
+			queryClient.invalidateQueries({ queryKey: libraryKeys.library });
+			queryClient.invalidateQueries({ queryKey: libraryKeys.report });
 		},
 	});
 };

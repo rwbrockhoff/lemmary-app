@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { useToast } from '@/providers/toast-context';
-import { useUpdateMaterial } from './materials-queries';
+import { useUpdateMaterial } from './library-queries';
 import type { MaterialLibraryItem } from '@/types/api';
 
 type RowData = {

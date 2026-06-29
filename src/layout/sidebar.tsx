@@ -4,7 +4,7 @@ import {
 	OrdersIcon,
 	StorefrontIcon,
 	ProductionIcon,
-	MaterialsIcon,
+	LibraryIcon,
 	BatchesIcon,
 	WorkflowIcon,
 	SidebarIcon,
@@ -34,13 +34,15 @@ const navSections = [
 		label: 'Reports',
 		items: [
 			{ to: '/performance', label: 'Performance', icon: TrendingUpIcon },
-			{ to: '/materials', label: 'Materials', icon: MaterialsIcon },
 			{ to: '/production', label: 'Production', icon: ProductionIcon },
 		],
 	},
 	{
 		label: 'Setup',
-		items: [{ to: '/storefront', label: 'Storefront', icon: StorefrontIcon }],
+		items: [
+			{ to: '/storefront', label: 'Storefront', icon: StorefrontIcon },
+			{ to: '/library', label: 'Library', icon: LibraryIcon },
+		],
 	},
 ];
 
