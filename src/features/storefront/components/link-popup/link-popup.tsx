@@ -51,9 +51,8 @@ export const LinkPopup = ({ url, onSave }: LinkPopupProps) => {
 				<button
 					type="button"
 					className={cn(styles.trigger, hasUrl && styles.triggerActive)}
-					onClick={(e) => e.stopPropagation()}
-				>
-					<LinkIcon size={14} />
+					onClick={(e) => e.stopPropagation()}>
+					<LinkIcon size={14} strokeWidth={hasUrl ? 3 : 2} />
 				</button>
 			</Popover.Trigger>
 			<Popover.Content side="top" align="end" style={{ minWidth: 320 }}>
@@ -78,18 +77,13 @@ export const LinkPopup = ({ url, onSave }: LinkPopupProps) => {
 										e.nativeEvent.stopImmediatePropagation();
 										window.open(getFullUrl(url), '_blank', 'noopener,noreferrer');
 										e.preventDefault();
-									}}
-								>
+									}}>
 									<ExternalLinkIcon size={14} />
 								</a>
 							) : undefined
 						}
 					/>
-					<Button
-						size="2"
-						iconLeft={<SaveIcon size={14} />}
-						onClick={handleSave}
-					>
+					<Button size="2" iconLeft={<SaveIcon size={14} />} onClick={handleSave}>
 						Save
 					</Button>
 					{hasUrl && (

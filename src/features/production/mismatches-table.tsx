@@ -34,10 +34,11 @@ export const MismatchesTable = ({ items }: MismatchesTableProps) => {
 						<Table.Row
 							key={`${item.platform_sku}-${index}`}
 							className={path ? 'cursor-pointer' : undefined}
-							onClick={path ? () => navigate(path) : undefined}
-						>
+							onClick={path ? () => navigate(path) : undefined}>
 							<Table.Cell>{item.product_name}</Table.Cell>
-							<Table.Cell><VariantBadges variants={item.variant_label} /></Table.Cell>
+							<Table.Cell>
+								<VariantBadges variants={item.variant_label} />
+							</Table.Cell>
 							<Table.Cell>{item.platform_sku ?? '—'}</Table.Cell>
 						</Table.Row>
 					);

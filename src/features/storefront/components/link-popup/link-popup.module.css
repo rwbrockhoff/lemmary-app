@@ -13,9 +13,9 @@
 }
 
 .triggerActive {
-	color: var(--color-info);
+	color: var(--color-primary);
 }
 
 .triggerActive:hover {
-	color: var(--color-info-hover);
+	color: var(--color-primary-hover);
 }

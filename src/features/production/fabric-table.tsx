@@ -8,12 +8,11 @@ type FabricTableProps = {
 };
 
 export const FabricTable = ({ items }: FabricTableProps) => {
-	const { sortedData, sortKey, sortDirection, toggleSort } =
-		useSortableTable(items, {
-			defaultKey: 'product_name',
-			defaultDirection: 'asc',
-			storageKey: 'materials-fabric',
-		});
+	const { sortedData, sortKey, sortDirection, toggleSort } = useSortableTable(items, {
+		defaultKey: 'product_name',
+		defaultDirection: 'asc',
+		storageKey: 'materials-fabric',
+	});
 
 	return (
 		<Table.Root variant="surface" size="2">
@@ -59,7 +58,8 @@ export const FabricTable = ({ items }: FabricTableProps) => {
 			</Table.Header>
 			<Table.Body>
 				{sortedData.map((item, index) => (
-					<Table.Row key={`${item.product_name}-${item.material_type}-${item.piece}-${item.color}-${index}`}>
+					<Table.Row
+						key={`${item.product_name}-${item.material_type}-${item.piece}-${item.color}-${index}`}>
 						<Table.Cell>{item.product_name}</Table.Cell>
 						<Table.Cell>{item.material_type}</Table.Cell>
 						<Table.Cell>{item.piece}</Table.Cell>

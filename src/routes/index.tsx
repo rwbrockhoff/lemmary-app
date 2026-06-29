@@ -29,7 +29,7 @@ const CustomerDetailPage = lazy(
 	() => import('@/features/customers/customer-detail-page'),
 );
 const ProductionPage = lazy(() => import('@/features/production/production-page'));
-const MaterialsPage = lazy(() => import('@/features/materials/materials-page'));
+const LibraryPage = lazy(() => import('@/features/library/library-page'));
 const WorkflowPage = lazy(() => import('@/features/workflow/workflow-page'));
 const BatchesPage = lazy(() => import('@/features/batches/batches-page'));
 const CreateBatchPage = lazy(() => import('@/features/batches/create-batch-page'));
@@ -212,10 +212,10 @@ const router = createBrowserRouter([
 								),
 							},
 							{
-								path: '/materials',
+								path: '/library',
 								element: (
 									<Suspense>
-										<MaterialsPage />
+										<LibraryPage />
 									</Suspense>
 								),
 							},

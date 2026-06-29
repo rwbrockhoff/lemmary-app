@@ -43,7 +43,24 @@ textarea:focus,
 textarea:focus-visible,
 select:focus,
 select:focus-visible {
-	outline: none;
+	outline-color: transparent;
+}
+
+/* subtle border on the input you're editing in an inline table */
+table input:focus,
+table input:focus-visible {
+	outline-color: var(--color-border-subtle);
+}
+
+/* sticky headers; clip not hidden so the sticky works */
+table {
+	overflow: clip;
+}
+
+thead th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
 }
 
 /* skip dialog focus-ring flash */

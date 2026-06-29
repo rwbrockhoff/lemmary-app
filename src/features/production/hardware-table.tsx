@@ -8,12 +8,11 @@ type HardwareTableProps = {
 };
 
 export const HardwareTable = ({ items }: HardwareTableProps) => {
-	const { sortedData, sortKey, sortDirection, toggleSort } =
-		useSortableTable(items, {
-			defaultKey: 'material_type',
-			defaultDirection: 'asc',
-			storageKey: 'materials-hardware',
-		});
+	const { sortedData, sortKey, sortDirection, toggleSort } = useSortableTable(items, {
+		defaultKey: 'material_type',
+		defaultDirection: 'asc',
+		storageKey: 'materials-hardware',
+	});
 
 	return (
 		<Table.Root variant="surface" size="2">
