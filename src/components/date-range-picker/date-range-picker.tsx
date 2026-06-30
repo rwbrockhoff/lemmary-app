@@ -3,7 +3,12 @@ import { Flex, Select, DatePicker } from '@artifact-ui/core';
 import { useStore } from '@/features/settings/api/store-queries';
 import { DEFAULT_TIMEZONE } from '@/utils/timezones';
 import { parseDateValue, formatDateValue } from '@/utils/date';
-import { RANGE_PRESETS, presetRange, type DateRangeValue } from './presets';
+import {
+	RANGE_PRESETS,
+	DEFAULT_PRESET_ID,
+	presetRange,
+	type DateRangeValue,
+} from './presets';
 
 type DateRangePickerProps = {
 	onChange: (range: DateRangeValue) => void;
@@ -15,7 +20,7 @@ export const DateRangePicker = ({ onChange }: DateRangePickerProps) => {
 	const { data: store } = useStore();
 	const timeZone = store?.timezone ?? DEFAULT_TIMEZONE;
 
-	const [mode, setMode] = useState<string>(RANGE_PRESETS[0].id);
+	const [mode, setMode] = useState<string>(DEFAULT_PRESET_ID);
 	const [custom, setCustom] = useState<DateRangeValue | null>(null);
 
 	useEffect(() => {
