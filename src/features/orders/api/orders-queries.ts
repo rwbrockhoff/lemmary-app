@@ -7,6 +7,7 @@ import {
 import { api } from '@/api/client';
 import { orderKeys } from './orders-keys';
 import { batchKeys } from '@/features/batches/api/batches-keys';
+import { storeKeys } from '@/features/settings/api/store-keys';
 import { optimisticallyUpdateItemStage, rollbackOrderDetail } from './orders-cache';
 import type { OrderDetail, GetOrdersResponse, WorkflowStage } from '@/types/api';
 import type {
@@ -134,6 +135,8 @@ export const useSyncOrders = () => {
 			queryClient.invalidateQueries({ queryKey: orderKeys.all });
 			// Dashboard reads /analytics/operations under its own key, so refresh it after a sync
 			queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+			// Refresh the store so its last synced time updates
+			queryClient.invalidateQueries({ queryKey: storeKeys.all });
 		},
 	});
 };

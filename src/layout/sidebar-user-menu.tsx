@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router';
 import { Avatar, DropdownMenu, Stack, Text } from '@artifact-ui/core';
-import { SettingsIcon, LogoutIcon, SunIcon, MoonIcon } from '@/components/icons';
+import { SettingsIcon, LogoutIcon, PaletteIcon, CheckIcon } from '@/components/icons';
 import { useAuthStatus } from '@/features/auth/hooks/use-auth-status';
 import { useLogoutFlow } from '@/features/auth/hooks/use-logout-flow';
-import { useTheme } from '@/providers';
+import { useTheme, THEMES } from '@/providers';
 import styles from './sidebar-user-menu.module.css';
 
 type SidebarUserMenuProps = {
@@ -14,7 +14,7 @@ export const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
 	const navigate = useNavigate();
 	const { data } = useAuthStatus();
 	const logoutMutation = useLogoutFlow();
-	const { theme, toggleTheme } = useTheme();
+	const { theme, setTheme } = useTheme();
 
 	const user = data?.user;
 	if (!user) return null;
@@ -51,12 +51,30 @@ export const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
 						Settings
 					</span>
 				</DropdownMenu.DropdownMenuItem>
-				<DropdownMenu.DropdownMenuItem onClick={toggleTheme}>
-					<span className={styles.menuItem}>
-						{theme === 'light' ? <MoonIcon size={16} /> : <SunIcon size={16} />}
-						{theme === 'light' ? 'Dark mode' : 'Light mode'}
-					</span>
-				</DropdownMenu.DropdownMenuItem>
+				<DropdownMenu.DropdownMenuSub>
+					<DropdownMenu.DropdownMenuSubTrigger>
+						<span className={styles.menuItem}>
+							<PaletteIcon size={16} />
+							Theme
+						</span>
+					</DropdownMenu.DropdownMenuSubTrigger>
+					<DropdownMenu.DropdownMenuSubContent>
+						{THEMES.map((option) => (
+							<DropdownMenu.DropdownMenuItem
+								key={option.value}
+								onClick={() => setTheme(option.value)}>
+								<span className={styles.menuItem}>
+									{theme === option.value ? (
+										<CheckIcon size={16} />
+									) : (
+										<span style={{ width: 16 }} />
+									)}
+									{option.label}
+								</span>
+							</DropdownMenu.DropdownMenuItem>
+						))}
+					</DropdownMenu.DropdownMenuSubContent>
+				</DropdownMenu.DropdownMenuSub>
 				<DropdownMenu.DropdownMenuItem onClick={() => logoutMutation.mutate()}>
 					<span className={styles.menuItem}>
 						<LogoutIcon size={16} />

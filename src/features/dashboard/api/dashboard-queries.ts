@@ -2,7 +2,6 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { api } from '@/api/client';
 import type { OrderType } from '@/types/api';
 
-export type DashboardRange = '30' | '90' | '365';
 export type DashboardBucket = 'day' | 'week' | 'month';
 
 export type DashboardData = {
@@ -52,12 +51,13 @@ export type DashboardData = {
 	}>;
 };
 
-export const dashboardKey = (range: DashboardRange) => ['dashboard', range] as const;
+export const dashboardKey = (start: string, end: string) =>
+	['dashboard', start, end] as const;
 
-export const useDashboard = (range: DashboardRange) => {
+export const useDashboard = (start: string, end: string) => {
 	return useQuery({
-		queryKey: dashboardKey(range),
-		queryFn: () => api.get<DashboardData>('/analytics/operations', { range }),
+		queryKey: dashboardKey(start, end),
+		queryFn: () => api.get<DashboardData>('/analytics/operations', { start, end }),
 		staleTime: 60 * 1000,
 		placeholderData: keepPreviousData,
 	});

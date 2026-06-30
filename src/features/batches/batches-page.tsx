@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Heading, Text, Button, Tabs, Flex } from '@artifact-ui/core';
+import { Heading, Button, Tabs, Badge, Flex } from '@artifact-ui/core';
 import { PlusIcon, BatchesIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
@@ -19,6 +19,11 @@ const BatchesPage = () => {
 	const activeBatches = useMemo(
 		() => batches?.filter((b) => ACTIVE_STATUSES.includes(b.status)) ?? [],
 		[batches],
+	);
+
+	const activeCount = useMemo(
+		() => activeBatches.filter((b) => b.status === 'Active').length,
+		[activeBatches],
 	);
 
 	const completedBatches = useMemo(
@@ -55,9 +60,25 @@ const BatchesPage = () => {
 				{batches && batches.length > 0 && (
 					<Tabs.Root defaultValue="active">
 						<Tabs.List>
-							<Tabs.Trigger value="active">Active ({activeBatches.length})</Tabs.Trigger>
+							<Tabs.Trigger value="active">
+								<span className="flex items-center gap-2">
+									Active
+									{activeCount > 0 && (
+										<Badge variant="soft" color="neutral" size="1">
+											{activeCount}
+										</Badge>
+									)}
+								</span>
+							</Tabs.Trigger>
 							<Tabs.Trigger value="completed">
-								Completed ({completedBatches.length})
+								<span className="flex items-center gap-2">
+									Completed
+									{completedBatches.length > 0 && (
+										<Badge variant="soft" color="neutral" size="1">
+											{completedBatches.length}
+										</Badge>
+									)}
+								</span>
 							</Tabs.Trigger>
 						</Tabs.List>
 
@@ -65,7 +86,11 @@ const BatchesPage = () => {
 							{activeBatches.length > 0 ? (
 								<BatchesTable batches={activeBatches} />
 							) : (
-								<Text color="secondary">No active batches.</Text>
+								<EmptyState
+									icon={<BatchesIcon size={20} />}
+									title="No active batches"
+									description="Create a batch to group orders for production."
+								/>
 							)}
 						</Tabs.Content>
 
@@ -73,7 +98,11 @@ const BatchesPage = () => {
 							{completedBatches.length > 0 ? (
 								<BatchesTable batches={completedBatches} />
 							) : (
-								<Text color="secondary">No completed batches.</Text>
+								<EmptyState
+									icon={<BatchesIcon size={20} />}
+									title="No completed batches"
+									description="Batches show up here once they're finished."
+								/>
 							)}
 						</Tabs.Content>
 					</Tabs.Root>

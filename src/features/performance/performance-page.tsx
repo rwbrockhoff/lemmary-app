@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { Heading, Text, SegmentControl, Flex, cn } from '@artifact-ui/core';
+import { Heading, Text, Flex, cn } from '@artifact-ui/core';
 import { TrendingUpIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
+import { DateRangePicker } from '@/components/date-range-picker/date-range-picker';
+import { defaultRange } from '@/components/date-range-picker/presets';
+import { DEFAULT_TIMEZONE } from '@/utils/timezones';
 import shared from '@/styles/shared.module.css';
-import { usePerformance, type PerformanceRange } from './api/performance-queries';
+import { usePerformance } from './api/performance-queries';
 import { BottleneckCard } from './components/bottleneck-card';
 import { TopProductsCard } from './components/top-products-card';
 import { CustomerMixCard } from './components/customer-mix-card';
@@ -14,15 +17,9 @@ import { OnTimeDeliveryCard } from './components/on-time-delivery-card';
 import { MaterialConsumptionCard } from './components/material-consumption-card';
 import styles from './performance-page.module.css';
 
-const RANGE_OPTIONS: { value: PerformanceRange; label: string }[] = [
-	{ value: '30', label: '30 days' },
-	{ value: '90', label: '90 days' },
-	{ value: '365', label: '1 year' },
-];
-
 const PerformancePage = () => {
-	const [range, setRange] = useState<PerformanceRange>('30');
-	const { data, isLoading, error } = usePerformance(range);
+	const [range, setRange] = useState(() => defaultRange(DEFAULT_TIMEZONE));
+	const { data, isLoading, error } = usePerformance(range.start, range.end);
 
 	return (
 		<div className={cn(shared.pageContainer, styles.page)}>
@@ -35,12 +32,7 @@ const PerformancePage = () => {
 						See production performance insights
 					</Text>
 				</div>
-				<SegmentControl
-					options={RANGE_OPTIONS}
-					value={range}
-					onChange={setRange}
-					size="2"
-				/>
+				<DateRangePicker onChange={setRange} />
 			</Flex>
 
 			<LoadingWrapper
@@ -56,9 +48,7 @@ const PerformancePage = () => {
 							<OnTimeDeliveryCard delivery={data.onTimeDelivery} />
 							<CustomerMixCard mix={data.customerMix} />
 							<CouponUsageCard usage={data.couponUsage} />
-							<MaterialConsumptionCard
-								materials={data.materialConsumption.materials}
-							/>
+							<MaterialConsumptionCard materials={data.materialConsumption.materials} />
 						</div>
 
 						<div className={styles.chartGrid}>

@@ -14,6 +14,7 @@ export type Store = {
 	leadTimeDays: number | null;
 	storeUrl: string | null;
 	timezone: string | null;
+	lastSyncedAt: string | null;
 };
 
 type UpdateStorePayload = {
