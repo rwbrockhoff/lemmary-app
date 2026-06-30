@@ -12,6 +12,8 @@ import {
 } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
 import { timezoneOptions } from '@/utils/timezones';
+import { ProductionTypeSelect } from '@/components/production-type-select';
+import type { ProductionType } from '@/types/api';
 import { useUpdateStore, type Store } from '../../api/store-queries';
 
 type StorePreferencesCardProps = {
@@ -21,6 +23,7 @@ type StorePreferencesCardProps = {
 type PreferencesPayload = {
 	leadTimeDays?: number | null;
 	timezone?: string;
+	defaultProductionType?: ProductionType;
 	applyLeadTimeToOpenOrders?: boolean;
 };
 
@@ -33,12 +36,16 @@ export const StorePreferencesCard = ({ settings }: StorePreferencesCardProps) =>
 		settings.leadTimeDays != null ? String(settings.leadTimeDays) : '',
 	);
 	const [timezone, setTimezone] = useState(settings.timezone ?? '');
+	const [productionType, setProductionType] = useState<ProductionType>(
+		settings.defaultProductionType ?? 'ready_made',
+	);
 	const [applyToOpenOrders, setApplyToOpenOrders] = useState(false);
 
 	if (settings !== prevSettings) {
 		setPrevSettings(settings);
 		setLeadTime(settings.leadTimeDays != null ? String(settings.leadTimeDays) : '');
 		setTimezone(settings.timezone ?? '');
+		setProductionType(settings.defaultProductionType ?? 'ready_made');
 	}
 
 	const buildPayload = (): PreferencesPayload => {
@@ -52,6 +59,10 @@ export const StorePreferencesCard = ({ settings }: StorePreferencesCardProps) =>
 
 		if (timezone && timezone !== settings.timezone) {
 			payload.timezone = timezone;
+		}
+
+		if (productionType !== settings.defaultProductionType) {
+			payload.defaultProductionType = productionType;
 		}
 
 		if (applyToOpenOrders && payload.leadTimeDays !== undefined) {
@@ -124,6 +135,21 @@ export const StorePreferencesCard = ({ settings }: StorePreferencesCardProps) =>
 							searchPlaceholder="Search timezones..."
 							emptyMessage="No matching timezone"
 							width="100%"
+						/>
+					</Stack>
+
+					<Stack gap="2">
+						<Text size="2" weight="medium">
+							Default Production Type
+						</Text>
+						<Text size="2" color="secondary">
+							Applied to new products during sync. Set per product anytime.
+						</Text>
+						<ProductionTypeSelect
+							value={productionType}
+							onChange={setProductionType}
+							variant="default"
+							size="2"
 						/>
 					</Stack>
 

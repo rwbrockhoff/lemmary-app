@@ -7,6 +7,7 @@ import { EmptyState } from '@/components/empty-state/empty-state';
 import { StorefrontIcon } from '@/components/icons';
 import { useStore } from '../../api/store-queries';
 import { StoreConnectionCard } from './store-connection-card';
+import { StoreProfileCard } from './store-profile-card';
 import { StorePreferencesCard } from './store-preferences-card';
 import { StoreDangerZoneCard } from './store-danger-zone-card';
 
@@ -24,6 +25,7 @@ export const StoreSettingsTab = () => {
 				{settings && settings.connected ? (
 					<>
 						<StoreConnectionCard settings={settings} />
+						<StoreProfileCard settings={settings} />
 						<StorePreferencesCard settings={settings} />
 						<StoreDangerZoneCard settings={settings} />
 					</>
