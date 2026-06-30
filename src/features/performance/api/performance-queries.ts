@@ -1,9 +1,6 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { api } from '@/api/client';
 
-export const VALID_RANGES = ['30', '90', '365'] as const;
-export type PerformanceRange = (typeof VALID_RANGES)[number];
-
 export type StageBottleneckStage = {
 	stageId: string;
 	stageName: string;
@@ -68,13 +65,13 @@ export type PerformanceData = {
 	};
 };
 
-export const performanceKey = (range: PerformanceRange) =>
-	['performance', range] as const;
+export const performanceKey = (start: string, end: string) =>
+	['performance', start, end] as const;
 
-export const usePerformance = (range: PerformanceRange) => {
+export const usePerformance = (start: string, end: string) => {
 	return useQuery({
-		queryKey: performanceKey(range),
-		queryFn: () => api.get<PerformanceData>('/analytics/performance', { range }),
+		queryKey: performanceKey(start, end),
+		queryFn: () => api.get<PerformanceData>('/analytics/performance', { start, end }),
 		staleTime: 60 * 1000,
 		placeholderData: keepPreviousData,
 	});
