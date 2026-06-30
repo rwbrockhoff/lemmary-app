@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
 import { StorefrontIcon } from '@/components/icons';
 import { useToast } from '@/providers/toast-context';
-import { toFieldError } from '@/utils/forms';
+import { toFieldError, setChanged } from '@/utils/forms';
 import { ensureHttps } from '@/utils/url';
 import { useUpdateStore, type Store } from '../../api/store-queries';
 import {
@@ -50,9 +50,7 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 		const storeUrl = ensureHttps(data.storeUrl);
 		const payload: ConnectionPayload = {};
 
-		if (storeUrl !== (settings.storeUrl ?? '')) {
-			payload.storeUrl = storeUrl || null;
-		}
+		setChanged(payload, 'storeUrl', storeUrl || null, settings.storeUrl);
 		if (data.accessToken.length > 0) {
 			payload.accessToken = data.accessToken;
 		}

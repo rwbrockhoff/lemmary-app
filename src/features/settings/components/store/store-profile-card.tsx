@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
-import { toFieldError } from '@/utils/forms';
+import { toFieldError, setChanged } from '@/utils/forms';
 import { ensureHttps } from '@/utils/url';
 import { useUpdateStore, type Store } from '../../api/store-queries';
 import {
@@ -51,18 +51,10 @@ export const StoreProfileCard = ({ settings }: StoreProfileCardProps) => {
 		const website = ensureHttps(data.website);
 		const payload: ProfilePayload = {};
 
-		if (data.storeName !== settings.storeName) {
-			payload.storeName = data.storeName;
-		}
-		if (data.tagline !== (settings.tagline ?? '')) {
-			payload.tagline = data.tagline || null;
-		}
-		if (website !== (settings.websiteUrl ?? '')) {
-			payload.websiteUrl = website || null;
-		}
-		if (data.contactEmail !== (settings.contactEmail ?? '')) {
-			payload.contactEmail = data.contactEmail || null;
-		}
+		setChanged(payload, 'storeName', data.storeName, settings.storeName);
+		setChanged(payload, 'tagline', data.tagline || null, settings.tagline);
+		setChanged(payload, 'websiteUrl', website || null, settings.websiteUrl);
+		setChanged(payload, 'contactEmail', data.contactEmail || null, settings.contactEmail);
 
 		if (Object.keys(payload).length === 0) return;
 
