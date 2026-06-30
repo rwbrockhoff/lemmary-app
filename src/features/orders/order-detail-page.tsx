@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router';
-import { Table, Flex, IconButton } from '@artifact-ui/core';
-import { PrinterIcon } from '@/components/icons/icons';
+import { Table, Flex } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
 import { getOrderDisplayName } from '@/utils/orders';
 import { PageHeader } from '@/components/page-header';
@@ -19,7 +18,7 @@ import {
 	useOrder,
 	useUpdateOrderItemStage,
 	useDeleteOrder,
-	useDownloadPackingSlip,
+	usePrintPackingSlip,
 } from './api/orders-queries';
 import {
 	useOrderStages,
@@ -45,7 +44,7 @@ const OrderDetailPage = () => {
 	const updateItemStage = useUpdateOrderItemStage(orderId!, itemStages);
 
 	const deleteOrder = useDeleteOrder();
-	const downloadSlip = useDownloadPackingSlip();
+	const printSlip = usePrintPackingSlip();
 	const [showDelete, setShowDelete] = useState(false);
 
 	const from = searchParams.get('from');
@@ -63,12 +62,19 @@ const OrderDetailPage = () => {
 
 	const handlePrintSlip = () => {
 		if (!order) return;
-		downloadSlip.mutate(
-			{ id: order.id, order_number: order.order_number },
-			{
-				onError: (err) => toast.error(err.message, 'Could not print packing slip'),
+		// Open the tab on the click itself so Safari doesn't block it, then point
+		// it at the slip once it's generated
+		const tab = window.open('', '_blank');
+		printSlip.mutate(order.id, {
+			onSuccess: (url) => {
+				if (tab) tab.location.href = url;
+				else window.open(url, '_blank');
 			},
-		);
+			onError: (err) => {
+				tab?.close();
+				toast.error(err.message, 'Could not open packing slip');
+			},
+		});
 	};
 
 	const breadcrumbs = getOrderBreadcrumbs(from, batchId);
@@ -92,21 +98,12 @@ const OrderDetailPage = () => {
 									updateOrderStage.mutate({ orderId: orderId!, stageId })
 								}
 							/>
-							<IconButton
-								icon={<PrinterIcon size={16} />}
-								label="Print packing slip"
-								size="1"
-								variant="ghost"
-								color="neutral"
-								loading={downloadSlip.isPending}
-								onClick={handlePrintSlip}
+							<OrderOptionsMenu
+								onPrint={handlePrintSlip}
+								canManage={order.order_type !== 'platform'}
+								onEdit={() => navigate(`/orders/${order.order_type}/${order.id}/edit`)}
+								onDelete={() => setShowDelete(true)}
 							/>
-							{order.order_type !== 'platform' && (
-								<OrderOptionsMenu
-									onEdit={() => navigate(`/orders/${order.order_type}/${order.id}/edit`)}
-									onDelete={() => setShowDelete(true)}
-								/>
-							)}
 						</Flex>
 					)
 				}
