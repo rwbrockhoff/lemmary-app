@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router';
-import { Table, Flex } from '@artifact-ui/core';
+import { Table, Flex, IconButton } from '@artifact-ui/core';
+import { PrinterIcon } from '@/components/icons/icons';
 import { useToast } from '@/providers/toast-context';
 import { getOrderDisplayName } from '@/utils/orders';
 import { PageHeader } from '@/components/page-header';
@@ -14,7 +15,12 @@ import { OrderMetadataCard } from './components/order-metadata-card/order-metada
 import { StageSelect } from '@/components/orders/stage-select';
 import { OrderOptionsMenu } from './components/order-options-menu';
 import { DeleteOrderModal } from './components/delete-order-modal';
-import { useOrder, useUpdateOrderItemStage, useDeleteOrder } from './api/orders-queries';
+import {
+	useOrder,
+	useUpdateOrderItemStage,
+	useDeleteOrder,
+	useDownloadPackingSlip,
+} from './api/orders-queries';
 import {
 	useOrderStages,
 	useItemStages,
@@ -39,6 +45,7 @@ const OrderDetailPage = () => {
 	const updateItemStage = useUpdateOrderItemStage(orderId!, itemStages);
 
 	const deleteOrder = useDeleteOrder();
+	const downloadSlip = useDownloadPackingSlip();
 	const [showDelete, setShowDelete] = useState(false);
 
 	const from = searchParams.get('from');
@@ -52,6 +59,16 @@ const OrderDetailPage = () => {
 			},
 			onError: (err) => toast.error(err.message, 'Could not delete order'),
 		});
+	};
+
+	const handlePrintSlip = () => {
+		if (!order) return;
+		downloadSlip.mutate(
+			{ id: order.id, order_number: order.order_number },
+			{
+				onError: (err) => toast.error(err.message, 'Could not print packing slip'),
+			},
+		);
 	};
 
 	const breadcrumbs = getOrderBreadcrumbs(from, batchId);
@@ -74,6 +91,15 @@ const OrderDetailPage = () => {
 								onChange={(stageId) =>
 									updateOrderStage.mutate({ orderId: orderId!, stageId })
 								}
+							/>
+							<IconButton
+								icon={<PrinterIcon size={16} />}
+								label="Print packing slip"
+								size="1"
+								variant="ghost"
+								color="neutral"
+								loading={downloadSlip.isPending}
+								onClick={handlePrintSlip}
 							/>
 							{order.order_type !== 'platform' && (
 								<OrderOptionsMenu

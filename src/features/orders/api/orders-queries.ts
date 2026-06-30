@@ -5,6 +5,7 @@ import {
 	useQueryClient,
 } from '@tanstack/react-query';
 import { api } from '@/api/client';
+import { saveBlob } from '@/utils/download';
 import { orderKeys } from './orders-keys';
 import { batchKeys } from '@/features/batches/api/batches-keys';
 import { storeKeys } from '@/features/settings/api/store-keys';
@@ -137,6 +138,15 @@ export const useSyncOrders = () => {
 			queryClient.invalidateQueries({ queryKey: ['dashboard'] });
 			// Refresh the store so its last synced time updates
 			queryClient.invalidateQueries({ queryKey: storeKeys.all });
+		},
+	});
+};
+
+export const useDownloadPackingSlip = () => {
+	return useMutation({
+		mutationFn: async (order: { id: string; order_number: string }) => {
+			const blob = await api.download(`/orders/${order.id}/packing-slip`);
+			saveBlob(blob, `packing-slip-${order.order_number}.pdf`);
 		},
 	});
 };
