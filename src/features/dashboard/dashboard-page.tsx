@@ -10,7 +10,8 @@ import { defaultRange } from '@/components/date-range-picker/presets';
 import { DEFAULT_TIMEZONE } from '@/utils/timezones';
 import shared from '@/styles/shared.module.css';
 import { useSyncOrders } from '@/features/orders/api/orders-queries';
-import { formatCurrencyShort } from '@/utils/format';
+import { useStore } from '@/features/settings/api/store-queries';
+import { formatCurrencyShort, formatRelativeTime } from '@/utils/format';
 import { useDashboard } from './api/dashboard-queries';
 import { KpiCard } from './components/kpi-card';
 import { DueSoonList } from './components/due-soon-list';
@@ -22,6 +23,8 @@ const DashboardPage = () => {
 	const [range, setRange] = useState(() => defaultRange(DEFAULT_TIMEZONE));
 	const { data, isLoading, error } = useDashboard(range.start, range.end);
 	const syncMutation = useSyncOrders();
+	const { data: store } = useStore();
+	const lastSyncedAt = store?.lastSyncedAt;
 
 	useStoreConnectionToast();
 
@@ -32,9 +35,11 @@ const DashboardPage = () => {
 					<Heading size="6" iconLeft={<DashboardIcon size={20} />}>
 						Dashboard
 					</Heading>
-					<Text size="2" color="secondary">
-						Overview of orders, revenue, and production
-					</Text>
+					{lastSyncedAt && (
+						<Text size="1" color="secondary">
+							Last synced {formatRelativeTime(lastSyncedAt)}
+						</Text>
+					)}
 				</div>
 				<Flex gap="3" align="center">
 					<Button
