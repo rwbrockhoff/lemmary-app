@@ -25,6 +25,7 @@ export { Settings as SettingsIcon } from 'lucide-react';
 export { Square as SquareIcon } from 'lucide-react';
 export { Store as StorefrontIcon } from 'lucide-react';
 export { Check as CheckIcon } from 'lucide-react';
+export { Palette as PaletteIcon } from 'lucide-react';
 export { Link as LinkIcon } from 'lucide-react';
 export { Key as KeyIcon } from 'lucide-react';
 export { Save as SaveIcon } from 'lucide-react';
