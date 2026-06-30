@@ -8,7 +8,7 @@ import { ProductThumbnail } from '@/components/product-thumbnail/product-thumbna
 import { formatCurrency } from '@/utils/format';
 import { useToast } from '@/providers/toast-context';
 import { useProduct, useUpdateVariantProductionType } from './api/storefront-queries';
-import { ProductionTypeSelect } from './components/production-type-select';
+import { ProductionTypeSelect } from '@/components/production-type-select';
 import shared from '@/styles/shared.module.css';
 
 const ProductDetailPage = () => {

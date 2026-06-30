@@ -1,6 +1,6 @@
 import { Text, Button, Flex, Modal } from '@artifact-ui/core';
 import type { ProductionType } from '@/types/api';
-import { productionTypeLabel } from '../production-type';
+import { productionTypeLabel } from '@/utils/production-type';
 
 type ConfirmBulkProductionTypeModalProps = {
 	open: boolean;
