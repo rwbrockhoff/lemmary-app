@@ -1,4 +1,5 @@
-import { Heading, Text, Stack, Tabs, Badge } from '@artifact-ui/core';
+import { Heading, Text, Stack, Tabs } from '@artifact-ui/core';
+import { TabCount } from '@/components/tab-count';
 import { ProductionIcon, InboxIcon } from '@/components/icons';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
@@ -32,11 +33,7 @@ const ProductionPage = () => {
 						<Tabs.Trigger value="materials">
 							<span className="flex items-center gap-2">
 								Materials
-								{mismatchCount > 0 && (
-									<Badge variant="soft" color="danger" size="1">
-										{mismatchCount}
-									</Badge>
-								)}
+								<TabCount count={mismatchCount} color="danger" />
 							</span>
 						</Tabs.Trigger>
 					</Tabs.List>

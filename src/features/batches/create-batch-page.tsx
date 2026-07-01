@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { Text, Flex, TextField, Tabs } from '@artifact-ui/core';
+import { TabCount } from '@/components/tab-count';
 import { useOrdersWithItems } from '@/features/orders/api/orders-queries';
 import { useCreateBatch } from './api/batches-queries';
 import { PageSpinner } from '@/components/page-spinner';
@@ -74,10 +75,16 @@ const CreateBatchPage = () => {
 				<Flex justify="between" align="center" className="mb-4">
 					<Tabs.List>
 						<Tabs.Trigger value="available">
-							Available ({availableOrders.length})
+							<span className="flex items-center gap-2">
+								Available
+								<TabCount count={availableOrders.length} />
+							</span>
 						</Tabs.Trigger>
 						<Tabs.Trigger value="in-batches">
-							In Batches ({batchedOrders.length})
+							<span className="flex items-center gap-2">
+								In Batches
+								<TabCount count={batchedOrders.length} />
+							</span>
 						</Tabs.Trigger>
 					</Tabs.List>
 					{tab === 'available' && selectedOrderIds.size > 0 && (

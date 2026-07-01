@@ -16,6 +16,12 @@ export function getProgressColor(completed: number, total: number): BadgeColor {
 
 export const BATCH_STATUSES = ['Active', 'Up Next', 'Paused', 'Completed'] as const;
 
+// Sort status by workflow order (matches the dropdown) instead of alphabetically
+export function getBatchStatusRank(status: string): number {
+	const index = BATCH_STATUSES.findIndex((s) => s === status);
+	return index === -1 ? BATCH_STATUSES.length : index;
+}
+
 export function getBatchStatusColor(status: string): BadgeColor {
 	switch (status) {
 		case 'Completed':

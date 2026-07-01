@@ -8,6 +8,7 @@ import {
 	DropdownMenu,
 } from '@artifact-ui/core';
 import { useNavigate } from 'react-router';
+import { TabCount } from '@/components/tab-count';
 import {
 	RefreshIcon,
 	OrdersIcon,
@@ -119,7 +120,12 @@ const OrdersPage = () => {
 						<Tabs.List>
 							<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
 							<Tabs.Trigger value="orders">Order Details</Tabs.Trigger>
-							<Tabs.Trigger value="work">Work Orders ({workOrders.length})</Tabs.Trigger>
+							<Tabs.Trigger value="work">
+								<span className="flex items-center gap-2">
+									Work Orders
+									<TabCount count={workOrders.length} />
+								</span>
+							</Tabs.Trigger>
 							<Tabs.Trigger value="completed">Completed</Tabs.Trigger>
 						</Tabs.List>
 
