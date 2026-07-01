@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Heading, Text, TextField, Button, Card, Stack, Flex } from '@artifact-ui/core';
 import { StorefrontIcon } from '@/components/icons';
 import { useToast } from '@/providers/toast-context';
+import { toFieldError, setChanged } from '@/utils/forms';
+import { ensureHttps } from '@/utils/url';
 import { useUpdateStore, type Store } from '../../api/store-queries';
+import {
+	storeConnectionSchema,
+	type StoreConnectionFormData,
+} from '../../schemas/store-connection-schema';
 import { ApiKeyHelpModal } from './api-key-help-modal';
 import styles from './store-connection-card.module.css';
 
@@ -13,7 +21,6 @@ type StoreConnectionCardProps = {
 };
 
 type ConnectionPayload = {
-	storeName?: string;
 	storeUrl?: string | null;
 	accessToken?: string;
 };
@@ -25,51 +32,37 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 	const platformLabel =
 		settings.platform.charAt(0).toUpperCase() + settings.platform.slice(1);
 
-	const [prevSettings, setPrevSettings] = useState(settings);
-	const [storeName, setStoreName] = useState(settings.storeName);
-	const [storeUrl, setStoreUrl] = useState(settings.storeUrl ?? '');
-	const [accessToken, setAccessToken] = useState('');
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors, isDirty },
+	} = useForm<StoreConnectionFormData>({
+		resolver: zodResolver(storeConnectionSchema),
+		defaultValues: { storeUrl: settings.storeUrl ?? '', accessToken: '' },
+	});
 
-	if (settings !== prevSettings) {
-		setPrevSettings(settings);
-		setStoreName(settings.storeName);
-		setStoreUrl(settings.storeUrl ?? '');
-	}
+	useEffect(() => {
+		reset({ storeUrl: settings.storeUrl ?? '', accessToken: '' });
+	}, [settings, reset]);
 
-	const buildPayload = (): ConnectionPayload => {
+	const onSubmit = (data: StoreConnectionFormData) => {
+		const storeUrl = ensureHttps(data.storeUrl);
 		const payload: ConnectionPayload = {};
 
-		if (storeName !== settings.storeName) {
-			payload.storeName = storeName.trim();
+		setChanged(payload, 'storeUrl', storeUrl || null, settings.storeUrl);
+		if (data.accessToken.length > 0) {
+			payload.accessToken = data.accessToken;
 		}
 
-		const currentUrl = settings.storeUrl ?? '';
-		const trimmedUrl = storeUrl.trim();
-		if (!isShopify && trimmedUrl !== currentUrl) {
-			payload.storeUrl = trimmedUrl === '' ? null : trimmedUrl;
-		}
-
-		if (accessToken.trim().length > 0) {
-			payload.accessToken = accessToken.trim();
-		}
-
-		return payload;
-	};
-
-	const payload = buildPayload();
-	const hasChanges = Object.keys(payload).length > 0;
-
-	const handleSave = () => {
-		if (!hasChanges) return;
+		if (Object.keys(payload).length === 0) return;
 
 		updateStore.mutate(payload, {
 			onSuccess: () => {
-				setAccessToken('');
+				reset({ storeUrl, accessToken: '' });
 				toast.success('Store connection updated');
 			},
-			onError: (error) => {
-				toast.error(error.message, 'Could not update store');
-			},
+			onError: (error) => toast.error(error.message, 'Could not update store'),
 		});
 	};
 
@@ -91,50 +84,40 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 				</Flex>
 			</Card.Header>
 			<Card.Body>
-				<Stack gap="5">
+				{isShopify ? (
 					<Stack gap="2">
 						<Text size="2" weight="medium">
-							Store Name
+							Connected store
 						</Text>
-						<TextField.Standalone
-							value={storeName}
-							onChange={(e) => setStoreName(e.target.value)}
-						/>
+						<Text size="2" color="secondary">
+							{(settings.storeUrl ?? '').replace(/^https?:\/\//, '')}
+						</Text>
+						<Flex>
+							<Button
+								variant="outline"
+								color="neutral"
+								onClick={handleReconnect}
+								iconLeft={<StorefrontIcon size={16} />}
+								className="cursor-pointer">
+								Reconnect with Shopify
+							</Button>
+						</Flex>
 					</Stack>
-
-					{isShopify ? (
-						<Stack gap="2">
-							<Text size="2" weight="medium">
-								Connected store
-							</Text>
-							<Text size="2" color="secondary">
-								{(settings.storeUrl ?? '').replace(/^https?:\/\//, '')}
-							</Text>
-							<Flex>
-								<Button
-									variant="outline"
-									color="neutral"
-									onClick={handleReconnect}
-									iconLeft={<StorefrontIcon size={16} />}
-									className="cursor-pointer">
-									Reconnect with Shopify
-								</Button>
-							</Flex>
-						</Stack>
-					) : (
-						<>
+				) : (
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<Stack gap="5">
 							<Stack gap="2">
 								<Text size="2" weight="medium">
-									Store URL
+									Platform Store URL
 								</Text>
 								<Text size="2" color="secondary">
-									Used to show links back to your e-commerce throughout the app.
+									Your e-commerce store address, used to link back to orders in the app.
+									Not shown to customers.
 								</Text>
 								<TextField.Standalone
-									type="url"
-									placeholder="https://yourstore.squarespace.com"
-									value={storeUrl}
-									onChange={(e) => setStoreUrl(e.target.value)}
+									placeholder="yourstore.squarespace.com"
+									{...register('storeUrl')}
+									error={toFieldError(errors.storeUrl)}
 								/>
 							</Stack>
 
@@ -151,22 +134,23 @@ export const StoreConnectionCard = ({ settings }: StoreConnectionCardProps) => {
 								<TextField.Standalone
 									type="password"
 									placeholder="Paste new API key to update"
-									value={accessToken}
-									onChange={(e) => setAccessToken(e.target.value)}
+									{...register('accessToken')}
+									error={toFieldError(errors.accessToken)}
 								/>
 							</Stack>
-						</>
-					)}
 
-					<Flex>
-						<Button
-							onClick={handleSave}
-							disabled={!hasChanges || updateStore.isPending}
-							className="cursor-pointer">
-							Save Changes
-						</Button>
-					</Flex>
-				</Stack>
+							<Flex>
+								<Button
+									type="submit"
+									disabled={!isDirty || updateStore.isPending}
+									loading={updateStore.isPending}
+									className="cursor-pointer">
+									Save Changes
+								</Button>
+							</Flex>
+						</Stack>
+					</form>
+				)}
 			</Card.Body>
 		</Card.Root>
 	);

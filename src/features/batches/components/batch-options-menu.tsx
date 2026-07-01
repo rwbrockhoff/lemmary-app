@@ -1,18 +1,21 @@
 import { DropdownMenu, IconButton } from '@artifact-ui/core';
 import {
 	EllipsisHorizontalIcon,
+	PrinterIcon,
 	PencilIcon,
 	TrashIcon,
 	ListChecksIcon,
 } from '@/components/icons/icons';
 
 type BatchOptionsMenuProps = {
+	onPrint: () => void;
 	onEditOrders: () => void;
 	onRename: () => void;
 	onDelete: () => void;
 };
 
 export const BatchOptionsMenu = ({
+	onPrint,
 	onEditOrders,
 	onRename,
 	onDelete,
@@ -29,6 +32,11 @@ export const BatchOptionsMenu = ({
 				/>
 			</DropdownMenu.DropdownMenuTrigger>
 			<DropdownMenu.DropdownMenuContent align="end" size="1">
+				<DropdownMenu.DropdownMenuItem onClick={onPrint}>
+					<PrinterIcon size={14} />
+					Print Packing Slips
+				</DropdownMenu.DropdownMenuItem>
+				<DropdownMenu.DropdownMenuSeparator />
 				<DropdownMenu.DropdownMenuItem onClick={onEditOrders}>
 					<ListChecksIcon size={14} />
 					Edit Orders

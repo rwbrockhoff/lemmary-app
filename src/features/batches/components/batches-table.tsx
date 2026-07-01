@@ -11,6 +11,7 @@ import {
 	useUpdateBatchStatus,
 	useDeleteBatch,
 } from '../api/batches-queries';
+import { getBatchStatusRank } from '../utils/batch-utils';
 import type { Batch } from '@/types/api';
 
 type BatchesTableProps = {
@@ -41,6 +42,7 @@ export const BatchesTable = ({ batches }: BatchesTableProps) => {
 				const bRatio = b.item_count ? b.items_completed / b.item_count : 0;
 				return aRatio - bRatio;
 			},
+			status: (a, b) => getBatchStatusRank(a.status) - getBatchStatusRank(b.status),
 		},
 	});
 

@@ -7,9 +7,9 @@ import { useSortableTable } from '@/hooks/use-sortable-table';
 import { formatCurrency } from '@/utils/format';
 import { useToast } from '@/providers/toast-context';
 import type { Product, ProductVariant, ProductionType } from '@/types/api';
-import { ProductionTypeSelect } from './production-type-select';
+import { ProductionTypeSelect } from '@/components/production-type-select';
 import { ConfirmBulkProductionTypeModal } from './confirm-bulk-production-type-modal';
-import { getProductProductionType } from '../production-type';
+import { getProductProductionType } from '@/utils/production-type';
 import { useUpdateProductProductionType } from '../api/storefront-queries';
 
 type PendingChange = { productId: string; productionType: ProductionType };

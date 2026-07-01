@@ -1,6 +1,6 @@
 import { Select } from '@artifact-ui/core';
 import type { ProductionType } from '@/types/api';
-import { PRODUCTION_TYPES, isProductionType } from '../production-type';
+import { PRODUCTION_TYPES, isProductionType } from '@/utils/production-type';
 
 type ProductionTypeSelectProps = {
 	value: ProductionType | undefined;

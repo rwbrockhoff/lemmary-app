@@ -15,6 +15,7 @@ export { EllipsisVertical as EllipsisIcon } from 'lucide-react';
 export { Ellipsis as EllipsisHorizontalIcon } from 'lucide-react';
 export { Pencil as PencilIcon } from 'lucide-react';
 export { Trash2 as TrashIcon } from 'lucide-react';
+export { Printer as PrinterIcon } from 'lucide-react';
 export { StickyNote as StickyNoteIcon } from 'lucide-react';
 export { GripVertical as GripIcon } from 'lucide-react';
 export { Columns3 as WorkflowIcon } from 'lucide-react';

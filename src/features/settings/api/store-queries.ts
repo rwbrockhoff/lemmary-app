@@ -5,6 +5,7 @@ import {
 	type QueryClient,
 } from '@tanstack/react-query';
 import { api } from '@/api/client';
+import type { ProductionType } from '@/types/api';
 import { storeKeys } from './store-keys';
 
 export type Store = {
@@ -13,6 +14,11 @@ export type Store = {
 	platform: string;
 	leadTimeDays: number | null;
 	storeUrl: string | null;
+	logoUrl: string | null;
+	tagline: string | null;
+	websiteUrl: string | null;
+	contactEmail: string | null;
+	defaultProductionType: ProductionType | null;
 	timezone: string | null;
 	lastSyncedAt: string | null;
 };
@@ -22,6 +28,10 @@ type UpdateStorePayload = {
 	leadTimeDays?: number | null;
 	accessToken?: string;
 	storeUrl?: string | null;
+	tagline?: string | null;
+	websiteUrl?: string | null;
+	contactEmail?: string | null;
+	defaultProductionType?: ProductionType;
 	timezone?: string;
 	applyLeadTimeToOpenOrders?: boolean;
 };

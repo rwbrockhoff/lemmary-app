@@ -1,4 +1,5 @@
-import { Text, Badge, Tabs } from '@artifact-ui/core';
+import { Text, Tabs } from '@artifact-ui/core';
+import { TabCount } from '@/components/tab-count';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
@@ -23,40 +24,26 @@ export const MaterialsReport = () => {
 						<Tabs.Trigger value="fabric">
 							<span className="flex items-center gap-2">
 								Fabric
-								{report.fabric.length > 0 && (
-									<Badge variant="soft" color="neutral" size="1">
-										{report.fabric.length}
-									</Badge>
-								)}
+								<TabCount count={report.fabric.length} />
 							</span>
 						</Tabs.Trigger>
 						<Tabs.Trigger value="linear">
 							<span className="flex items-center gap-2">
 								Linear
-								{report.linear.length > 0 && (
-									<Badge variant="soft" color="neutral" size="1">
-										{report.linear.length}
-									</Badge>
-								)}
+								<TabCount count={report.linear.length} />
 							</span>
 						</Tabs.Trigger>
 						<Tabs.Trigger value="hardware">
 							<span className="flex items-center gap-2">
 								Hardware
-								{report.hardware.length > 0 && (
-									<Badge variant="soft" color="neutral" size="1">
-										{report.hardware.length}
-									</Badge>
-								)}
+								<TabCount count={report.hardware.length} />
 							</span>
 						</Tabs.Trigger>
 						{report.mismatches.length > 0 && (
 							<Tabs.Trigger value="mismatches">
 								<span className="flex items-center gap-2">
 									Mismatches
-									<Badge variant="soft" color="danger" size="1">
-										{report.mismatches.length}
-									</Badge>
+									<TabCount count={report.mismatches.length} color="danger" />
 								</span>
 							</Tabs.Trigger>
 						)}

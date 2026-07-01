@@ -1,5 +1,6 @@
 import { Tabs } from '@artifact-ui/core';
 import type { BatchDetail } from '@/types/api';
+import { TabCount } from '@/components/tab-count';
 import { BatchOrdersTable } from './batch-orders-table';
 import { BatchItemsTable } from './batch-items-table';
 import { BatchMaterialsTable } from './batch-materials-table';
@@ -17,19 +18,41 @@ export const BatchTabs = ({ batchId, batch, onToggle, onUpdateQty }: BatchTabsPr
 	const fabricMaterials = batch.materials.filter((m) => m.category === 'fabric');
 	const linearMaterials = batch.materials.filter((m) => m.category === 'linear');
 	const hardwareMaterials = batch.materials.filter((m) => m.category === 'hardware');
+	const itemCount = batch.items.reduce((sum, i) => sum + i.quantity, 0);
 
 	return (
 		<Tabs.Root defaultValue="orders">
 			<Tabs.List>
-				<Tabs.Trigger value="orders">Orders ({batch.orders.length})</Tabs.Trigger>
-				<Tabs.Trigger value="items">
-					Items ({batch.items.reduce((sum, i) => sum + i.quantity, 0)})
+				<Tabs.Trigger value="orders">
+					<span className="flex items-center gap-2">
+						Orders
+						<TabCount count={batch.orders.length} />
+					</span>
 				</Tabs.Trigger>
-				<Tabs.Trigger value="fabric">Fabric ({fabricMaterials.length})</Tabs.Trigger>
-				<Tabs.Trigger value="linear">Linear ({linearMaterials.length})</Tabs.Trigger>
+				<Tabs.Trigger value="items">
+					<span className="flex items-center gap-2">
+						Items
+						<TabCount count={itemCount} />
+					</span>
+				</Tabs.Trigger>
+				<Tabs.Trigger value="fabric">
+					<span className="flex items-center gap-2">
+						Fabric
+						<TabCount count={fabricMaterials.length} />
+					</span>
+				</Tabs.Trigger>
+				<Tabs.Trigger value="linear">
+					<span className="flex items-center gap-2">
+						Linear
+						<TabCount count={linearMaterials.length} />
+					</span>
+				</Tabs.Trigger>
 				{hardwareMaterials.length > 0 && (
 					<Tabs.Trigger value="hardware">
-						Hardware ({hardwareMaterials.length})
+						<span className="flex items-center gap-2">
+							Hardware
+							<TabCount count={hardwareMaterials.length} />
+						</span>
 					</Tabs.Trigger>
 				)}
 			</Tabs.List>

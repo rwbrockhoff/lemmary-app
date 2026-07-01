@@ -14,7 +14,12 @@ import { OrderMetadataCard } from './components/order-metadata-card/order-metada
 import { StageSelect } from '@/components/orders/stage-select';
 import { OrderOptionsMenu } from './components/order-options-menu';
 import { DeleteOrderModal } from './components/delete-order-modal';
-import { useOrder, useUpdateOrderItemStage, useDeleteOrder } from './api/orders-queries';
+import {
+	useOrder,
+	useUpdateOrderItemStage,
+	useDeleteOrder,
+	usePrintPackingSlip,
+} from './api/orders-queries';
 import {
 	useOrderStages,
 	useItemStages,
@@ -39,6 +44,7 @@ const OrderDetailPage = () => {
 	const updateItemStage = useUpdateOrderItemStage(orderId!, itemStages);
 
 	const deleteOrder = useDeleteOrder();
+	const printSlip = usePrintPackingSlip();
 	const [showDelete, setShowDelete] = useState(false);
 
 	const from = searchParams.get('from');
@@ -51,6 +57,22 @@ const OrderDetailPage = () => {
 				navigate('/orders');
 			},
 			onError: (err) => toast.error(err.message, 'Could not delete order'),
+		});
+	};
+
+	const handlePrintSlip = () => {
+		if (!order) return;
+		// Open the tab on the click itself so Safari doesn't block the popup
+		const tab = window.open('', '_blank');
+		printSlip.mutate(order.id, {
+			onSuccess: (url) => {
+				if (tab) tab.location.href = url;
+				else window.open(url, '_blank');
+			},
+			onError: (err) => {
+				tab?.close();
+				toast.error(err.message, 'Could not open packing slip');
+			},
 		});
 	};
 
@@ -75,12 +97,12 @@ const OrderDetailPage = () => {
 									updateOrderStage.mutate({ orderId: orderId!, stageId })
 								}
 							/>
-							{order.order_type !== 'platform' && (
-								<OrderOptionsMenu
-									onEdit={() => navigate(`/orders/${order.order_type}/${order.id}/edit`)}
-									onDelete={() => setShowDelete(true)}
-								/>
-							)}
+							<OrderOptionsMenu
+								onPrint={handlePrintSlip}
+								canManage={order.order_type !== 'platform'}
+								onEdit={() => navigate(`/orders/${order.order_type}/${order.id}/edit`)}
+								onDelete={() => setShowDelete(true)}
+							/>
 						</Flex>
 					)
 				}

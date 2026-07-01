@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { Heading, Button, Tabs, Badge, Flex } from '@artifact-ui/core';
+import { Heading, Button, Tabs, Flex } from '@artifact-ui/core';
 import { PlusIcon, BatchesIcon } from '@/components/icons';
+import { TabCount } from '@/components/tab-count';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
 import { ErrorState } from '@/components/error-state/error-state';
@@ -63,21 +64,13 @@ const BatchesPage = () => {
 							<Tabs.Trigger value="active">
 								<span className="flex items-center gap-2">
 									Active
-									{activeCount > 0 && (
-										<Badge variant="soft" color="neutral" size="1">
-											{activeCount}
-										</Badge>
-									)}
+									<TabCount count={activeCount} />
 								</span>
 							</Tabs.Trigger>
 							<Tabs.Trigger value="completed">
 								<span className="flex items-center gap-2">
 									Completed
-									{completedBatches.length > 0 && (
-										<Badge variant="soft" color="neutral" size="1">
-											{completedBatches.length}
-										</Badge>
-									)}
+									<TabCount count={completedBatches.length} />
 								</span>
 							</Tabs.Trigger>
 						</Tabs.List>

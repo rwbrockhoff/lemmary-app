@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Text, Button, Stack, Flex, Modal } from '@artifact-ui/core';
 import { ProductionIcon } from '@/components/icons';
 import type { ProductionType } from '@/types/api';
-import { ProductionTypeSelect } from './production-type-select';
+import { ProductionTypeSelect } from '@/components/production-type-select';
 
 type SetAllProductionTypeModalProps = {
 	open: boolean;

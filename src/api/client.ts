@@ -48,29 +48,60 @@ async function request<T>(endpoint: string, options?: RequestOptions): Promise<T
 		...init,
 	});
 
-	if (!response.ok) {
-		const body = await response.json().catch(() => ({}));
-		const data = body as {
-			error?: string | { message?: string; code?: string; details?: unknown };
-			message?: string;
-			code?: string;
-		};
-
-		const errorObject = typeof data.error === 'object' ? data.error : null;
-		const code = data.code ?? errorObject?.code;
-
-		if (code === DEMO_READONLY_CODE) {
-			throw new ApiError(response.status, DEMO_READONLY_MESSAGE, code);
-		}
-
-		const message =
-			(typeof data.error === 'string' ? data.error : errorObject?.message) ??
-			data.message ??
-			response.statusText;
-		throw new ApiError(response.status, message, code, errorObject?.details);
-	}
+	await throwIfError(response);
 
 	return response.json() as Promise<T>;
+}
+
+async function throwIfError(response: Response): Promise<void> {
+	if (response.ok) return;
+
+	const body = await response.json().catch(() => ({}));
+	const data = body as {
+		error?: string | { message?: string; code?: string; details?: unknown };
+		message?: string;
+		code?: string;
+	};
+
+	const errorObject = typeof data.error === 'object' ? data.error : null;
+	const code = data.code ?? errorObject?.code;
+
+	if (code === DEMO_READONLY_CODE) {
+		throw new ApiError(response.status, DEMO_READONLY_MESSAGE, code);
+	}
+
+	const message =
+		(typeof data.error === 'string' ? data.error : errorObject?.message) ??
+		data.message ??
+		response.statusText;
+	throw new ApiError(response.status, message, code, errorObject?.details);
+}
+
+async function requestBlob(endpoint: string, options?: RequestOptions): Promise<Blob> {
+	const { params, ...init } = options ?? {};
+
+	let url = `${BASE_URL}${endpoint}`;
+	if (params) {
+		const searchParams = new URLSearchParams(params);
+		url += `?${searchParams.toString()}`;
+	}
+
+	const headers: Record<string, string> = {
+		...(init?.headers as Record<string, string>),
+	};
+	if (init?.body) {
+		headers['Content-Type'] = 'application/json';
+	}
+
+	const response = await fetch(url, {
+		credentials: 'include',
+		headers,
+		...init,
+	});
+
+	await throwIfError(response);
+
+	return response.blob();
 }
 
 export const api = {
@@ -97,4 +128,7 @@ export const api = {
 
 	del: <T = void>(endpoint: string, params?: Record<string, string>) =>
 		request<ApiResponse<T>>(endpoint, { method: 'DELETE', params }).then((r) => r.data),
+
+	download: (endpoint: string, options?: RequestOptions) =>
+		requestBlob(endpoint, options),
 };
