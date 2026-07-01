@@ -62,8 +62,7 @@ const OrderDetailPage = () => {
 
 	const handlePrintSlip = () => {
 		if (!order) return;
-		// Open the tab on the click itself so Safari doesn't block it, then point
-		// it at the slip once it's generated
+		// Open the tab on the click itself so Safari doesn't block the popup
 		const tab = window.open('', '_blank');
 		printSlip.mutate(order.id, {
 			onSuccess: (url) => {

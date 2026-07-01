@@ -17,12 +17,17 @@ import { RenameBatchModal } from './components/rename-batch-modal';
 import { DeleteBatchModal } from './components/delete-batch-modal';
 import { BatchTabs } from './components/batch-tabs';
 import { BatchOptionsMenu } from './components/batch-options-menu';
+import { useToast } from '@/providers/toast-context';
+import { usePrintBatchSlips } from '@/features/orders/api/orders-queries';
 import shared from '@/styles/shared.module.css';
 
 const BatchDetailPage = () => {
 	const { batchId } = useParams<{ batchId: string }>();
 	const navigate = useNavigate();
+	const toast = useToast();
+
 	const { data: batch, isLoading, error } = useBatch(batchId!);
+	const printSlips = usePrintBatchSlips();
 	const toggleComplete = useToggleComplete(batchId!);
 	const updateMaterialQty = useUpdateMaterialQty(batchId!);
 	const renameMutation = useRenameBatch();
@@ -42,6 +47,28 @@ const BatchDetailPage = () => {
 	const handleDelete = () => {
 		deleteMutation.mutate(batchId!, {
 			onSuccess: () => navigate('/batches'),
+		});
+	};
+
+	const handlePrintSlips = () => {
+		if (!batch) return;
+		// Open the tab on the click itself so Safari doesn't block the popup
+		const tab = window.open('', '_blank');
+		const orderIds = batch.orders.map((order) => order.order_id);
+		if (orderIds.length === 0) {
+			tab?.close();
+			toast.error('This batch has no orders to print');
+			return;
+		}
+		printSlips.mutate(orderIds, {
+			onSuccess: (url) => {
+				if (tab) tab.location.href = url;
+				else window.open(url, '_blank');
+			},
+			onError: (err) => {
+				tab?.close();
+				toast.error(err.message, 'Could not open packing slips');
+			},
 		});
 	};
 
@@ -72,6 +99,7 @@ const BatchDetailPage = () => {
 								}
 							/>
 							<BatchOptionsMenu
+								onPrint={handlePrintSlips}
 								onEditOrders={() => navigate(`/batches/${batchId}/edit`)}
 								onRename={() => setShowRename(true)}
 								onDelete={() => setShowDelete(true)}
