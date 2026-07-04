@@ -86,10 +86,17 @@ export type OrderWithItems = Order & {
 	items: OrderItem[];
 };
 
+export type OrderMetrics = {
+	totalItems: number;
+	revenue: number;
+	dueThisWeek: number;
+};
+
 export type GetOrdersResponse = {
 	orders: OrderWithItems[];
 	hasMore: boolean;
 	lastSyncedAt: string | null;
+	metricSummary: OrderMetrics | null;
 };
 
 export type WorkflowStage = {

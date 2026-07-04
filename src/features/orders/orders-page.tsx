@@ -24,12 +24,12 @@ import { ErrorState } from '@/components/error-state/error-state';
 import { EmptyState } from '@/components/empty-state/empty-state';
 import { useStore } from '@/features/settings/api/store-queries';
 import { useOrdersWithItems, useSyncOrders } from './api/orders-queries';
-import { OrdersTable } from './components/orders-table';
 import { OrdersOverviewTable } from './components/orders-overview-table';
 import { CompletedOrdersTable } from './components/completed-orders-table';
 import { WorkOrdersTable } from './components/work-orders-table';
 import { OrdersSummary } from './components/orders-summary';
 import { formatRelativeTime } from '@/utils/format';
+import { getDueUrgency } from '@/utils/orders';
 import shared from '@/styles/shared.module.css';
 
 const OrdersPage = () => {
@@ -45,6 +45,10 @@ const OrdersPage = () => {
 	// filtered out of the customer tabs and summary
 	const customerOrders = orders?.filter((o) => o.order_type !== 'work') ?? [];
 	const workOrders = orders?.filter((o) => o.order_type === 'work') ?? [];
+
+	const overdueOrders = customerOrders.filter(
+		(o) => getDueUrgency(o.due_date) === 'overdue',
+	);
 
 	return (
 		<div className={shared.pageContainer}>
@@ -113,13 +117,25 @@ const OrdersPage = () => {
 						/>
 					)
 				}>
-				{customerOrders.length > 0 && <OrdersSummary orders={customerOrders} />}
+				{data?.metricSummary && <OrdersSummary metrics={data.metricSummary} />}
 
 				{orders && orders.length > 0 && (
 					<Tabs.Root defaultValue="overview">
 						<Tabs.List>
-							<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
-							<Tabs.Trigger value="orders">Order Details</Tabs.Trigger>
+							<Tabs.Trigger value="overview">
+								<span className="flex items-center gap-2">
+									Open Orders
+									<TabCount count={customerOrders.length} />
+								</span>
+							</Tabs.Trigger>
+							{overdueOrders.length > 0 && (
+								<Tabs.Trigger value="overdue">
+									<span className="flex items-center gap-2">
+										Overdue
+										<TabCount count={overdueOrders.length} color="danger" />
+									</span>
+								</Tabs.Trigger>
+							)}
 							<Tabs.Trigger value="work">
 								<span className="flex items-center gap-2">
 									Work Orders
@@ -133,9 +149,11 @@ const OrdersPage = () => {
 							<OrdersOverviewTable orders={customerOrders} />
 						</Tabs.Content>
 
-						<Tabs.Content value="orders">
-							<OrdersTable orders={customerOrders} />
-						</Tabs.Content>
+						{overdueOrders.length > 0 && (
+							<Tabs.Content value="overdue">
+								<OrdersOverviewTable orders={overdueOrders} />
+							</Tabs.Content>
+						)}
 
 						<Tabs.Content value="work">
 							<WorkOrdersTable orders={workOrders} />

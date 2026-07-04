@@ -1,21 +1,18 @@
 import { Grid } from '@artifact-ui/core';
 import { formatCurrencyShort } from '@/utils/format';
 import { StatCard } from './stat-card';
-import type { Order } from '@/types/api';
+import type { OrderMetrics } from '@/types/api';
 
 type OrdersSummaryProps = {
-	orders: Order[];
+	metrics: OrderMetrics;
 };
 
-export const OrdersSummary = ({ orders }: OrdersSummaryProps) => {
-	const totalItems = orders.reduce((sum, o) => sum + o.item_count, 0);
-	const totalRevenue = orders.reduce((sum, o) => sum + Number(o.grand_total ?? 0), 0);
-
+export const OrdersSummary = ({ metrics }: OrdersSummaryProps) => {
 	return (
 		<Grid columns={3} gap="4" className="mb-6">
-			<StatCard label="Open Orders" value={orders.length} />
-			<StatCard label="Total Items" value={totalItems} />
-			<StatCard label="Revenue" value={formatCurrencyShort(totalRevenue)} />
+			<StatCard label="Orders Due This Week" value={metrics.dueThisWeek} />
+			<StatCard label="Items to Make" value={metrics.totalItems} />
+			<StatCard label="Open Revenue" value={formatCurrencyShort(metrics.revenue)} />
 		</Grid>
 	);
 };

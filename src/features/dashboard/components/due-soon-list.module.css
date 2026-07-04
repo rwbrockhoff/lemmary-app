@@ -10,16 +10,6 @@
 	color: var(--color-text-default);
 }
 
-.dueSoon {
-	color: var(--color-warning, var(--color-text-default));
-	font-weight: 500;
-}
-
-.overdue {
-	color: var(--color-error);
-	font-weight: 500;
-}
-
 .empty {
 	padding: var(--space-6) 0;
 	text-align: center;

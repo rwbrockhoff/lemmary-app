@@ -17,6 +17,17 @@
 	color: var(--color-error);
 }
 
+/* Due date urgency, shared by the orders table and the dashboard due list */
+.dueOverdue {
+	color: var(--color-error);
+	font-weight: 500;
+}
+
+.dueSoon {
+	color: var(--color-warning, var(--color-text-default));
+	font-weight: 500;
+}
+
 /* Hidden visually but kept for screen readers */
 .srOnly {
 	position: absolute;
