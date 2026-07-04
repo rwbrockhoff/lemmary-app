@@ -150,18 +150,6 @@ export const usePrintPackingSlip = () => {
 	});
 };
 
-export const usePrintBatchSlips = () => {
-	return useMutation({
-		mutationFn: async (orderIds: string[]) => {
-			const blob = await api.download('/orders/packing-slips', {
-				method: 'POST',
-				body: JSON.stringify({ orderIds }),
-			});
-			return URL.createObjectURL(blob);
-		},
-	});
-};
-
 export const useCreateCustomOrder = () => {
 	const queryClient = useQueryClient();
 

@@ -12,6 +12,7 @@ import {
 	useDeleteBatch,
 } from '../api/batches-queries';
 import { getBatchStatusRank } from '../utils/batch-utils';
+import { usePrintBatchSlips } from '../hooks/use-print-batch-slips';
 import type { Batch } from '@/types/api';
 
 type BatchesTableProps = {
@@ -25,6 +26,7 @@ export const BatchesTable = ({ batches }: BatchesTableProps) => {
 	const renameMutation = useRenameBatch();
 	const statusMutation = useUpdateBatchStatus();
 	const deleteMutation = useDeleteBatch();
+	const { print: printSlips } = usePrintBatchSlips();
 
 	const [renameTarget, setRenameTarget] = useState<Batch | null>(null);
 	const [deleteTarget, setDeleteTarget] = useState<Batch | null>(null);
@@ -83,6 +85,7 @@ export const BatchesTable = ({ batches }: BatchesTableProps) => {
 							key={batch.id}
 							batch={batch}
 							onRowClick={() => navigate(`/batches/${batch.id}`)}
+							onPrint={() => printSlips(batch.id)}
 							onStatusChange={(status) =>
 								statusMutation.mutate({ batchId: batch.id, status })
 							}
