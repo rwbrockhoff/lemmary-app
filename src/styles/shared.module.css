@@ -10,6 +10,13 @@
 	margin-inline: auto;
 }
 
+/* Destructive menu action, colors the label and its icon */
+.dangerMenuItem,
+.dangerMenuItem svg,
+.dangerMenuItem * {
+	color: var(--color-error);
+}
+
 .completedRow {
 	background-color: var(--color-success-bg);
 }
