@@ -9,6 +9,7 @@ import { TypeInput } from '../type-input/type-input';
 import { LinkPopup } from '../link-popup/link-popup';
 import { useBomRow } from './use-bom-row';
 import type { BomItem } from '@/types/api';
+import shared from '@/styles/shared.module.css';
 import styles from './bom-category-section.module.css';
 
 type BomRowProps = {
@@ -147,8 +148,9 @@ export const BomRow = ({
 									Duplicate
 								</Flex>
 							</DropdownMenu.DropdownMenuItem>
+							<DropdownMenu.DropdownMenuSeparator />
 							<DropdownMenu.DropdownMenuItem
-								className={styles.menuItem}
+								className={cn(styles.menuItem, shared.dangerMenuItem)}
 								onClick={deleteItem}>
 								<Flex align="center" gap="2">
 									<TrashIcon size={14} />

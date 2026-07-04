@@ -8,6 +8,7 @@ import {
 } from '@/components/icons/icons';
 import { BatchStatusSelect } from './batch-status-select';
 import { useFormatDateTz } from '@/hooks/use-format-date-tz';
+import shared from '@/styles/shared.module.css';
 import type { Batch } from '@/types/api';
 
 type BatchRowProps = {
@@ -75,11 +76,6 @@ export const BatchRow = ({
 						/>
 					</DropdownMenu.DropdownMenuTrigger>
 					<DropdownMenu.DropdownMenuContent align="end" size="1">
-						<DropdownMenu.DropdownMenuItem onClick={handlePrint}>
-							<PrinterIcon size={14} />
-							Print Packing Slips
-						</DropdownMenu.DropdownMenuItem>
-						<DropdownMenu.DropdownMenuSeparator />
 						<DropdownMenu.DropdownMenuItem onClick={handleEditOrders}>
 							<ListChecksIcon size={14} />
 							Edit Orders
@@ -88,8 +84,14 @@ export const BatchRow = ({
 							<PencilIcon size={14} />
 							Rename
 						</DropdownMenu.DropdownMenuItem>
+						<DropdownMenu.DropdownMenuItem onClick={handlePrint}>
+							<PrinterIcon size={14} />
+							Print Packing Slips
+						</DropdownMenu.DropdownMenuItem>
 						<DropdownMenu.DropdownMenuSeparator />
-						<DropdownMenu.DropdownMenuItem onClick={handleDelete}>
+						<DropdownMenu.DropdownMenuItem
+							onClick={handleDelete}
+							className={shared.dangerMenuItem}>
 							<TrashIcon size={14} />
 							Delete
 						</DropdownMenu.DropdownMenuItem>
