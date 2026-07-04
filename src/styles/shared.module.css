@@ -36,26 +36,6 @@
 	background-color: color-mix(in srgb, var(--color-info) 15%, transparent);
 }
 
-.statusInfo {
-	background-color: var(--color-info-bg);
-	color: var(--color-info);
-	border: 1px solid color-mix(in srgb, var(--color-info) 50%, transparent);
-}
-
-.statusInfo:hover {
-	background-color: var(--color-info-bg);
-}
-
-.statusSuccess {
-	background-color: var(--color-success-bg);
-	color: var(--color-success);
-	border: 1px solid color-mix(in srgb, var(--color-success) 50%, transparent);
-}
-
-.statusSuccess:hover {
-	background-color: var(--color-success-bg);
-}
-
 .expandIcon {
 	transition: transform 150ms;
 	transform: rotate(-90deg);

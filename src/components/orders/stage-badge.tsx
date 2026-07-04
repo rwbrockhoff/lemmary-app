@@ -1,6 +1,5 @@
 import type { WorkflowStageColor } from './stage-colors';
-import { getStageColorStyle } from './stage-colors';
-import styles from './stage-badge.module.css';
+import { BorderBadge } from '@/components/border-badge/border-badge';
 
 type StageBadgeProps = {
 	name: string | null;
@@ -8,7 +7,5 @@ type StageBadgeProps = {
 };
 
 export const StageBadge = ({ name, color }: StageBadgeProps) => (
-	<span className={styles.badge} style={getStageColorStyle(color)}>
-		{name ?? 'No status'}
-	</span>
+	<BorderBadge color={color ?? 'slate'}>{name ?? 'No status'}</BorderBadge>
 );
