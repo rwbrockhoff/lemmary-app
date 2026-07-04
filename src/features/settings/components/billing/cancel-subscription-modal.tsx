@@ -1,4 +1,5 @@
 import { Text, Button, Stack, Flex, Modal } from '@artifact-ui/core';
+import { ErrorIcon } from '@/components/icons/icons';
 import { useToast } from '@/providers/toast-context';
 import { useCancelSubscription } from '@/features/billing/api/subscription-queries';
 
@@ -33,7 +34,9 @@ export const CancelSubscriptionModal = ({
 				size="1"
 				ariaDescription="Confirm subscription cancellation">
 				<Modal.Header showCloseButton={false}>
-					<Modal.Title>Cancel subscription?</Modal.Title>
+					<Modal.Title iconLeft={<ErrorIcon size={18} />}>
+						Cancel subscription?
+					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Stack gap="3">

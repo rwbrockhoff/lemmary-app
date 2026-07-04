@@ -20,7 +20,7 @@ export const DeleteOrderModal = ({
 		<Modal.Root open={open} onOpenChange={onOpenChange}>
 			<Modal.Content variant="simple" size="1" ariaDescription="Confirm order deletion">
 				<Modal.Header showCloseButton={false}>
-					<Modal.Title>Delete Order</Modal.Title>
+					<Modal.Title iconLeft={<TrashIcon size={18} />}>Delete Order</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Text size="2">

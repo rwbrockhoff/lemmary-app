@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Modal, TextField, Button, Text, Flex, Stack } from '@artifact-ui/core';
+import { LockIcon } from '@/components/icons/icons';
 import { useToast } from '@/providers/toast-context';
 import { extractErrorMessage } from '@/utils/errors';
 import { toFieldError } from '@/utils/forms';
@@ -51,7 +52,7 @@ export const ChangePasswordModal = ({ open, onOpenChange }: ChangePasswordModalP
 		<Modal.Root open={open} onOpenChange={handleOpenChange}>
 			<Modal.Content size="1" ariaDescription="Change your password">
 				<Modal.Header>
-					<Modal.Title>Change Password</Modal.Title>
+					<Modal.Title iconLeft={<LockIcon size={18} />}>Change Password</Modal.Title>
 				</Modal.Header>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Modal.Body>
