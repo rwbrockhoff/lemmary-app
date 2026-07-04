@@ -10,6 +10,7 @@ import {
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useSearch, type SearchResults } from '../api/search-queries';
 import styles from './search-palette.module.css';
+import shared from '@/styles/shared.module.css';
 
 type SearchPaletteProps = {
 	open: boolean;
@@ -107,13 +108,12 @@ export const SearchPalette = ({ open, onOpenChange }: SearchPaletteProps) => {
 	return (
 		<Modal.Root open={open} onOpenChange={onOpenChange}>
 			<Modal.Content size="2" ariaDescription="Search orders, products, and customers">
-				<Modal.Header>
-					<Modal.Title>Search</Modal.Title>
-				</Modal.Header>
+				<Modal.Title className={shared.srOnly}>Search</Modal.Title>
 				<Modal.Body>
 					<TextField.Standalone
 						variant="icon"
-						iconLeft={<SearchIcon size={16} />}
+						size="3"
+						iconLeft={<SearchIcon size={18} />}
 						placeholder="Search orders, products, customers…"
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}

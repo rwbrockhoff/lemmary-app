@@ -6,6 +6,7 @@ import {
 	TrashIcon,
 	ListChecksIcon,
 } from '@/components/icons/icons';
+import shared from '@/styles/shared.module.css';
 
 type BatchOptionsMenuProps = {
 	onPrint: () => void;
@@ -32,11 +33,6 @@ export const BatchOptionsMenu = ({
 				/>
 			</DropdownMenu.DropdownMenuTrigger>
 			<DropdownMenu.DropdownMenuContent align="end" size="1">
-				<DropdownMenu.DropdownMenuItem onClick={onPrint}>
-					<PrinterIcon size={14} />
-					Print Packing Slips
-				</DropdownMenu.DropdownMenuItem>
-				<DropdownMenu.DropdownMenuSeparator />
 				<DropdownMenu.DropdownMenuItem onClick={onEditOrders}>
 					<ListChecksIcon size={14} />
 					Edit Orders
@@ -45,8 +41,14 @@ export const BatchOptionsMenu = ({
 					<PencilIcon size={14} />
 					Rename
 				</DropdownMenu.DropdownMenuItem>
+				<DropdownMenu.DropdownMenuItem onClick={onPrint}>
+					<PrinterIcon size={14} />
+					Print Packing Slips
+				</DropdownMenu.DropdownMenuItem>
 				<DropdownMenu.DropdownMenuSeparator />
-				<DropdownMenu.DropdownMenuItem onClick={onDelete}>
+				<DropdownMenu.DropdownMenuItem
+					onClick={onDelete}
+					className={shared.dangerMenuItem}>
 					<TrashIcon size={14} />
 					Delete
 				</DropdownMenu.DropdownMenuItem>

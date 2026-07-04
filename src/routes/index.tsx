@@ -25,6 +25,9 @@ const WorkOrderCreatePage = lazy(
 	() => import('@/features/orders/work-order-create-page'),
 );
 const WorkOrderEditPage = lazy(() => import('@/features/orders/work-order-edit-page'));
+const ReworkOrderEditPage = lazy(
+	() => import('@/features/orders/rework-order-edit-page'),
+);
 const CustomerDetailPage = lazy(
 	() => import('@/features/customers/customer-detail-page'),
 );
@@ -160,6 +163,14 @@ const router = createBrowserRouter([
 								element: (
 									<Suspense>
 										<WorkOrderEditPage />
+									</Suspense>
+								),
+							},
+							{
+								path: '/orders/rework/:orderId/edit',
+								element: (
+									<Suspense>
+										<ReworkOrderEditPage />
 									</Suspense>
 								),
 							},

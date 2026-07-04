@@ -6,7 +6,8 @@ import { StatusBadge } from './status-badge';
 import { OrderNumberLabel } from '@/components/orders/order-number-label';
 import { SortableHeader } from '@/components/sortable-header';
 import { useSortableTable } from '@/hooks/use-sortable-table';
-import { formatDate } from '@/utils/format';
+import { formatDate, formatCurrency } from '@/utils/format';
+import { getDueUrgency } from '@/utils/orders';
 import { ChevronDownIcon } from '@/components/icons/icons';
 import { OrderItemsExpanded } from './order-items-expanded/order-items-expanded';
 import { CustomerNameWithNotes } from '@/components/customer-name-with-notes/customer-name-with-notes';
@@ -56,7 +57,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 						activeSortKey={sortKey}
 						sortDirection={sortDirection}
 						onSort={toggleSort}
-						className="w-1/5"
+						className="w-44"
 					/>
 					<SortableHeader
 						label="Due"
@@ -67,6 +68,14 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 						className="w-40"
 					/>
 					<SortableHeader
+						label="Total"
+						sortKey="grand_total"
+						activeSortKey={sortKey}
+						sortDirection={sortDirection}
+						onSort={toggleSort}
+						className="w-28"
+					/>
+					<SortableHeader
 						label="Progress"
 						sortKey="item_count"
 						activeSortKey={sortKey}
@@ -74,7 +83,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 						onSort={toggleSort}
 						className="w-28"
 					/>
-					<Table.HeaderCell className="w-44">
+					<Table.HeaderCell className="w-40">
 						<Text size="2" weight="medium" color="secondary">
 							Status
 						</Text>
@@ -90,6 +99,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 			<Table.Body>
 				{sortedData.map((order) => {
 					const isExpanded = expandedOrderIds.has(order.id);
+					const dueUrgency = getDueUrgency(order.due_date);
 
 					return (
 						<Fragment key={order.id}>
@@ -108,8 +118,15 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 										hasNotes={Boolean(order.order_notes)}
 									/>
 								</Table.Cell>
-								<Table.Cell>
+								<Table.Cell
+									className={cn(
+										dueUrgency === 'overdue' && shared.dueOverdue,
+										dueUrgency === 'soon' && shared.dueSoon,
+									)}>
 									{order.due_date ? formatDate(order.due_date) : '—'}
+								</Table.Cell>
+								<Table.Cell>
+									{order.grand_total ? formatCurrency(order.grand_total) : '—'}
 								</Table.Cell>
 								<Table.Cell>
 									<Badge
@@ -125,17 +142,17 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 										color={order.workflow_stage_color}
 									/>
 								</Table.Cell>
-								<Table.Cell>
+								<Table.Cell className="w-full">
 									{order.batch_name && order.batch_id ? (
 										<Badge
 											size="1"
 											variant="soft"
-											className="cursor-pointer"
+											className="cursor-pointer max-w-full min-w-0"
 											onClick={(e) => {
 												e.stopPropagation();
 												navigate(`/batches/${order.batch_id}`);
 											}}>
-											{order.batch_name}
+											<span className="truncate">{order.batch_name}</span>
 										</Badge>
 									) : (
 										'—'
@@ -163,7 +180,7 @@ export const OrdersOverviewTable = ({ orders }: OrdersOverviewTableProps) => {
 									/>
 								</Table.Cell>
 							</Table.Row>
-							{isExpanded && <OrderItemsExpanded items={order.items} colSpan={7} />}
+							{isExpanded && <OrderItemsExpanded items={order.items} colSpan={8} />}
 						</Fragment>
 					);
 				})}

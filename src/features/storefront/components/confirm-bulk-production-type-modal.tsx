@@ -1,4 +1,5 @@
 import { Text, Button, Flex, Modal } from '@artifact-ui/core';
+import { ProductionIcon } from '@/components/icons';
 import type { ProductionType } from '@/types/api';
 import { productionTypeLabel } from '@/utils/production-type';
 
@@ -21,7 +22,9 @@ export const ConfirmBulkProductionTypeModal = ({
 			size="1"
 			ariaDescription="Confirm applying one production type to all variants">
 			<Modal.Header showCloseButton={false}>
-				<Modal.Title>Apply to all variants?</Modal.Title>
+				<Modal.Title iconLeft={<ProductionIcon size={18} />}>
+					Apply to all variants?
+				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<Text size="2">

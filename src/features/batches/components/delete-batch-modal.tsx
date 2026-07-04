@@ -20,12 +20,12 @@ export const DeleteBatchModal = ({
 		<Modal.Root open={open} onOpenChange={onOpenChange}>
 			<Modal.Content variant="simple" size="1" ariaDescription="Confirm batch deletion">
 				<Modal.Header showCloseButton={false}>
-					<Modal.Title>Delete Batch</Modal.Title>
+					<Modal.Title iconLeft={<TrashIcon size={18} />}>Delete Batch</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Text size="2">
-						Are you sure you want to delete <strong>{batchName}</strong>? Your
-						orders will not be affected.
+						Are you sure you want to delete <strong>{batchName}</strong>? Your orders will
+						not be affected.
 					</Text>
 				</Modal.Body>
 				<Modal.Footer>
@@ -34,8 +34,7 @@ export const DeleteBatchModal = ({
 							variant="ghost"
 							color="neutral"
 							onClick={() => onOpenChange(false)}
-							disabled={isPending}
-						>
+							disabled={isPending}>
 							Cancel
 						</Button>
 						<Button
@@ -43,8 +42,7 @@ export const DeleteBatchModal = ({
 							iconLeft={<TrashIcon size={14} />}
 							onClick={onDelete}
 							loading={isPending}
-							disabled={isPending}
-						>
+							disabled={isPending}>
 							Delete
 						</Button>
 					</Flex>

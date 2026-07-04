@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Modal, TextField, Button, Text, Flex, Stack } from '@artifact-ui/core';
+import { MailIcon } from '@/components/icons/icons';
 import { useToast } from '@/providers/toast-context';
 import { extractErrorMessage } from '@/utils/errors';
 import { toFieldError } from '@/utils/forms';
@@ -55,7 +56,7 @@ export const ChangeEmailModal = ({
 		<Modal.Root open={open} onOpenChange={handleOpenChange}>
 			<Modal.Content size="1" ariaDescription="Change your email">
 				<Modal.Header>
-					<Modal.Title>Change Email</Modal.Title>
+					<Modal.Title iconLeft={<MailIcon size={18} />}>Change Email</Modal.Title>
 				</Modal.Header>
 
 				<form onSubmit={handleSubmit(onSubmit)}>

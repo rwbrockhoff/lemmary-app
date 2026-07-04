@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router';
 import { Table, Flex } from '@artifact-ui/core';
 import { useToast } from '@/providers/toast-context';
-import { getOrderDisplayName } from '@/utils/orders';
+import { getOrderDisplayName, isSalesOrder } from '@/utils/orders';
+import type { ReworkReason } from '@/types/api';
 import { PageHeader } from '@/components/page-header';
 import { PageSpinner } from '@/components/page-spinner';
 import { LoadingWrapper } from '@/components/loading-wrapper/loading-wrapper';
@@ -14,11 +15,13 @@ import { OrderMetadataCard } from './components/order-metadata-card/order-metada
 import { StageSelect } from '@/components/orders/stage-select';
 import { OrderOptionsMenu } from './components/order-options-menu';
 import { DeleteOrderModal } from './components/delete-order-modal';
+import { ReworkReasonModal } from './components/rework-reason-modal';
 import {
 	useOrder,
 	useUpdateOrderItemStage,
 	useDeleteOrder,
 	usePrintPackingSlip,
+	useCreateRework,
 } from './api/orders-queries';
 import {
 	useOrderStages,
@@ -45,7 +48,9 @@ const OrderDetailPage = () => {
 
 	const deleteOrder = useDeleteOrder();
 	const printSlip = usePrintPackingSlip();
+	const createRework = useCreateRework();
 	const [showDelete, setShowDelete] = useState(false);
+	const [showRedo, setShowRedo] = useState(false);
 
 	const from = searchParams.get('from');
 	const batchId = searchParams.get('batchId');
@@ -76,6 +81,26 @@ const OrderDetailPage = () => {
 		});
 	};
 
+	const handleRedo = (reason: ReworkReason) => {
+		if (!order) return;
+		createRework.mutate(
+			{ parent_order_id: order.id, rework_reason: reason },
+			{
+				onSuccess: (rework) => {
+					toast.success('Redo order created');
+					navigate(`/orders/rework/${rework.id}/edit`);
+				},
+				onError: (err) => toast.error(err.message, 'Could not create rework'),
+			},
+		);
+	};
+
+	const handleViewOnStore = () => {
+		if (order?.order_url) {
+			window.open(order.order_url, '_blank', 'noopener,noreferrer');
+		}
+	};
+
 	const breadcrumbs = getOrderBreadcrumbs(from, batchId);
 
 	const pageTitle = order
@@ -102,6 +127,8 @@ const OrderDetailPage = () => {
 								canManage={order.order_type !== 'platform'}
 								onEdit={() => navigate(`/orders/${order.order_type}/${order.id}/edit`)}
 								onDelete={() => setShowDelete(true)}
+								onRedo={isSalesOrder(order) ? () => setShowRedo(true) : undefined}
+								onViewOnStore={order.order_url ? handleViewOnStore : undefined}
 							/>
 						</Flex>
 					)
@@ -159,6 +186,14 @@ const OrderDetailPage = () => {
 							orderNumber={order.order_number}
 							onDelete={handleDelete}
 							isPending={deleteOrder.isPending}
+						/>
+
+						<ReworkReasonModal
+							open={showRedo}
+							onOpenChange={setShowRedo}
+							onConfirm={handleRedo}
+							isPending={createRework.isPending}
+							orderNumber={order.order_number}
 						/>
 					</>
 				)}

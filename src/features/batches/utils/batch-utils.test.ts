@@ -6,6 +6,8 @@ const buildOrder = (overrides: Partial<OrderWithItems> = {}): OrderWithItems => 
 	id: 'o1',
 	store_id: 's1',
 	order_type: 'platform',
+	parent_order_id: null,
+	rework_reason: null,
 	platform_order_id: 'p1',
 	order_number: 'O-1',
 	order_title: null,

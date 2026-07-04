@@ -29,7 +29,7 @@ export const CustomerMetadataRow = ({
 	return (
 		<Flex gap="4" align="center">
 			<Text size="2" color="secondary" className={styles.label}>
-				Customer
+				Customer:
 			</Text>
 			{href ? (
 				<Link to={href} className={styles.link}>

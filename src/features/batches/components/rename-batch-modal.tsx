@@ -37,7 +37,7 @@ export const RenameBatchModal = ({
 		<Modal.Root open={open} onOpenChange={onOpenChange}>
 			<Modal.Content size="1" ariaDescription="Rename this batch">
 				<Modal.Header>
-					<Modal.Title>Rename Batch</Modal.Title>
+					<Modal.Title iconLeft={<PencilIcon size={18} />}>Rename Batch</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<form onSubmit={handleSubmit}>
@@ -51,11 +51,7 @@ export const RenameBatchModal = ({
 				</Modal.Body>
 				<Modal.Footer>
 					<Flex justify="end" gap="2">
-						<Button
-							variant="ghost"
-							color="neutral"
-							onClick={() => onOpenChange(false)}
-						>
+						<Button variant="ghost" color="neutral" onClick={() => onOpenChange(false)}>
 							Cancel
 						</Button>
 						<Button
@@ -63,8 +59,7 @@ export const RenameBatchModal = ({
 							iconLeft={<PencilIcon size={14} />}
 							onClick={handleSubmit}
 							loading={isPending}
-							disabled={isPending || !name.trim() || name.trim() === currentName}
-						>
+							disabled={isPending || !name.trim() || name.trim() === currentName}>
 							Rename
 						</Button>
 					</Flex>

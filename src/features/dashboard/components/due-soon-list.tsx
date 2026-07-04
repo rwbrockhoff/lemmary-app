@@ -5,6 +5,7 @@ import { StatusBadge } from '@/features/orders/components/status-badge';
 import { getProgressColor } from '@/features/batches/utils/batch-utils';
 import { getOrderDisplayName } from '@/utils/orders';
 import type { DashboardData } from '../api/dashboard-queries';
+import shared from '@/styles/shared.module.css';
 import styles from './due-soon-list.module.css';
 
 type DueSoonListProps = {
@@ -126,8 +127,8 @@ export const DueSoonList = ({ orders }: DueSoonListProps) => {
 										</Table.Cell>
 										<Table.Cell
 											className={cn(
-												isOverdue && styles.overdue,
-												isDueSoon && styles.dueSoon,
+												isOverdue && shared.dueOverdue,
+												isDueSoon && shared.dueSoon,
 											)}>
 											{formatDaysUntilDue(order.daysUntilDue)}
 										</Table.Cell>

@@ -1,4 +1,5 @@
 import { Text, Button, Stack, Flex, Modal } from '@artifact-ui/core';
+import { TrashIcon } from '@/components/icons/icons';
 import { useToast } from '@/providers/toast-context';
 import { useDeleteMaterial } from './library-queries';
 import type { MaterialLibraryItem } from '@/types/api';
@@ -38,7 +39,7 @@ export const DeleteMaterialModal = ({
 				size="1"
 				ariaDescription="Confirm material deletion">
 				<Modal.Header showCloseButton={false}>
-					<Modal.Title>Delete material?</Modal.Title>
+					<Modal.Title iconLeft={<TrashIcon size={18} />}>Delete material?</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Stack gap="3">

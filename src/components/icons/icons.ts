@@ -1,4 +1,5 @@
 export { RefreshCw as RefreshIcon } from 'lucide-react';
+export { RotateCcw as RedoIcon } from 'lucide-react';
 export { ShoppingCart as OrdersIcon } from 'lucide-react';
 export { ClipboardList as ProductionIcon } from 'lucide-react';
 export { Package as MaterialsIcon } from 'lucide-react';
@@ -45,6 +46,7 @@ export { TrendingUp as TrendingUpIcon } from 'lucide-react';
 export { TrendingDown as TrendingDownIcon } from 'lucide-react';
 export { Clock as ClockIcon } from 'lucide-react';
 export { Lock as LockIcon } from 'lucide-react';
+export { Mail as MailIcon } from 'lucide-react';
 export { Inbox as InboxIcon } from 'lucide-react';
 export { AlertCircle as ErrorIcon } from 'lucide-react';
 export { Info as InfoIcon } from 'lucide-react';

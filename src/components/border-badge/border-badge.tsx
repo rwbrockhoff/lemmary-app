@@ -11,6 +11,6 @@ type BorderBadgeProps = {
 export const BorderBadge = ({ color, children, icon }: BorderBadgeProps) => (
 	<span className={styles.badge} style={getTintStyle(color)}>
 		{icon}
-		{children}
+		<span className={styles.label}>{children}</span>
 	</span>
 );

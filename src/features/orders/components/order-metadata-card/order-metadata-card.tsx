@@ -1,10 +1,13 @@
 import { useState, type ReactNode } from 'react';
+import { Link } from 'react-router';
 import { Text, Card, TextArea, Button, Stack, Flex, DatePicker } from '@artifact-ui/core';
+import { OrdersIcon } from '@/components/icons/icons';
 import { useUpdateOrderNotes, useUpdateOrderDates } from '../../api/orders-queries';
 import { CustomerMetadataRow } from '@/features/customers/components/customer-metadata-row';
 import { OrderTypeBadge } from '../order-type-badge';
 import { useToast } from '@/providers/toast-context';
 import { formatCurrency } from '@/utils/format';
+import { reworkReasonLabel } from '@/utils/rework';
 import { parseDateValue, formatDateValue, toZonedDateValue } from '@/utils/date';
 import { useStore } from '@/features/settings/api/store-queries';
 import { DEFAULT_TIMEZONE } from '@/utils/timezones';
@@ -24,6 +27,7 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 
 	const hasNotesChanged = notes !== (order.order_notes ?? '');
 	const isWork = order.order_type === 'work';
+	const isRework = order.order_type === 'rework';
 
 	const handleSaveNotes = () => {
 		updateNotes.mutate(notes, {
@@ -76,9 +80,41 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 					{isWork && order.order_description && (
 						<MetadataRow label="Description" value={order.order_description} />
 					)}
+					{isRework && order.rework_reason && (
+						<MetadataRow label="Reason" value={reworkReasonLabel(order.rework_reason)} />
+					)}
+					{isRework && order.parent_order_id && order.parent_order_number && (
+						<Flex gap="4" align="center">
+							<Text size="2" color="secondary" className={styles.label}>
+								Original:
+							</Text>
+							<Link to={`/orders/${order.parent_order_id}`} className={styles.orderLink}>
+								<OrdersIcon size={14} />
+								{order.parent_order_number}
+							</Link>
+						</Flex>
+					)}
+					{!isRework && order.reworks.length > 0 && (
+						<Flex gap="4" align="center">
+							<Text size="2" color="secondary" className={styles.label}>
+								{order.reworks.length > 1 ? 'Redos:' : 'Redo:'}
+							</Text>
+							<Flex gap="3">
+								{order.reworks.map((rework) => (
+									<Link
+										key={rework.id}
+										to={`/orders/${rework.id}`}
+										className={`${styles.orderLink} ${styles.orderLinkRework}`}>
+										<OrdersIcon size={14} />
+										{rework.order_number}
+									</Link>
+								))}
+							</Flex>
+						</Flex>
+					)}
 					<Flex gap="4" align="center">
 						<Text size="2" color="secondary" className={styles.label}>
-							Date
+							Date:
 						</Text>
 						<DatePicker
 							selected={parseDateValue(
@@ -93,7 +129,7 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 					</Flex>
 					<Flex gap="4" align="center">
 						<Text size="2" color="secondary" className={styles.label}>
-							Due
+							Due:
 						</Text>
 						<DatePicker
 							selected={parseDateValue(order.due_date ?? undefined)}
@@ -102,25 +138,11 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 							size="1"
 						/>
 					</Flex>
-					{!isWork && (
+					{!isWork && !isRework && (
 						<MetadataRow label="Total" value={formatCurrency(order.grand_total)} />
 					)}
 					{order.shipping_method && (
 						<MetadataRow label="Shipping" value={order.shipping_method} />
-					)}
-					{order.order_url && (
-						<Flex gap="4">
-							<Text size="2" color="secondary" className={styles.label}>
-								Order Page
-							</Text>
-							<a
-								href={order.order_url}
-								target="_blank"
-								rel="noopener noreferrer"
-								className={styles.link}>
-								View on Your Store
-							</a>
-						</Flex>
 					)}
 				</Stack>
 				<Stack>
@@ -158,7 +180,7 @@ type MetadataRowProps = {
 const MetadataRow = ({ label, value, trailing }: MetadataRowProps) => (
 	<Flex gap="4" align="center">
 		<Text size="2" color="secondary" className={styles.label}>
-			{label}
+			{label}:
 		</Text>
 		<Text size="2">{value}</Text>
 		{trailing}

@@ -10,6 +10,37 @@
 	margin-inline: auto;
 }
 
+/* Destructive menu action, colors the label and its icon */
+.dangerMenuItem,
+.dangerMenuItem svg,
+.dangerMenuItem * {
+	color: var(--color-error);
+}
+
+/* Due date urgency, shared by the orders table and the dashboard due list */
+.dueOverdue {
+	color: var(--color-error);
+	font-weight: 500;
+}
+
+.dueSoon {
+	color: var(--color-warning, var(--color-text-default));
+	font-weight: 500;
+}
+
+/* Hidden visually but kept for screen readers */
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
 .completedRow {
 	background-color: var(--color-success-bg);
 }
