@@ -9,8 +9,10 @@ import {
 	WorkflowIcon,
 	SidebarIcon,
 	TrendingUpIcon,
+	SearchIcon,
 } from '@/components/icons';
 import { BrandMark } from '@/components/brand-mark/brand-mark';
+import { useSearchPalette } from '@/features/search/search-context';
 import { SidebarUserMenu } from './sidebar-user-menu';
 import { ConnectStorePrompt } from './connect-store-prompt';
 import styles from './sidebar.module.css';
@@ -47,6 +49,8 @@ const navSections = [
 ];
 
 export const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
+	const { open } = useSearchPalette();
+
 	return (
 		<aside
 			className={styles.sidebar}
@@ -62,6 +66,12 @@ export const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 						<SidebarIcon size={18} />
 					</button>
 				</div>
+
+				<button className={styles.searchButton} onClick={open} aria-label="Search">
+					<SearchIcon size={18} />
+					{!isCollapsed && <span className={styles.searchLabel}>Search</span>}
+					{!isCollapsed && <kbd className={styles.searchKbd}>⌘K</kbd>}
+				</button>
 
 				<nav className={styles.nav}>
 					{navSections.map((section) => (

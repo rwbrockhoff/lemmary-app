@@ -1,6 +1,7 @@
 import { Table, DropdownMenu, IconButton } from '@artifact-ui/core';
 import {
 	EllipsisHorizontalIcon,
+	PrinterIcon,
 	PencilIcon,
 	TrashIcon,
 	ListChecksIcon,
@@ -12,6 +13,7 @@ import type { Batch } from '@/types/api';
 type BatchRowProps = {
 	batch: Batch;
 	onRowClick: () => void;
+	onPrint: () => void;
 	onStatusChange: (status: Batch['status']) => void;
 	onEditOrders: () => void;
 	onRename: () => void;
@@ -21,6 +23,7 @@ type BatchRowProps = {
 export const BatchRow = ({
 	batch,
 	onRowClick,
+	onPrint,
 	onStatusChange,
 	onEditOrders,
 	onRename,
@@ -41,6 +44,11 @@ export const BatchRow = ({
 	const handleDelete = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onDelete();
+	};
+
+	const handlePrint = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		onPrint();
 	};
 
 	return (
@@ -67,6 +75,11 @@ export const BatchRow = ({
 						/>
 					</DropdownMenu.DropdownMenuTrigger>
 					<DropdownMenu.DropdownMenuContent align="end" size="1">
+						<DropdownMenu.DropdownMenuItem onClick={handlePrint}>
+							<PrinterIcon size={14} />
+							Print Packing Slips
+						</DropdownMenu.DropdownMenuItem>
+						<DropdownMenu.DropdownMenuSeparator />
 						<DropdownMenu.DropdownMenuItem onClick={handleEditOrders}>
 							<ListChecksIcon size={14} />
 							Edit Orders
