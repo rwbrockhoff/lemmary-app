@@ -10,7 +10,15 @@ export type OrdersResponse = {
 	lastSyncedAt: string | null;
 };
 
-export type OrderType = 'platform' | 'custom' | 'work';
+export type OrderType = 'platform' | 'custom' | 'work' | 'rework';
+
+export type ReworkReason =
+	| 'missing_item'
+	| 'wrong_item'
+	| 'defect'
+	| 'damaged_in_transit'
+	| 'customer_change'
+	| 'other';
 
 export type ProductionType = 'made_to_order' | 'ready_made' | 'dropship' | 'digital';
 
@@ -18,6 +26,8 @@ export type Order = {
 	id: string;
 	store_id: string;
 	order_type: OrderType;
+	parent_order_id: string | null;
+	rework_reason: ReworkReason | null;
 	platform_order_id: string | null;
 	order_number: string;
 	order_title: string | null;

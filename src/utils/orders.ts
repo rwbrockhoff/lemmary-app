@@ -9,6 +9,10 @@ export const FULFILLMENT_STATUS = {
 export const isOrderLocked = (order: { fulfillment_status: string }): boolean =>
 	order.fulfillment_status !== FULFILLMENT_STATUS.PENDING;
 
+/** platform and custom orders are real customer sales that can be redone. */
+export const isSalesOrder = (order: { order_type: OrderType }): boolean =>
+	order.order_type === 'platform' || order.order_type === 'custom';
+
 type NamedOrder = {
 	order_type: OrderType;
 	order_title: string | null;
@@ -27,4 +31,5 @@ export const ORDER_TYPE_DISPLAY: Record<
 > = {
 	custom: { label: 'Custom', color: 'marigold' },
 	work: { label: 'Work order', color: 'cobalt' },
+	rework: { label: 'Redo', color: 'coral' },
 };
