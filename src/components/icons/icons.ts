@@ -50,6 +50,7 @@ export { AlertCircle as ErrorIcon } from 'lucide-react';
 export { Info as InfoIcon } from 'lucide-react';
 export { Boxes as TopProductsIcon } from 'lucide-react';
 export { Users as CustomersIcon } from 'lucide-react';
+export { Search as SearchIcon } from 'lucide-react';
 export { User as UserIcon } from 'lucide-react';
 export { Ticket as CouponIcon } from 'lucide-react';
 export { CreditCard as BillingIcon } from 'lucide-react';
