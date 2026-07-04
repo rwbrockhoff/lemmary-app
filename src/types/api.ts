@@ -77,6 +77,8 @@ export type OrderItem = {
 
 export type OrderDetail = Order & {
 	workflow_stage_name: string | null;
+	parent_order_number: string | null;
+	reworks: { id: string; order_number: string }[];
 	items: OrderItem[];
 };
 

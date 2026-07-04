@@ -19,6 +19,29 @@
 	opacity: 1;
 }
 
+.orderLink {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-size: var(--font-size-2);
+	color: var(--color-text-default);
+	text-decoration: none;
+	padding: 2px var(--space-2);
+	border: 1px solid color-mix(in srgb, var(--color-border-subtle) 50%, transparent);
+	border-radius: var(--radius-2);
+	opacity: 0.85;
+}
+
+.orderLink:hover {
+	opacity: 1;
+	background: var(--color-bg-subtle);
+}
+
+.orderLinkRework {
+	color: var(--wf-stage-color-coral);
+	border-color: color-mix(in srgb, var(--wf-stage-color-coral) 40%, transparent);
+}
+
 /** Modify disabled style for DatePicker **/
 .subtleDisabled:disabled {
 	opacity: 0.9;

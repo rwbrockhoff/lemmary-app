@@ -17,7 +17,7 @@ export const getTintStyle = (color: string): CSSProperties => {
 		: cssVar;
 
 	return {
-		backgroundColor: `color-mix(in srgb, ${cssVar} 18%, transparent)`,
+		backgroundColor: `color-mix(in srgb, ${cssVar} 12%, transparent)`,
 		color: fg,
 		borderColor: `color-mix(in srgb, ${cssVar} 40%, transparent)`,
 	};

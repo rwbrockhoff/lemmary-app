@@ -1,5 +1,7 @@
 import { useState, type ReactNode } from 'react';
+import { Link } from 'react-router';
 import { Text, Card, TextArea, Button, Stack, Flex, DatePicker } from '@artifact-ui/core';
+import { OrdersIcon } from '@/components/icons/icons';
 import { useUpdateOrderNotes, useUpdateOrderDates } from '../../api/orders-queries';
 import { CustomerMetadataRow } from '@/features/customers/components/customer-metadata-row';
 import { OrderTypeBadge } from '../order-type-badge';
@@ -79,10 +81,36 @@ export const OrderMetadataCard = ({ order }: OrderMetadataCardProps) => {
 						<MetadataRow label="Description" value={order.order_description} />
 					)}
 					{isRework && order.rework_reason && (
-						<MetadataRow
-							label="Redo reason"
-							value={reworkReasonLabel(order.rework_reason)}
-						/>
+						<MetadataRow label="Reason" value={reworkReasonLabel(order.rework_reason)} />
+					)}
+					{isRework && order.parent_order_id && order.parent_order_number && (
+						<Flex gap="4" align="center">
+							<Text size="2" color="secondary" className={styles.label}>
+								Original:
+							</Text>
+							<Link to={`/orders/${order.parent_order_id}`} className={styles.orderLink}>
+								<OrdersIcon size={14} />
+								{order.parent_order_number}
+							</Link>
+						</Flex>
+					)}
+					{!isRework && order.reworks.length > 0 && (
+						<Flex gap="4" align="center">
+							<Text size="2" color="secondary" className={styles.label}>
+								{order.reworks.length > 1 ? 'Redos:' : 'Redo:'}
+							</Text>
+							<Flex gap="3">
+								{order.reworks.map((rework) => (
+									<Link
+										key={rework.id}
+										to={`/orders/${rework.id}`}
+										className={`${styles.orderLink} ${styles.orderLinkRework}`}>
+										<OrdersIcon size={14} />
+										{rework.order_number}
+									</Link>
+								))}
+							</Flex>
+						</Flex>
 					)}
 					<Flex gap="4" align="center">
 						<Text size="2" color="secondary" className={styles.label}>
